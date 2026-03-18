@@ -115,7 +115,7 @@ export default function LoginPage() {
               </div>
 
               <button
-                className="w-full bg-slate-900 dark:bg-primary text-white font-bold py-3.5 rounded-lg hover:bg-slate-800 dark:hover:bg-primary/90 transition-colors shadow-lg"
+                className="w-full bg-slate-900 dark:bg-primary text-white font-bold py-3.5 rounded-lg hover:bg-slate-800 dark:hover:bg-primary/90 transition-colors shadow-lg cursor-pointer"
                 type="submit"
               >
                 Sign In
@@ -128,7 +128,7 @@ export default function LoginPage() {
               </div>
 
               <button
-                className="w-full flex items-center justify-center gap-3 bg-white dark:bg-transparent border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold py-3.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+                className="w-full flex items-center justify-center gap-3 bg-white dark:bg-transparent border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold py-3.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm cursor-pointer"
                 type="button"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
