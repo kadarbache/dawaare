@@ -19,6 +19,46 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import StatusCard from "@/components/StatusCard";
+
+const products = [
+  {
+    id: 1,
+    name: "Sony WH-1000XM4",
+    sku: "AUD-2023-001",
+    category: "Electronics",
+    price: "$349.00",
+    costPrice: "$280.00",
+    stockCount: 3,
+    isLowStock: true,
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuChmsiOr397ceoV7PlvRBOK-zRIspy5luCA8i_7Rd-nmakHCpRqkBmoL5Ssq3I1mNrQl4GVwTKbtgtWnMwiGH_W4ZQLxhB5aIFoBFgB2LGSqT2JKgISVcUxN6kUObM8_xP3i8LGaqP1ynRDZJTI-LHivzhOOz9O-OyBwgJ-laEAVxI-vlcZxLffn9Y43jH8em6aAaEbp8xw0wCZyZsR0kRN0DlUT3Qtl-3Bz82NaQ5SBzXJ0MxeGhF344JuTLQTbYGptIFBjNz3h48",
+  },
+  {
+    id: 2,
+    name: "Nordic Chronograph",
+    sku: "WCH-8821-X",
+    category: "Accessories",
+    price: "$189.00",
+    costPrice: "$120.00",
+    stockCount: 42,
+    isLowStock: false,
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDIhYWzUAmrZzvQc7tAgS6Jyw7ee9xa4eyOMFRf90NZr9KV4TbcUcxIuDp5vPyfpLiHwQ3Kt4hG0ZFzCEEBWHV47KhlH9-V0MFOi0i5c41fq8g5poJkJyPYlKwcipi1_aRjBrh1OBduu3aCjQceq1UMtycfmxuzMmDPQ5_di5gL0JVzfQOCeYNqHX0g2nhydGhUN_JVz4dqYDSNokYlfpJbfph5vTP2V-wCpqduYzZcX-x4UrFuroG2yTix-iBLcEs6TIc28CfzZw4",
+  },
+  {
+    id: 3,
+    name: "Polaroid Now+ Gen 2",
+    sku: "CAM-9001-P",
+    category: "Electronics",
+    price: "$149.99",
+    costPrice: "$95.00",
+    stockCount: 4,
+    isLowStock: true,
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBC5e5suMRG0gzm-7i4wwzDmV7NE27IVEyiLhDCyMHmzLJ2opAjCBKu_GS3MUbkqpgesgHXpdKKbCUqnUjFNzkTxAISbgCSrI_uvaFf3nNKYcOkGkyZ-EDQQnYE25A0PMbtclk3vpUdUqX-m3lcA5dR4bTqdgsSHtlm98yIOWI5NPlHb8atnPQGiM_8RxbXauEZILnKvWXzARBgipiDLlIi4eFqOFK71FkZJqCVvEQos4f91y6RpF1k6hfGbPSvjOTsrj7I0Pc_tAY",
+  },
+];
 
 export default function InventoryPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,52 +116,32 @@ export default function InventoryPage() {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <div className="flex flex-col gap-2 rounded-2xl p-6 border border-slate-200 dark:border-primary/30 bg-white dark:bg-background-dark shadow-lg">
-                <div className="flex justify-between items-start">
-                  <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">
-                    Total Products
-                  </p>
-                  <Layers size={20} className="text-primary" />
-                </div>
-                <p className="text-slate-900 dark:text-slate-100 text-3xl font-black">
-                  1,240
-                </p>
-                <p className="text-emerald-500 text-xs font-bold flex items-center gap-1">
-                  <TrendingUp size={12} />
-                  +2.5% from last month
-                </p>
-              </div>
+              <StatusCard
+                title="Total Products"
+                value="1,240"
+                description="+2.5% from last month"
+                variant="success"
+                icon={<Layers size={20} className="text-primary" />}
+                trendIcon={<TrendingUp size={12} />}
+              />
 
-              <div className="flex flex-col gap-2 rounded-2xl p-6 border border-slate-200 dark:border-primary/30 bg-white dark:bg-background-dark shadow-lg">
-                <div className="flex justify-between items-start">
-                  <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">
-                    Low Stock Items
-                  </p>
-                  <AlertTriangle size={20} className="text-primary" />
-                </div>
-                <p className="text-slate-900 dark:text-slate-100 text-3xl font-black">
-                  8
-                </p>
-                <p className="text-primary text-xs font-bold flex items-center gap-1 uppercase">
-                  <AlertCircle size={12} />
-                  Critical attention
-                </p>
-              </div>
+              <StatusCard
+                title="Low Stock Items"
+                value="8"
+                description="Critical attention"
+                variant="danger"
+                icon={<AlertTriangle size={20} className="text-primary" />}
+                trendIcon={<AlertCircle size={12} />}
+              />
 
-              <div className="flex flex-col gap-2 rounded-2xl p-6 border border-slate-200 dark:border-primary/30 bg-white dark:bg-background-dark shadow-lg">
-                <div className="flex justify-between items-start">
-                  <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">
-                    Out of Stock
-                  </p>
-                  <Ban size={20} className="text-primary" />
-                </div>
-                <p className="text-slate-900 dark:text-slate-100 text-3xl font-black">
-                  3
-                </p>
-                <p className="text-slate-400 text-xs font-medium">
-                  No change from yesterday
-                </p>
-              </div>
+              <StatusCard
+                title="Out of Stock"
+                value="3"
+                description="No change from yesterday"
+                variant="danger"
+                icon={<Ban size={20} className="text-primary" />}
+                trendIcon={<AlertCircle size={12} />}
+              />
 
               <div className="flex flex-col gap-2 rounded-2xl p-6 border border-slate-200 dark:border-primary/30 bg-white dark:bg-background-dark shadow-lg">
                 <div className="flex justify-between items-start">
@@ -164,6 +184,9 @@ export default function InventoryPage() {
                         Price
                       </th>
                       <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-widest">
+                        Cost Price
+                      </th>
+                      <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-widest">
                         Stock Count
                       </th>
                       <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-widest text-right">
@@ -172,151 +195,67 @@ export default function InventoryPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-primary/5">
-                    {/* Row 1: Low Stock */}
-                    <tr className="hover:bg-primary/5 transition-colors group">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div
-                          className="bg-center bg-no-repeat aspect-square bg-cover rounded-xl size-12 border border-slate-200 dark:border-primary/30 group-hover:border-primary/50 transition-colors"
-                          data-alt="High quality professional headphones"
-                          style={{
-                            backgroundImage:
-                              'url("https://lh3.googleusercontent.com/aida-public/AB6AXuChmsiOr397ceoV7PlvRBOK-zRIspy5luCA8i_7Rd-nmakHCpRqkBmoL5Ssq3I1mNrQl4GVwTKbtgtWnMwiGH_W4ZQLxhB5aIFoBFgB2LGSqT2JKgISVcUxN6kUObM8_xP3i8LGaqP1ynRDZJTI-LHivzhOOz9O-OyBwgJ-laEAVxI-vlcZxLffn9Y43jH8em6aAaEbp8xw0wCZyZsR0kRN0DlUT3Qtl-3Bz82NaQ5SBzXJ0MxeGhF344JuTLQTbYGptIFBjNz3h48")',
-                          }}
-                        ></div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col">
-                          <span className="text-slate-900 dark:text-slate-100 font-bold text-sm">
-                            Sony WH-1000XM4
-                          </span>
-                          <span className="text-slate-400 dark:text-slate-500 font-mono text-xs">
-                            SKU: AUD-2023-001
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-sm">
-                        Electronics
-                      </td>
-                      <td className="px-6 py-4 text-slate-900 dark:text-slate-100 font-bold text-sm">
-                        $349.00
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-primary font-black text-sm flex items-center gap-1">
-                          3{" "}
-                          <span className="text-[10px] font-bold uppercase tracking-widest">
-                            (Low)
-                          </span>
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex justify-end gap-2">
-                          <button className="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
-                            <Pencil size={14} />
-                            Edit
-                          </button>
-                          <button className="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
-                            <BarChart3 size={14} />
-                            Analytics
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    {/* Row 2: Healthy Stock */}
-                    <tr className="hover:bg-primary/5 transition-colors group">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div
-                          className="bg-center bg-no-repeat aspect-square bg-cover rounded-xl size-12 border border-slate-200 dark:border-primary/30 group-hover:border-primary/50 transition-colors"
-                          data-alt="Minimalist wrist watch white"
-                          style={{
-                            backgroundImage:
-                              'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDIhYWzUAmrZzvQc7tAgS6Jyw7ee9xa4eyOMFRf90NZr9KV4TbcUcxIuDp5vPyfpLiHwQ3Kt4hG0ZFzCEEBWHV47KhlH9-V0MFOi0i5c41fq8g5poJkJyPYlKwcipi1_aRjBrh1OBduu3aCjQceq1UMtycfmxuzMmDPQ5_di5gL0JVzfQOCeYNqHX0g2nhydGhUN_JVz4dqYDSNokYlfpJbfph5vTP2V-wCpqduYzZcX-x4UrFuroG2yTix-iBLcEs6TIc28CfzZw4")',
-                          }}
-                        ></div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col">
-                          <span className="text-slate-900 dark:text-slate-100 font-bold text-sm">
-                            Nordic Chronograph
-                          </span>
-                          <span className="text-slate-400 dark:text-slate-500 font-mono text-xs">
-                            SKU: WCH-8821-X
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-sm">
-                        Accessories
-                      </td>
-                      <td className="px-6 py-4 text-slate-900 dark:text-slate-100 font-bold text-sm">
-                        $189.00
-                      </td>
-                      <td className="px-6 py-4 text-slate-500 dark:text-slate-100 font-bold text-sm">
-                        42
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex justify-end gap-2">
-                          <button className="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
-                            <Pencil size={14} />
-                            Edit
-                          </button>
-                          <button className="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
-                            <BarChart3 size={14} />
-                            Analytics
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    {/* Row 3: Low Stock */}
-                    <tr className="hover:bg-primary/5 transition-colors group">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div
-                          className="bg-center bg-no-repeat aspect-square bg-cover rounded-xl size-12 border border-slate-200 dark:border-primary/30 group-hover:border-primary/50 transition-colors"
-                          data-alt="Retro polaroid camera"
-                          style={{
-                            backgroundImage:
-                              'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBC5e5suMRG0gzm-7i4wwzDmV7NE27IVEyiLhDCyMHmzLJ2opAjCBKu_GS3MUbkqpgesgHXpdKKbCUqnUjFNzkTxAISbgCSrI_uvaFf3nNKYcOkGkyZ-EDQQnYE25A0PMbtclk3vpUdUqX-m3lcA5dR4bTqdgsSHtlm98yIOWI5NPlHb8atnPQGiM_8RxbXauEZILnKvWXzARBgipiDLlIi4eFqOFK71FkZJqCVvEQos4f91y6RpF1k6hfGbPSvjOTsrj7I0Pc_tAY")',
-                          }}
-                        ></div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col">
-                          <span className="text-slate-900 dark:text-slate-100 font-bold text-sm">
-                            Polaroid Now+ Gen 2
-                          </span>
-                          <span className="text-slate-400 dark:text-slate-500 font-mono text-xs">
-                            SKU: CAM-9001-P
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-sm">
-                        Electronics
-                      </td>
-                      <td className="px-6 py-4 text-slate-900 dark:text-slate-100 font-bold text-sm">
-                        $149.99
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-primary font-black text-sm flex items-center gap-1">
-                          4{" "}
-                          <span className="text-[10px] font-bold uppercase tracking-widest">
-                            (Low)
-                          </span>
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div
-                          className="flex justify-end gap-2"
-                          onClick={handleOpenModal}
-                        >
-                          <button className="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
-                            <Pencil size={14} />
-                            Edit
-                          </button>
-                          <button className="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
-                            <BarChart3 size={14} />
-                            Analytics
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    {products.map((product) => (
+                      <tr
+                        key={product.id}
+                        className="hover:bg-primary/5 transition-colors group"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div
+                            className="bg-center bg-no-repeat aspect-square bg-cover rounded-xl size-12 border border-slate-200 dark:border-primary/30 group-hover:border-primary/50 transition-colors"
+                            data-alt={product.name}
+                            style={{
+                              backgroundImage: `url("${product.image}")`,
+                            }}
+                          ></div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex flex-col">
+                            <span className="text-slate-900 dark:text-slate-100 font-bold text-sm">
+                              {product.name}
+                            </span>
+                            <span className="text-slate-400 dark:text-slate-500 font-mono text-xs">
+                              SKU: {product.sku}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-sm">
+                          {product.category}
+                        </td>
+                        <td className="px-6 py-4 text-slate-900 dark:text-slate-100 font-bold text-sm">
+                          {product.price}
+                        </td>
+                        <td className="px-6 py-4 text-slate-500 dark:text-slate-400 font-medium text-sm">
+                          {product.costPrice}
+                        </td>
+                        <td className="px-6 py-4">
+                          {product.isLowStock ? (
+                            <span className="text-primary font-black text-sm flex items-center gap-1">
+                              {product.stockCount}{" "}
+                              <span className="text-[10px] font-bold uppercase tracking-widest">
+                                (Low)
+                              </span>
+                            </span>
+                          ) : (
+                            <span className="text-slate-900 dark:text-slate-100 font-bold text-sm">
+                              {product.stockCount}
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex justify-end gap-2">
+                            <button className="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
+                              <Pencil size={14} />
+                              Edit
+                            </button>
+                            <button className="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
+                              <BarChart3 size={14} />
+                              Analytics
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
