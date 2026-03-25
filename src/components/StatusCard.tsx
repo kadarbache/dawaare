@@ -23,7 +23,7 @@ export default function StatusCard({
         </p>
         {icon}
       </div>
-      <p className="text-slate-900 dark:text-slate-100 text-3xl font-black">
+      <p className="text-slate-900 dark:text-slate-100 text-3xl font-bold">
         {value}
       </p>
       <p

@@ -5,7 +5,6 @@ import {
   LayoutDashboard,
   Terminal,
   Package,
-  ShoppingCart,
   BarChart3,
   Settings,
   Users,
@@ -23,7 +22,7 @@ export default function Sidebar() {
 
       <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
         <Link
-          href="#"
+          href="/dashboard"
           className="flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/5 rounded-xl transition-all font-semibold group cursor-pointer"
         >
           <LayoutDashboard
