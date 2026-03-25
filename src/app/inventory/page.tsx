@@ -71,11 +71,6 @@ export default function InventoryPage() {
     setIsModalOpen(false);
   };
 
-  const handleSaveProduct = () => {
-    console.log("Saving product...");
-    setIsModalOpen(false);
-  };
-
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Persistent Sidebar */}
@@ -321,7 +316,6 @@ export default function InventoryPage() {
         <AddProductModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          onSave={handleSaveProduct}
         />
       </div>
     </div>

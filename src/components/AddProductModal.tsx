@@ -1,37 +1,77 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { X, Check, Package, Pencil, Trash2, ImagePlus } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { useActionState } from "react";
+import {
+  X,
+  Check,
+  Package,
+  Pencil,
+  Trash2,
+  ImagePlus,
+  Loader2,
+} from "lucide-react";
 import SimpleDropdown from "./ui/SimpleDropdown";
-
+import { uploadImage } from "@/lib/upload";
+import { createProduct } from "@/app/inventory/server";
+import { deleteImage } from "@/lib/upload";
 interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: () => void;
 }
 
-const AddProductModal: React.FC<AddProductModalProps> = ({
+export default function AddProductModal({
   isOpen,
   onClose,
-  onSave,
-}) => {
+}: AddProductModalProps) {
+  const [state, formAction, isPending] = useActionState(createProduct, null);
   const [category, setCategory] = useState("");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
+  const [uploadedPublicId, setUploadedPublicId] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (state?.success) {
+      setCategory("");
+      setPreviewImage(null);
+      setUploadedUrl(null);
+      setUploadedPublicId(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      onClose();
+    }
+  }, [state, onClose]);
+
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    setIsUploading(true);
+    try {
+      const result = await uploadImage(file);
+      setUploadedUrl(result.url);
+      setUploadedPublicId(result.publicId);
+    } catch {
+      setPreviewImage(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    } finally {
+      setIsUploading(false);
     }
   };
 
   const handleRemoveImage = () => {
-    setSelectedImage(null);
+    if (uploadedPublicId) deleteImage(uploadedPublicId);
+    setPreviewImage(null);
+    setUploadedUrl(null);
+    setUploadedPublicId(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -39,6 +79,17 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
 
   const triggerFileInput = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleCloseModal = () => {
+    if (uploadedPublicId) deleteImage(uploadedPublicId);
+    setPreviewImage(null);
+    setUploadedUrl(null);
+    setUploadedPublicId(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -54,7 +105,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             </h2>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleCloseModal}
             className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-primary/10 text-slate-500 dark:text-slate-400 transition-colors"
           >
             <X size={24} />
@@ -62,12 +113,24 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
         </div>
 
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSave();
-          }}
+          ref={formRef}
+          action={formAction}
           className="p-6 space-y-5 overflow-y-auto max-h-[70vh]"
         >
+          <input type="hidden" name="image" value={uploadedUrl ?? ""} />
+          <input
+            type="hidden"
+            name="public_id"
+            value={uploadedPublicId ?? ""}
+          />
+          <input type="hidden" name="category" value={category} />
+
+          {state?.error && (
+            <div className="px-4 py-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 text-sm font-semibold">
+              {state.error}
+            </div>
+          )}
+
           {/* Image Selection Section */}
           <div className="mb-8 container-query">
             <input
@@ -79,23 +142,30 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             />
 
             <div className="relative group">
-              {selectedImage ? (
+              {previewImage ? (
                 <div
                   className="w-full h-56 bg-slate-100 dark:bg-primary/5 rounded-lg overflow-hidden border border-dashed border-slate-300 dark:border-primary/30 flex items-center justify-center bg-center bg-cover"
-                  style={{ backgroundImage: `url(${selectedImage})` }}
+                  style={{ backgroundImage: `url(${previewImage})` }}
                 >
+                  {isUploading && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-lg">
+                      <Loader2 size={32} className="text-white animate-spin" />
+                    </div>
+                  )}
                   <div className="absolute bottom-4 right-4 flex gap-2">
                     <button
                       type="button"
                       onClick={triggerFileInput}
-                      className="bg-white dark:bg-background-dark p-2 rounded-lg shadow-lg text-primary hover:bg-primary hover:text-white transition-all cursor-pointer"
+                      disabled={isUploading}
+                      className="bg-white dark:bg-background-dark p-2 rounded-lg shadow-lg text-primary hover:bg-primary hover:text-white transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Pencil size={18} />
                     </button>
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="bg-white dark:bg-background-dark p-2 rounded-lg shadow-lg text-slate-500 hover:text-red-500 transition-all cursor-pointer"
+                      disabled={isUploading}
+                      className="bg-white dark:bg-background-dark p-2 rounded-lg shadow-lg text-slate-500 hover:text-red-500 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Trash2 size={18} />
                     </button>
@@ -123,12 +193,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             </div>
           </div>
 
-          {/* Input Section: Product Name - Used to identify the item in the inventory */}
+          {/* Input Section: Product Name */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
               Product Name
             </label>
             <input
+              name="name"
               className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
               placeholder="e.g. Wireless Ergonomic Mouse"
               type="text"
@@ -136,7 +207,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Input Section: Category - Organizes products into groups (e.g., Electronics, Accessories) */}
+            {/* Category */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Category
@@ -154,12 +225,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
               />
             </div>
 
-            {/* Input Section: SKU Code - Unique identifier for stock keeping and tracking */}
+            {/* SKU Code */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                 SKU Code
               </label>
               <input
+                name="sku"
                 className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                 placeholder="PROD-12345"
                 type="text"
@@ -168,7 +240,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Input Section: Selling Price - The price the customer pays for the product */}
+            {/* Selling Price */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Selling Price
@@ -178,6 +250,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
                   $
                 </span>
                 <input
+                  name="price"
                   className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-lg pl-8 pr-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                   placeholder="0.00"
                   step="0.01"
@@ -186,7 +259,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
               </div>
             </div>
 
-            {/* Input Section: Cost Price - The amount paid to acquire the product from the supplier */}
+            {/* Cost Price */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Cost Price
@@ -196,6 +269,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
                   $
                 </span>
                 <input
+                  name="cost_price"
                   className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-lg pl-8 pr-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                   placeholder="0.00"
                   step="0.01"
@@ -204,7 +278,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
               </div>
             </div>
 
-            {/* Input Section: Stock Count - Total number of items currently available in stock */}
+            {/* Stock Count */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Stock Count
@@ -214,6 +288,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
                   <Package size={20} />
                 </span>
                 <input
+                  name="stock_qty"
                   className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-lg pl-10 pr-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                   placeholder="0"
                   type="number"
@@ -231,16 +306,19 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             Cancel
           </button>
           <button
-            onClick={onSave}
-            className="px-6 py-2.5 rounded-lg text-sm font-bold bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all flex items-center gap-2"
+            onClick={() => formRef.current?.requestSubmit()}
+            disabled={isPending || isUploading}
+            className="px-6 py-2.5 rounded-lg text-sm font-bold bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Check size={20} />
-            Save Changes
+            {isPending ? (
+              <Loader2 size={20} className="animate-spin" />
+            ) : (
+              <Check size={20} />
+            )}
+            {isPending ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </div>
     </div>
   );
-};
-
-export default AddProductModal;
+}

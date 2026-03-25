@@ -8,6 +8,7 @@ model Product {
     stock_qty    Int
     is_low_stock Boolean
     image        String
+    public_id    String
     created_at   DateTime @default(now())
     updated_at   DateTime @updatedAt
 }
