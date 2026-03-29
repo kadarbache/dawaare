@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { Scanner } from "@yudiel/react-qr-scanner";
 import { useActionState } from "react";
 import {
   X,
@@ -10,6 +11,7 @@ import {
   Trash2,
   ImagePlus,
   Loader2,
+  QrCode,
 } from "lucide-react";
 import SimpleDropdown from "./ui/SimpleDropdown";
 import { uploadImage } from "@/lib/upload";
@@ -30,6 +32,8 @@ export default function AddProductModal({
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const [uploadedPublicId, setUploadedPublicId] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [sku, setSku] = useState("");
+  const [isScanning, setIsScanning] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -39,6 +43,8 @@ export default function AddProductModal({
       setPreviewImage(null);
       setUploadedUrl(null);
       setUploadedPublicId(null);
+      setSku("");
+      setIsScanning(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
       onClose();
     }
@@ -230,12 +236,57 @@ export default function AddProductModal({
               <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                 SKU Code
               </label>
-              <input
-                name="sku"
-                className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                placeholder="PROD-12345"
-                type="text"
-              />
+              <div className="flex gap-2">
+                <input
+                  name="sku"
+                  value={sku} // Controlled input
+                  onChange={(e) => setSku(e.target.value)} // Manual typing still works
+                  className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                  placeholder="PROD-12345"
+                  type="text"
+                />
+
+                {/* Scan Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsScanning(!isScanning)}
+                  className="px-3 py-2 bg-slate-100 dark:bg-primary/10 text-slate-600 dark:text-primary hover:bg-slate-200 dark:hover:bg-primary/20 rounded-lg transition-colors cursor-pointer flex items-center justify-center shrink-0"
+                  title="Scan Barcode/QR Code"
+                >
+                  <QrCode size={20} />
+                </button>
+              </div>
+
+              {/* Conditional Scanner Component */}
+              {isScanning && (
+                <div className="mt-2 w-full h-48 sm:h-64 rounded-xl overflow-hidden border-2 border-primary/40 relative bg-black">
+                  <Scanner
+                    onScan={(detectedCodes) => {
+                      if (detectedCodes.length > 0) {
+                        setSku(detectedCodes[0].rawValue); // Auto-fill the input
+                        setIsScanning(false); // Close the scanner automatically
+                      }
+                    }}
+                    onError={(error) => {
+                      console.error("Scanner Error:", error);
+                      // Optional: Add a small toast notification here if you want
+                    }}
+                    components={{
+                      // audio: true, // Plays a beep on success
+                      finder: true, // Shows the scanning UI overlay
+                    }}
+                  />
+
+                  {/* Close button layered over the camera view */}
+                  <button
+                    type="button"
+                    onClick={() => setIsScanning(false)}
+                    className="absolute top-2 right-2 p-1.5 bg-black/50 text-white rounded-lg hover:bg-black/70 z-10 transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
