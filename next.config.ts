@@ -10,6 +10,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/sales",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

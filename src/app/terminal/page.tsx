@@ -229,7 +229,7 @@ export default function TerminalPage() {
                   options={paymentOptions}
                   value={paymentMethod}
                   onChange={setPaymentMethod}
-                  placeholder="Choose payment method..."
+                  placeholder="Payment method..."
                   icon={<Banknote size={20} />}
                 />
               </div>
