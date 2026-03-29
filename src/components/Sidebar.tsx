@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Store,
   LayoutDashboard,
@@ -8,9 +11,36 @@ import {
   BarChart3,
   Settings,
   Users,
+  DollarSign,
 } from "lucide-react";
 
+const nav_items = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/terminal", label: "Terminal", icon: Terminal },
+  { href: "/inventory", label: "Inventory", icon: Package },
+  { href: "/sales", label: "Sales", icon: DollarSign },
+  { href: "/debt", label: "Customers", icon: Users },
+  { href: "/analytics", label: "Analytics", icon: BarChart3 },
+];
+
+const bottom_nav_items = [{ href: "/settings", label: "Settings", icon: Settings }];
+
 export default function Sidebar() {
+  const pathname = usePathname();
+
+  const get_link_class = (href: string) => {
+    const is_active = pathname === href || pathname.startsWith(href + "/");
+    if (is_active) {
+      return "flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary rounded-xl transition-all font-bold group border border-primary/20 cursor-pointer";
+    }
+    return "flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/5 rounded-xl transition-all font-semibold group cursor-pointer";
+  };
+
+  const get_icon_class = (href: string) => {
+    const is_active = pathname === href || pathname.startsWith(href + "/");
+    return is_active ? "" : "group-hover:scale-110 transition-transform";
+  };
+
   return (
     <aside className="w-64 shrink-0 border-r border-slate-200 dark:border-primary/20 bg-white dark:bg-background-dark flex flex-col z-50">
       <div className="p-6 flex items-center gap-3 text-primary">
@@ -21,65 +51,34 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/5 rounded-xl transition-all font-semibold group cursor-pointer"
-        >
-          <LayoutDashboard
-            size={20}
-            className="group-hover:scale-110 transition-transform"
-          />
-          Dashboard
-        </Link>
-        <Link
-          href="/terminal"
-          className="flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/5 rounded-xl transition-all font-semibold group cursor-pointer"
-        >
-          <Terminal
-            size={20}
-            className="group-hover:scale-110 transition-transform"
-          />
-          Terminal
-        </Link>
-        <Link
-          href="/inventory"
-          className="flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary rounded-xl transition-all font-bold group border border-primary/20 cursor-pointer"
-        >
-          <Package size={20} />
-          Inventory
-        </Link>
-        <Link
-          href="/debt"
-          className="flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/5 rounded-xl transition-all font-semibold group cursor-pointer"
-        >
-          <Users
-            size={20}
-            className="group-hover:scale-110 transition-transform"
-          />
-          Customers
-        </Link>
-        <Link
-          href="#"
-          className="flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/5 rounded-xl transition-all font-semibold group cursor-pointer"
-        >
-          <BarChart3
-            size={20}
-            className="group-hover:scale-110 transition-transform"
-          />
-          Analytics
-        </Link>
+        {nav_items.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={get_link_class(item.href)}
+            >
+              <Icon size={20} className={get_icon_class(item.href)} />
+              {item.label}
+            </Link>
+          );
+        })}
 
         <div className="pt-4 mt-4 border-t border-slate-100 dark:border-primary/10">
-          <Link
-            href="#"
-            className="flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/5 rounded-xl transition-all font-semibold group cursor-pointer"
-          >
-            <Settings
-              size={20}
-              className="group-hover:scale-110 transition-transform"
-            />
-            Settings
-          </Link>
+          {bottom_nav_items.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={get_link_class(item.href)}
+              >
+                <Icon size={20} className={get_icon_class(item.href)} />
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
       </nav>
 

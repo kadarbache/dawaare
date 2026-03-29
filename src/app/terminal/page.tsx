@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
+import SimpleDropdown from "../../components/ui/SimpleDropdown";
 import {
   Barcode,
   ShoppingCart,
@@ -10,14 +11,19 @@ import {
   Minus,
   Plus,
   Banknote,
-  Wallet,
-  CreditCard,
   UserPlus,
-  FileText,
   Pen,
 } from "lucide-react";
 
 export default function TerminalPage() {
+  const [paymentMethod, setPaymentMethod] = useState("");
+
+  const paymentOptions = [
+    { label: "Cash", value: "cash" },
+    { label: "Zaad", value: "zaad" },
+    { label: "eDahab", value: "edahab" },
+  ];
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Persistent Sidebar */}
@@ -31,7 +37,7 @@ export default function TerminalPage() {
         {/* POS Workspace */}
         <main className="flex flex-1 overflow-hidden">
           {/* Left Side: Scanning Zone */}
-          <section className="w-[60%] flex flex-col p-8 gap-6 overflow-hidden">
+          <section className="w-[70%] flex flex-col p-8 gap-6 overflow-hidden">
             {/* Search & Barcode Area */}
             <div className="relative group shrink-0">
               <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
@@ -188,7 +194,7 @@ export default function TerminalPage() {
           </section>
 
           {/* Right Side: Summary Sidebar */}
-          <aside className="w-[40%] flex flex-col p-8 border-l border-slate-200 dark:border-primary/20 bg-slate-50 dark:bg-primary/5 overflow-y-auto">
+          <aside className="w-[30%] flex flex-col p-8 border-l border-slate-200 dark:border-primary/20 bg-slate-50 dark:bg-primary/5 overflow-y-auto">
             {/* Amount and Payment Card */}
             <div className="bg-white dark:bg-[#2d1e16] p-8 rounded-2xl border border-slate-200 dark:border-primary/20 shadow-2xl mb-6 flex-1 flex flex-col">
               <div className="mb-10">
@@ -219,53 +225,13 @@ export default function TerminalPage() {
                   Select Payment Method
                 </p>
 
-                {/* Cash Payment */}
-                <button className="w-full py-5 px-6 bg-[#4b2c20] text-white rounded-xl flex items-center justify-between hover:scale-[1.02] active:scale-95 transition-all shadow-lg border border-white/5">
-                  <div className="flex items-center gap-4">
-                    <Banknote size={32} />
-                    <div className="text-left">
-                      <p className="text-lg font-black leading-tight">Cash</p>
-                      <p className="text-white/60 text-[10px] uppercase tracking-wider">
-                        Standard checkout
-                      </p>
-                    </div>
-                  </div>
-                  <kbd className="px-2 py-1 bg-white/10 rounded text-[10px] font-black">
-                    F1
-                  </kbd>
-                </button>
-
-                {/* Zaad Payment */}
-                <button className="w-full py-5 px-6 bg-[#22c55e] text-white rounded-xl flex items-center justify-between hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-green-900/20">
-                  <div className="flex items-center gap-4">
-                    <Wallet size={32} />
-                    <div className="text-left">
-                      <p className="text-lg font-black leading-tight">Zaad</p>
-                      <p className="text-white/80 text-[10px] uppercase tracking-wider">
-                        Direct Wallet Transfer
-                      </p>
-                    </div>
-                  </div>
-                  <kbd className="px-2 py-1 bg-black/10 rounded text-[10px] font-black">
-                    F2
-                  </kbd>
-                </button>
-
-                {/* eDahab Payment */}
-                <button className="w-full py-5 px-6 bg-[#facc15] text-slate-900 rounded-xl flex items-center justify-between hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-yellow-900/20">
-                  <div className="flex items-center gap-4">
-                    <CreditCard size={32} />
-                    <div className="text-left">
-                      <p className="text-lg font-black leading-tight">eDahab</p>
-                      <p className="text-slate-900/70 text-[10px] uppercase tracking-wider">
-                        Tap or Phone Scan
-                      </p>
-                    </div>
-                  </div>
-                  <kbd className="px-2 py-1 bg-black/10 rounded text-[10px] font-black">
-                    F3
-                  </kbd>
-                </button>
+                <SimpleDropdown
+                  options={paymentOptions}
+                  value={paymentMethod}
+                  onChange={setPaymentMethod}
+                  placeholder="Choose payment method..."
+                  icon={<Banknote size={20} />}
+                />
               </div>
             </div>
 
@@ -283,16 +249,20 @@ export default function TerminalPage() {
                 />
               </div>
               <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#2d1e16] rounded-xl border border-slate-200 dark:border-primary/20 transition-all focus-within:border-primary shadow-lg">
-                <FileText
+                <Banknote
                   size={20}
                   className="text-slate-400 dark:text-slate-500"
                 />
                 <input
                   className="bg-transparent border-none focus:ring-0 text-sm w-full p-0 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 font-medium outline-none"
-                  placeholder="Order Note..."
-                  type="text"
+                  placeholder="Amount Paid (leave empty for full debt)..."
+                  type="number"
                 />
               </div>
+              <button className="w-full py-4 bg-primary text-white rounded-xl flex items-center justify-center gap-3 hover:bg-primary/90 active:scale-[0.98] transition-all shadow-lg font-bold text-lg uppercase tracking-wider">
+                <ShoppingCart size={20} />
+                Complete Sale
+              </button>
             </div>
           </aside>
         </main>
