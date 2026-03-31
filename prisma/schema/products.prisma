@@ -1,7 +1,7 @@
 model Product {
     id           String   @id @default(uuid())
     name         String
-    sku          String
+    sku          String   @unique
     category     String
     price        Float
     cost_price   Float

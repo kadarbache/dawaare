@@ -18,6 +18,7 @@ import {
   TrendingUp,
   Wallet,
 } from "lucide-react";
+import Link from "next/link";
 import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
 
@@ -236,9 +237,12 @@ export default async function InventoryPage() {
                             </td>
                             <td className="px-6 py-4">
                               <div className="flex flex-col">
-                                <span className="text-slate-900 dark:text-slate-100 font-bold text-sm">
+                                <Link
+                                  href={`/inventory/${product.id}`}
+                                  className="text-slate-900 dark:text-slate-100 font-bold text-sm hover:text-primary transition-colors"
+                                >
                                   {product.name}
-                                </span>
+                                </Link>
                                 <span className="text-slate-400 dark:text-slate-500 font-mono text-xs">
                                   SKU: {product.sku}
                                 </span>
@@ -268,16 +272,19 @@ export default async function InventoryPage() {
                               )}
                             </td>
                             <td className="px-6 py-4 text-right">
-                              <div className="flex justify-end gap-2">
-                                <button className="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
-                                  <Pencil size={14} />
-                                  Edit
-                                </button>
-                                <button className="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
-                                  <BarChart3 size={14} />
-                                  Analytics
-                                </button>
-                              </div>
+                                <div className="flex justify-end gap-2">
+                                  <button className="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
+                                    <Pencil size={14} />
+                                    Edit
+                                  </button>
+                                  <Link
+                                    href={`/inventory/${product.id}`}
+                                    className="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <BarChart3 size={14} />
+                                    Analytics
+                                  </Link>
+                                </div>
                             </td>
                           </tr>
                         ))}

@@ -1,22 +1,20 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import { createProduct } from "@/app/inventory/server";
+import { deleteImage, uploadImage } from "@/lib/upload";
 import { Scanner } from "@yudiel/react-qr-scanner";
-import { useActionState } from "react";
 import {
-  X,
+  Barcode,
   Check,
+  ImagePlus,
+  Loader2,
   Package,
   Pencil,
   Trash2,
-  ImagePlus,
-  Loader2,
-  QrCode,
+  X,
 } from "lucide-react";
+import React, { useActionState, useEffect, useRef, useState } from "react";
 import SimpleDropdown from "./ui/SimpleDropdown";
-import { uploadImage } from "@/lib/upload";
-import { createProduct } from "@/app/inventory/server";
-import { deleteImage } from "@/lib/upload";
 interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -253,7 +251,7 @@ export default function AddProductModal({
                   className="px-3 py-2 bg-slate-100 dark:bg-primary/10 text-slate-600 dark:text-primary hover:bg-slate-200 dark:hover:bg-primary/20 rounded-lg transition-colors cursor-pointer flex items-center justify-center shrink-0"
                   title="Scan Barcode/QR Code"
                 >
-                  <QrCode size={20} />
+                  <Barcode size={20} />
                 </button>
               </div>
 
