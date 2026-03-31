@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Store,
-  LayoutDashboard,
   Terminal,
   Package,
   BarChart3,
@@ -15,15 +14,16 @@ import {
 } from "lucide-react";
 
 const nav_items = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/terminal", label: "Terminal", icon: Terminal },
   { href: "/inventory", label: "Inventory", icon: Package },
   { href: "/sales", label: "Sales", icon: DollarSign },
-  { href: "/debt", label: "Customers", icon: Users },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/customers", label: "Customers", icon: Users },
 ];
 
-const bottom_nav_items = [{ href: "/settings", label: "Settings", icon: Settings }];
+const bottom_nav_items = [
+  { href: "/settings", label: "Settings", icon: Settings },
+];
 
 export default function Sidebar() {
   const pathname = usePathname();

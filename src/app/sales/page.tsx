@@ -17,7 +17,11 @@ function get_default_dates() {
 export default async function SalesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; start_date?: string; end_date?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    start_date?: string;
+    end_date?: string;
+  }>;
 }) {
   const params = await searchParams;
   const defaults = get_default_dates();

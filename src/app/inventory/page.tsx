@@ -272,19 +272,19 @@ export default async function InventoryPage() {
                               )}
                             </td>
                             <td className="px-6 py-4 text-right">
-                                <div className="flex justify-end gap-2">
-                                  <button className="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
-                                    <Pencil size={14} />
-                                    Edit
-                                  </button>
-                                  <Link
-                                    href={`/inventory/${product.id}`}
-                                    className="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer"
-                                  >
-                                    <BarChart3 size={14} />
-                                    Analytics
-                                  </Link>
-                                </div>
+                              <div className="flex justify-end gap-2">
+                                <button className="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
+                                  <Pencil size={14} />
+                                  Edit
+                                </button>
+                                <Link
+                                  href={`/inventory/${product.id}`}
+                                  className="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer"
+                                >
+                                  <BarChart3 size={14} />
+                                  Analytics
+                                </Link>
+                              </div>
                             </td>
                           </tr>
                         ))}

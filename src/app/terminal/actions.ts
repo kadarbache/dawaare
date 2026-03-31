@@ -15,7 +15,8 @@ export async function submitSale(
   try {
     const rawCart = formData.get("cart_payload") as string;
     const notes = formData.get("notes") as string;
-    const paymentMethod = formData.get("payment_method") as string;
+    const paymentMethod =
+      (formData.get("payment_method") as "ZAAD") || "CASH" || "E_DAHAB";
     const customerId = formData.get("customer_id") as string;
     const amountPaidInput = formData.get("amount_paid") as string;
 
@@ -52,7 +53,7 @@ export async function submitSale(
           remaining: remaining > 0 ? remaining : 0,
           // TODO: add unpaid state
           status: remaining > 0.01 ? "partial" : "paid",
-          payment_method: paymentMethod || "CASH",
+          payment_method: paymentMethod || "ZAAD",
           notes: notes,
         },
       });
