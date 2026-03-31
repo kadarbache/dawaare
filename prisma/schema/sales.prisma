@@ -1,18 +1,25 @@
 model Sale {
-    id           String   @id @default(uuid())
-    customer_id  String?
-    total_amount Float
-    amount_paid  Float    @default(0)
-    remaining    Float    @default(0)
-    status       String   @default("paid")
-    notes        String?
-    created_at   DateTime @default(now())
-    updated_at   DateTime @updatedAt
+    id             String        @id @default(uuid())
+    customer_id    String?
+    total_amount   Float
+    amount_paid    Float         @default(0)
+    remaining      Float         @default(0)
+    status         String        @default("paid")
+    notes          String?
+    payment_method PaymentMethod
+    created_at     DateTime      @default(now())
+    updated_at     DateTime      @updatedAt
 
     customer   Customer?  @relation(fields: [customer_id], references: [id], onDelete: SetNull)
     sale_items SaleItem[]
 
     @@map("sales")
+}
+
+enum PaymentMethod {
+    ZAAD
+    E_DAHAB
+    CASH
 }
 
 model SaleItem {
