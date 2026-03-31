@@ -50,6 +50,7 @@ export async function submitSale(
           total_amount: grandTotal,
           amount_paid: parsedAmountPaid,
           remaining: remaining > 0 ? remaining : 0,
+          // TODO: add unpaid state
           status: remaining > 0.01 ? "partial" : "paid",
           payment_method: paymentMethod || "CASH",
           notes: notes,
@@ -80,6 +81,7 @@ export async function submitSale(
     // Revalidate paths that show stock and sales
     revalidatePath("/terminal");
     revalidatePath("/inventory");
+    revalidatePath("/sales");
 
     return { success: true };
   } catch (error: unknown) {
