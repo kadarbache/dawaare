@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
 import {
   UserSearch,
@@ -16,13 +15,10 @@ import {
 
 export default function DebtManagementPage() {
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+    <>
+      <Topbar page="Debt Management" subPage="" />
 
-      <div className="flex-1 flex flex-col overflow-hidden relative border-l border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
-        <Topbar page="Debt Management" subPage="" />
-
-        <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
           {/* Left Sidebar: Master List (30%) */}
           <aside className="w-1/3 border-r border-slate-200 dark:border-primary/20 flex flex-col bg-slate-50 dark:bg-primary/5">
             <div className="p-6 border-b border-slate-200 dark:border-primary/20">
@@ -336,7 +332,6 @@ export default function DebtManagementPage() {
             <div className="text-slate-500">POS TERMINAL #04 • V2.4.0</div>
           </div>
         </footer>
-      </div>
-    </div>
+    </>
   );
 }

@@ -19,7 +19,6 @@ import {
   Wallet,
 } from "lucide-react";
 import Link from "next/link";
-import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
 
 export default async function InventoryPage() {
@@ -70,17 +69,12 @@ export default async function InventoryPage() {
   const isInventoryValueDown = inventoryValueChange < 0;
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Persistent Sidebar */}
-      <Sidebar />
+    <>
+      {/* Top Navigation Bar */}
+      <Topbar page="Inventory" subPage="" />
 
-      {/* Main Content Area Wrapper */}
-      <div className="flex-1 flex flex-col overflow-hidden relative border-l border-slate-200 dark:border-primary/20">
-        {/* Top Navigation Bar */}
-        <Topbar page="Inventory" subPage="" />
-
-        {/* Scrollable Content */}
-        <main className="flex-1 overflow-y-auto bg-background-light dark:bg-[#1a110c]">
+      {/* Scrollable Content */}
+      <main className="flex-1 overflow-y-auto bg-background-light dark:bg-[#1a110c]">
           <div className="max-w-360 mx-auto px-8 py-8">
             {/* Page Header & Stats */}
             <div className="flex flex-wrap justify-between items-end gap-3 mb-8">
@@ -351,7 +345,6 @@ export default async function InventoryPage() {
             <span>INVENTORY MANAGER • V2.4.0</span>
           </div>
         </footer>
-      </div>
-    </div>
+    </>
   );
 }

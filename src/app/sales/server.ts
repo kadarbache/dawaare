@@ -32,8 +32,8 @@ export async function get_sales(
     ...(start_date && end_date
       ? {
           created_at: {
-            gte: new Date(start_date),
-            lte: new Date(`${end_date}T23:59:59`),
+            gte: new Date(`${start_date}T00:00:00`),
+            lte: new Date(`${end_date}T23:59:59.999`),
           },
         }
       : {}),
@@ -78,8 +78,8 @@ export async function get_sale_stats(
     ...(start_date && end_date
       ? {
           created_at: {
-            gte: new Date(start_date),
-            lte: new Date(`${end_date}T23:59:59`),
+            gte: new Date(`${start_date}T00:00:00`),
+            lte: new Date(`${end_date}T23:59:59.999`),
           },
         }
       : {}),
