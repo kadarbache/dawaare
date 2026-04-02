@@ -16,6 +16,12 @@ export default async function TerminalPage() {
     },
   });
 
+  const sales = await prisma.sale.findMany({
+    where: {
+      status: "PENDING",
+    },
+  });
+
   return (
     <>
       {/* Top Navigation Bar */}
