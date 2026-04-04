@@ -1,8 +1,11 @@
 // @ts-expect-error this error can be savely ignored
 import "./globals.css";
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Roboto } from "next/font/google";
 import { Toaster } from "react-hot-toast";
+import { cn } from "@/lib/utils";
+
+const roboto = Roboto({subsets:['latin'],variable:'--font-sans'});
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -21,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={cn("dark", "font-sans", roboto.variable)}>
       <body className={`${poppins.variable} antialiased`}>
         <Toaster position="top-right" />
         {children}
