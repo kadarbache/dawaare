@@ -219,6 +219,7 @@ export default function AddProductModal({
               <SimpleDropdown
                 options={[
                   { label: "Electronics", value: "electronics" },
+                  { label: "books", value: "books" },
                   { label: "Furniture", value: "furniture" },
                   { label: "Clothing", value: "clothing" },
                   { label: "Accessories", value: "accessories" },

@@ -15,6 +15,7 @@ export type TerminalProduct = {
   name: string;
   sku: string;
   price: number;
+  cost_price: number;
   stock_qty: number;
   image?: string | null;
   category?: string;
@@ -31,6 +32,7 @@ interface TerminalContextValue {
   addToCart: (product: TerminalProduct) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
+  updatePrice: (productId: string, price: number) => void;
   clearCart: () => void;
   cartTotal: number;
 
@@ -113,6 +115,20 @@ export function TerminalProvider({
     [removeFromCart],
   );
 
+  function updatePrice(productId: string, price: number) {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.product.id === productId
+          ? {
+              ...item,
+              product: { ...item.product, price },
+              subtotal: item.quantity * price,
+            }
+          : item,
+      ),
+    );
+  }
+
   const clearCart = useCallback(() => {
     setCartItems([]);
     setSelectedCustomer(null);
@@ -138,6 +154,7 @@ export function TerminalProvider({
     amountPaid,
     setAmountPaid,
     products,
+    updatePrice,
   };
 
   return (

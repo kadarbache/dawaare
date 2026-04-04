@@ -9,16 +9,11 @@ export default async function TerminalPage() {
       id: true,
       name: true,
       sku: true,
+      cost_price: true,
       price: true,
       stock_qty: true,
       image: true,
       category: true,
-    },
-  });
-
-  const sales = await prisma.sale.findMany({
-    where: {
-      status: "PENDING",
     },
   });
 
