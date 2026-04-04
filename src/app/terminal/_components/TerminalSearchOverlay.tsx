@@ -112,7 +112,10 @@ export default function TerminalSearchOverlay({
                 return (
                   <div
                     key={product.id}
-                    onClick={() => onSelectProduct(product)}
+                    onClick={() => {
+                      setSearchTerm("");
+                      onSelectProduct(product);
+                    }}
                     className={`px-6 py-5 border-b border-slate-100 dark:border-primary/10 flex items-center justify-between cursor-pointer transition-all duration-200 group ${
                       isSelected
                         ? "bg-orange-50 dark:bg-orange-600/20 border-l-4 border-l-orange-500 dark:border-l-orange-600"

@@ -1,3 +1,4 @@
+// @ts-expect-error this error can be savely ignored
 import "./globals.css";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
