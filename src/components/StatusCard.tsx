@@ -16,7 +16,7 @@ export default function StatusCard({
   variant,
 }: StatusCardProps) {
   return (
-    <div className="flex flex-col gap-2 rounded-2xl p-6 border border-slate-200 dark:border-primary/30 bg-white dark:bg-background-dark shadow-lg">
+    <div className="flex flex-col gap-2 rounded-md p-6 border border-slate-200 dark:border-primary/30 bg-white dark:bg-background-dark shadow-lg">
       <div className="flex justify-between items-start">
         <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">
           {title}
