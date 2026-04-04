@@ -21,7 +21,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 // TODO: remove stock movements list table (ui)
-// TODO: adding shadcn ui library
 export default async function ProductDetailPage({
   params,
 }: {

@@ -1,6 +1,6 @@
-import React from "react";
 import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { useTerminal } from "../_context/TerminalContext";
+import toast from "react-hot-toast";
 
 export default function CartTable() {
   const { cartItems, updateQuantity, updatePrice, removeFromCart, clearCart } =
@@ -68,12 +68,22 @@ export default function CartTable() {
                   <td className="px-6 py-5 text-slate-400 dark:text-slate-500 font-mono text-[11px] whitespace-nowrap w-fit">
                     {item.product.cost_price}
                   </td>
+                  {/* TODO: ADD TOASTER IF THE PRICE IS LESS THAN THE COST */}
                   <td className="px-6 py-5 whitespace-nowrap w-fit min-w-64">
                     <div className="flex items-center justify-between gap-3">
                       <button
-                        onClick={() =>
-                          updatePrice(item.product.id, item.product.price - 0.1)
-                        }
+                        onClick={() => {
+                          const newPrice = Number(
+                            (item.product.price - 0.1).toFixed(2),
+                          );
+                          if (newPrice < item.product.cost_price) {
+                            toast.error(
+                              "Price can't be less than the cost price",
+                            );
+                            return;
+                          }
+                          updatePrice(item.product.id, newPrice);
+                        }}
                         className="size-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors"
                       >
                         <Minus size={14} />
@@ -82,9 +92,12 @@ export default function CartTable() {
                         ${item.product.price.toFixed(2)}
                       </span>
                       <button
-                        onClick={() =>
-                          updatePrice(item.product.id, item.product.price + 0.1)
-                        }
+                        onClick={() => {
+                          const newPrice = Number(
+                            (item.product.price + 0.1).toFixed(2),
+                          );
+                          updatePrice(item.product.id, newPrice);
+                        }}
                         className="size-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors"
                       >
                         <Plus size={14} />

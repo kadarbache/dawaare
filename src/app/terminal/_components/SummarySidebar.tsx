@@ -3,6 +3,7 @@ import SimpleDropdown from "@/components/ui/SimpleDropdown";
 import { Banknote, ShoppingCart, UserPlus } from "lucide-react";
 import { useTerminal } from "../_context/TerminalContext";
 import { submitSale, ActionState } from "../actions";
+import toast from "react-hot-toast";
 
 const paymentOptions = [
   { label: "Cash", value: "CASH" },
@@ -22,9 +23,9 @@ export default function SummarySidebar() {
   useEffect(() => {
     if (state?.success) {
       clearCart();
-      // TODO: @user - add toast.success("Sale completed successfully!") here
+      toast.success("Sale completed successfully!");
     } else if (state?.error) {
-      // TODO: @user - add toast.error(state.error) here
+      toast.error(state.error || "Can't complete sale");
     }
   }, [state, clearCart]);
 
