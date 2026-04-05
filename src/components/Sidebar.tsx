@@ -31,9 +31,9 @@ export default function Sidebar() {
   const get_link_class = (href: string) => {
     const is_active = pathname === href || pathname.startsWith(href + "/");
     if (is_active) {
-      return "flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary rounded-xl transition-all font-bold group border border-primary/20 cursor-pointer";
+      return "flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary rounded-md transition-all font-bold group border border-primary/20 cursor-pointer";
     }
-    return "flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/5 rounded-xl transition-all font-semibold group cursor-pointer";
+    return "flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/5 rounded-md transition-all font-semibold group cursor-pointer";
   };
 
   const get_icon_class = (href: string) => {
@@ -83,7 +83,7 @@ export default function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-slate-200 dark:border-primary/10">
-        <div className="flex items-center gap-3 p-2 bg-slate-50 dark:bg-primary/5 rounded-xl border border-transparent dark:border-primary/10">
+        <div className="flex items-center gap-3 p-2 bg-slate-50 dark:bg-primary/5 rounded-md border border-transparent dark:border-primary/10">
           <div
             className="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-10 border border-primary/40"
             data-alt="User profile avatar portrait"

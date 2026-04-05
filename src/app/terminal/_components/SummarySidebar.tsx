@@ -35,7 +35,7 @@ export default function SummarySidebar() {
   return (
     <aside className="w-[30%] flex flex-col p-8 border-l border-slate-200 dark:border-primary/20 bg-slate-50 dark:bg-primary/5 overflow-y-auto">
       {/* Amount and Payment Card */}
-      <div className="bg-white dark:bg-[#2d1e16] p-8 rounded-2xl border border-slate-200 dark:border-primary/20 shadow-2xl mb-6 flex-1 flex flex-col">
+      <div className="bg-white dark:bg-[#2d1e16] p-8 rounded-md border border-slate-200 dark:border-primary/20 shadow-2xl mb-6 flex-1 flex flex-col">
         <div className="mb-10">
           <p className="text-slate-500 uppercase tracking-widest text-[10px] font-black mb-2">
             Total Amount Payable
@@ -83,7 +83,7 @@ export default function SummarySidebar() {
         />
         <input type="hidden" name="payment_method" value={paymentMethod} />
 
-        <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#2d1e16] rounded-xl border border-slate-200 dark:border-primary/20 transition-all focus-within:border-primary shadow-lg">
+        <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#2d1e16] rounded-md border border-slate-200 dark:border-primary/20 transition-all focus-within:border-primary shadow-lg">
           <UserPlus size={20} className="text-slate-400 dark:text-slate-500" />
           <input
             name="customer_id"
@@ -92,7 +92,7 @@ export default function SummarySidebar() {
             type="text"
           />
         </div>
-        <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#2d1e16] rounded-xl border border-slate-200 dark:border-primary/20 transition-all focus-within:border-primary shadow-lg">
+        <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#2d1e16] rounded-md border border-slate-200 dark:border-primary/20 transition-all focus-within:border-primary shadow-lg">
           <Banknote size={20} className="text-slate-400 dark:text-slate-500" />
           <input
             name="amount_paid"
@@ -102,7 +102,7 @@ export default function SummarySidebar() {
             type="number"
           />
         </div>
-        <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#2d1e16] rounded-xl border border-slate-200 dark:border-primary/20 transition-all focus-within:border-primary shadow-lg">
+        <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#2d1e16] rounded-md border border-slate-200 dark:border-primary/20 transition-all focus-within:border-primary shadow-lg">
           <Banknote size={20} className="text-slate-400 dark:text-slate-500" />
           <input
             name="notes"
@@ -113,7 +113,7 @@ export default function SummarySidebar() {
         </div>
         <button
           disabled={cartItems.length === 0 || isPending}
-          className="w-full py-4 bg-primary text-white rounded-xl flex items-center justify-center gap-3 hover:bg-primary/90 active:scale-[0.98] transition-all shadow-lg font-bold text-lg uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-4 bg-primary text-white rounded-md flex items-center justify-center gap-3 hover:bg-primary/90 active:scale-[0.98] transition-all shadow-lg font-bold text-lg uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? (
             <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

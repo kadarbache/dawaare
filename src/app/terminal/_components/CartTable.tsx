@@ -7,7 +7,7 @@ export default function CartTable() {
     useTerminal();
 
   return (
-    <div className="flex-1 bg-white dark:bg-[#2d1e16] rounded-xl border border-slate-200 dark:border-primary/10 overflow-hidden flex flex-col shadow-xl">
+    <div className="flex-1 bg-white dark:bg-[#2d1e16] rounded-md border border-slate-200 dark:border-primary/10 overflow-hidden flex flex-col shadow-xl">
       <div className="p-4 border-b border-slate-200 dark:border-primary/10 flex justify-between items-center bg-slate-50 dark:bg-primary/5 shrink-0">
         <h3 className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-widest flex items-center gap-2">
           <ShoppingCart size={16} className="text-primary" />
@@ -68,7 +68,6 @@ export default function CartTable() {
                   <td className="px-6 py-5 text-slate-400 dark:text-slate-500 font-mono text-[11px] whitespace-nowrap w-fit">
                     {item.product.cost_price}
                   </td>
-                  {/* TODO: ADD TOASTER IF THE PRICE IS LESS THAN THE COST */}
                   <td className="px-6 py-5 whitespace-nowrap w-fit min-w-64">
                     <div className="flex items-center justify-between gap-3">
                       <button

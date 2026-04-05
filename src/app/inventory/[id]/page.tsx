@@ -57,14 +57,17 @@ export default async function ProductDetailPage({
     (sum, item) => sum + item.total_price,
     0,
   );
+
   const total_units_sold = all_sale_items.reduce(
     (sum, item) => sum + item.quantity,
     0,
   );
+
   const total_cost = all_sale_items.reduce(
     (sum, item) => sum + product.cost_price * item.quantity,
     0,
   );
+
   const net_profit = total_revenue - total_cost;
 
   const last_month = dayjs().subtract(1, "month");
@@ -139,8 +142,6 @@ export default async function ProductDetailPage({
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-
       <div className="flex-1 flex flex-col overflow-hidden relative border-l border-slate-200 dark:border-primary/20">
         <Topbar page="Inventory" subPage={product.name} />
 
@@ -163,7 +164,7 @@ export default async function ProductDetailPage({
             {/* Product Header */}
             <section className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between bg-white dark:bg-background-dark p-6 rounded-2xl border border-slate-200 dark:border-primary/20 shadow-lg mb-8">
               <div className="flex items-center gap-6">
-                <div className="size-32 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-800 relative shrink-0 border border-slate-200 dark:border-primary/30">
+                <div className="size-32 rounded-md overflow-hidden bg-slate-200 dark:bg-slate-800 relative shrink-0 border border-slate-200 dark:border-primary/30">
                   {product.image ? (
                     <Image
                       alt={product.name}
@@ -206,11 +207,11 @@ export default async function ProductDetailPage({
                 </div>
               </div>
               <div className="flex gap-3 w-full lg:w-auto">
-                <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-primary/20 text-primary font-bold hover:bg-primary/5 transition-colors cursor-pointer">
+                <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-primary/20 text-primary font-bold hover:bg-primary/5 transition-colors cursor-pointer">
                   <Edit size={16} />
                   Edit Product
                 </button>
-                <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-white font-bold hover:brightness-110 transition-all cursor-pointer shadow-lg shadow-primary/20">
+                <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-md bg-primary text-white font-bold hover:brightness-110 transition-all cursor-pointer shadow-lg shadow-primary/20">
                   <Share size={16} />
                   Export Data
                 </button>

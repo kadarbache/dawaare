@@ -66,7 +66,7 @@ function WorkspaceContent() {
               <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                 <SearchIcon size={24} className="text-primary" />
               </div>
-              <div className="w-full h-14 bg-white dark:bg-[#2d1e16] border border-slate-200 dark:border-primary/20 rounded-xl pl-14 pr-16 text-lg font-medium text-slate-400 dark:text-slate-500 hover:border-primary transition-all shadow-sm flex items-center">
+              <div className="w-full h-14 bg-white dark:bg-[#2d1e16] border border-slate-200 dark:border-primary/20 rounded-md pl-14 pr-16 text-lg font-medium text-slate-400 dark:text-slate-500 hover:border-primary transition-all shadow-sm flex items-center">
                 Type product name or SKU & press enter...
               </div>
               <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
@@ -79,7 +79,7 @@ function WorkspaceContent() {
               <button
                 type="button"
                 onClick={() => setIsScanning((prev) => !prev)}
-                className={`w-full h-14 border rounded-xl pl-5 pr-16 text-lg font-medium focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm flex items-center cursor-pointer active:scale-[0.98] ${
+                className={`w-full h-14 border rounded-md pl-5 pr-16 text-lg font-medium focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm flex items-center cursor-pointer active:scale-[0.98] ${
                   isScanning
                     ? "bg-primary/10 dark:bg-primary/20 border-primary/50 dark:border-primary/50"
                     : "bg-white dark:bg-[#2d1e16] border-slate-200 dark:border-primary/20 hover:bg-slate-50 dark:hover:bg-primary/5"
@@ -106,7 +106,7 @@ function WorkspaceContent() {
                     onClick={() => setIsScanning(false)}
                   />
                   <div
-                    className="absolute top-full left-0 mt-2 w-full z-50 rounded-xl overflow-hidden border-2 border-primary/40 bg-black shadow-2xl shadow-primary/10"
+                    className="absolute top-full left-0 mt-2 w-full z-50 rounded-md overflow-hidden border-2 border-primary/40 bg-black shadow-2xl shadow-primary/10"
                     style={{ height: "220px" }}
                   >
                     <Scanner

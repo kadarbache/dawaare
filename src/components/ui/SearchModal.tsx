@@ -40,9 +40,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           className="fixed inset-0 bg-background-dark/80 backdrop-blur-sm z-0"
           onClick={onClose}
         ></div>
-        
+
         {/* Search Results Dialog Modal */}
-        <div className="relative z-10 w-full max-w-2xl bg-background-light dark:bg-[#2d1e16] rounded-xl shadow-2xl border border-primary/10 flex flex-col max-h-[85vh] sm:max-h-[80vh] animate-in fade-in zoom-in-95 duration-200">
+        <div className="relative z-10 w-full max-w-2xl bg-background-light dark:bg-[#2d1e16] rounded-md shadow-2xl border border-primary/10 flex flex-col max-h-[85vh] sm:max-h-[80vh] animate-in fade-in zoom-in-95 duration-200">
           {/* Header Section */}
           <header className="p-4 sm:p-6 border-b border-primary/10 shrink-0">
             <div className="flex items-center justify-between mb-4 sm:mb-6">
@@ -60,7 +60,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 <X className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" />
               </button>
             </div>
-            
+
             {/* Search Input Container */}
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -125,7 +125,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 truncate pr-2">
                       Arabica Coffee Beans
                     </h3>
-                    <span className="text-primary font-bold text-sm sm:text-base shrink-0">$15.00</span>
+                    <span className="text-primary font-bold text-sm sm:text-base shrink-0">
+                      $15.00
+                    </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
                     <span className="bg-slate-200/50 dark:bg-background-dark px-1.5 sm:px-2 py-0.5 rounded border border-slate-300 dark:border-primary/10">
@@ -137,7 +139,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     </span>
                   </div>
                 </div>
-                <button 
+                <button
                   type="button"
                   className="px-3 py-1.5 sm:px-4 sm:py-2 bg-primary hover:bg-primary/90 text-white text-xs sm:text-sm font-bold rounded-lg transition-colors shadow-lg shadow-primary/20 shrink-0"
                 >
@@ -161,7 +163,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 truncate pr-2">
                       Dark Roast Blend
                     </h3>
-                    <span className="text-primary font-bold text-sm sm:text-base shrink-0">$18.50</span>
+                    <span className="text-primary font-bold text-sm sm:text-base shrink-0">
+                      $18.50
+                    </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
                     <span className="bg-slate-200/50 dark:bg-background-dark px-1.5 sm:px-2 py-0.5 rounded border border-slate-300 dark:border-primary/10">
@@ -173,7 +177,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     </span>
                   </div>
                 </div>
-                <button 
+                <button
                   type="button"
                   className="px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-200 hover:bg-slate-300 dark:bg-background-dark dark:hover:bg-primary/20 border border-slate-300 dark:border-primary/20 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold rounded-lg transition-colors shrink-0"
                 >
@@ -197,7 +201,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 truncate pr-2">
                       Espresso Gold Edition
                     </h3>
-                    <span className="text-primary font-bold text-sm sm:text-base shrink-0">$22.00</span>
+                    <span className="text-primary font-bold text-sm sm:text-base shrink-0">
+                      $22.00
+                    </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
                     <span className="bg-slate-200/50 dark:bg-background-dark px-1.5 sm:px-2 py-0.5 rounded border border-slate-300 dark:border-primary/10">
@@ -209,7 +215,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     </span>
                   </div>
                 </div>
-                <button 
+                <button
                   type="button"
                   className="px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-200 hover:bg-slate-300 dark:bg-background-dark dark:hover:bg-primary/20 border border-slate-300 dark:border-primary/20 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold rounded-lg transition-colors shrink-0"
                 >
@@ -233,7 +239,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 truncate pr-2">
                       Cold Brew Concentrate
                     </h3>
-                    <span className="text-primary font-bold text-sm sm:text-base shrink-0">$12.99</span>
+                    <span className="text-primary font-bold text-sm sm:text-base shrink-0">
+                      $12.99
+                    </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
                     <span className="bg-slate-200/50 dark:bg-background-dark px-1.5 sm:px-2 py-0.5 rounded border border-slate-300 dark:border-primary/10">
@@ -245,7 +253,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     </span>
                   </div>
                 </div>
-                <button 
+                <button
                   type="button"
                   className="px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-200 hover:bg-slate-300 dark:bg-background-dark dark:hover:bg-primary/20 border border-slate-300 dark:border-primary/20 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold rounded-lg transition-colors shrink-0"
                 >
@@ -267,8 +275,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               >
                 Cancel
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-white font-bold transition-all shadow-lg shadow-primary/30 text-sm sm:text-base whitespace-nowrap"
               >
                 View All Results

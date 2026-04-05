@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
+import { Fragment, useState, useTransition } from "react";
 import type { SaleRow, SaleStats } from "../server";
 import {
   ChevronLeft,
@@ -68,6 +68,16 @@ function time_ago(date: Date | null) {
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
+function formatDisplayDate(dateStr: string) {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export default function SalesClient({
   sales,
   stats,
@@ -113,21 +123,33 @@ export default function SalesClient({
     (p) => p === 1 || p === total_pages || Math.abs(p - currentPage) <= 1,
   );
 
+  // Inside SalesClient component
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <>
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
         <div>
           <h1 className="text-slate-900 dark:text-slate-100 text-4xl font-black leading-tight tracking-tight">
             Sales History
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-base font-normal mt-1">
-            Track and manage all your transaction records
+            Track and manage all your sales from{" "}
           </p>
+          <div className="text-slate-500 dark:text-slate-400 text-base font-normal">
+            <span className="text-primary font-bold">
+              {formatDisplayDate(localStart)}
+            </span>{" "}
+            to{" "}
+            <span className="text-primary font-bold">
+              {formatDisplayDate(localEnd)}
+            </span>
+          </div>
         </div>
 
         {/* Date Filter */}
-        <div className="bg-white dark:bg-primary/5 p-2 rounded-xl border border-slate-200 dark:border-primary/20 flex flex-wrap items-center gap-2">
+        <div className="bg-white dark:bg-primary/5 p-2 rounded-md border border-slate-200 dark:border-primary/20 flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-primary/10 rounded-lg border border-slate-200 dark:border-primary/20">
             <Calendar size={14} className="text-slate-400" />
             <span className="text-[10px] uppercase tracking-widest text-slate-500 mr-2 font-bold">
@@ -136,6 +158,7 @@ export default function SalesClient({
             <input
               type="date"
               value={localStart}
+              max={today}
               onChange={(e) => setLocalStart(e.target.value)}
               className="bg-transparent border-none text-xs text-slate-900 dark:text-slate-100 focus:ring-0 p-0 cursor-pointer"
             />
@@ -148,6 +171,7 @@ export default function SalesClient({
             <input
               type="date"
               value={localEnd}
+              max={today}
               onChange={(e) => setLocalEnd(e.target.value)}
               className="bg-transparent border-none text-xs text-slate-900 dark:text-slate-100 focus:ring-0 p-0 cursor-pointer"
             />
@@ -385,7 +409,7 @@ export default function SalesClient({
             {page_numbers.map((p, i) => {
               const prev = page_numbers[i - 1];
               return (
-                <>
+                <Fragment key={p}>
                   {prev && p - prev > 1 && (
                     <span
                       key={`gap-${p}`}
@@ -406,7 +430,7 @@ export default function SalesClient({
                   >
                     {p}
                   </button>
-                </>
+                </Fragment>
               );
             })}
 

@@ -2,11 +2,16 @@ import Topbar from "@/components/Topbar";
 import { get_sales, get_sale_stats } from "./server";
 import SalesClient from "./_components/SalesClient";
 
-// Default date range: current month
+// Default date range: last 30 days
 function get_default_dates() {
   const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth(), 1);
-  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  // End date is today
+  const end = now;
+
+  // Start date is 29 days before today (making 30 days total)
+  const start = new Date();
+  start.setDate(now.getDate() - 29);
 
   const formatDate = (date: Date) => {
     const y = date.getFullYear();

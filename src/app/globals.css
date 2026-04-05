@@ -15,9 +15,10 @@
   --color-background-dark: #221610;
   --color-secondary: #0f172b;
   --font-display: var(--font-poppins);
-  --radius-DEFAULT: 0.25rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
+  --radius-sm: 0.125rem;
+  --radius-md: 0.8rem;
+  --radius-lg: 1rem;
+  --radius-xl: 2rem;
   --radius-full: 9999px;
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -47,11 +48,24 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /* --radius-sm: calc(var(--radius) * 1.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6); */
+}
+
+@utility rounded-sm {
+  border-radius: var(--radius-sm);
+}
+@utility rounded-md {
+  border-radius: var(--radius-md);
+}
+@utility rounded-lg {
+  border-radius: var(--radius-lg);
+}
+@utility rounded-md {
+  border-radius: var(--radius-xl);
 }
 
 body {

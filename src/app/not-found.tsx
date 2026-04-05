@@ -46,12 +46,12 @@ export default function NotFound() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <Link
               href="/"
-              className="px-8 py-4 bg-primary text-white rounded-xl font-bold text-lg flex items-center gap-2 shadow-lg shadow-primary/20 hover:bg-[#f5611b] hover:-translate-y-1 active:scale-95 transition-all duration-200"
+              className="px-8 py-4 bg-primary text-white rounded-md font-bold text-lg flex items-center gap-2 shadow-lg shadow-primary/20 hover:bg-[#f5611b] hover:-translate-y-1 active:scale-95 transition-all duration-200"
             >
               <LayoutDashboard size={20} />
               Back to Dashboard
             </Link>
-            <button className="px-8 py-4 border-2 border-[#5a4138] text-slate-100 rounded-xl font-bold text-lg flex items-center gap-2 hover:bg-[#41312b] hover:border-primary transition-all duration-200">
+            <button className="px-8 py-4 border-2 border-[#5a4138] text-slate-100 rounded-md font-bold text-lg flex items-center gap-2 hover:bg-[#41312b] hover:border-primary transition-all duration-200">
               <Headphones size={20} />
               Contact Support
             </button>

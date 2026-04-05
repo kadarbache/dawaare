@@ -100,7 +100,7 @@ export default function AddProductModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background-dark/80 backdrop-blur-sm p-4 animate-fade-in">
-      <div className="relative w-full max-w-xl bg-background-light dark:bg-background-dark border border-slate-200 dark:border-primary/20 rounded-xl shadow-2xl flex flex-col overflow-hidden animate-modal-pop">
+      <div className="relative w-full max-w-xl bg-background-light dark:bg-background-dark border border-slate-200 dark:border-primary/20 rounded-md shadow-2xl flex flex-col overflow-hidden animate-modal-pop">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-primary/10">
           <div className="flex items-center gap-3">
             <X size={20} className="text-primary" />
@@ -258,7 +258,7 @@ export default function AddProductModal({
 
               {/* Conditional Scanner Component */}
               {isScanning && (
-                <div className="mt-2 w-full h-48 sm:h-64 rounded-xl overflow-hidden border-2 border-primary/40 relative bg-black">
+                <div className="mt-2 w-full h-48 sm:h-64 rounded-md overflow-hidden border-2 border-primary/40 relative bg-black">
                   <Scanner
                     onScan={(detectedCodes) => {
                       if (detectedCodes.length > 0) {
