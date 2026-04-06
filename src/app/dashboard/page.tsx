@@ -16,6 +16,7 @@ import {
   get_recent_transactions,
   get_recent_debt_clearances,
 } from "./server";
+import FilterButtons from "@/components/FilterButtons";
 
 function format_payment(method: string) {
   switch (method) {
@@ -89,13 +90,16 @@ export default async function DashboardPage() {
       <main className="flex-1 overflow-y-auto bg-background-light dark:bg-[#1a110c]">
         <div className="max-w-360 mx-auto px-8 py-8">
           {/* Page Header */}
-          <div className="mb-8">
-            <h1 className="text-slate-900 dark:text-slate-100 text-4xl font-black leading-tight tracking-tight">
-              Dashboard
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-base font-normal mt-1">
-              Real-time overview of your shop performance
-            </p>
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-slate-900 dark:text-slate-100 text-4xl font-black leading-tight tracking-tight">
+                Dashboard
+              </h1>
+              <p className="text-slate-500 dark:text-slate-400 text-base font-normal mt-1">
+                Real-time overview of your shop performance
+              </p>
+            </div>
+            <FilterButtons />
           </div>
 
           {/* Quick Stats Row */}
