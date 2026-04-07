@@ -1,6 +1,7 @@
 import Topbar from "@/components/Topbar";
 import { get_sales, get_sale_stats } from "./server";
 import SalesClient from "./_components/SalesClient";
+import ButtomAcionBar from "../terminal/_components/ButtomAcionBar";
 
 // Default date range: last 30 days
 function get_default_dates() {
@@ -65,20 +66,13 @@ export default async function SalesPage({
       </main>
 
       {/* Bottom Status Bar */}
-      <footer className="h-10 bg-slate-900 text-slate-400 px-6 flex items-center gap-6 text-[10px] font-bold uppercase tracking-wider shrink-0 border-t border-white/5 z-40">
-        <div className="flex items-center gap-1">
-          <span className="bg-slate-700 px-1 rounded text-white">F1</span> HELP
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="bg-slate-700 px-1 rounded text-white">F10</span>{" "}
-          SEARCH
-        </div>
-        <div className="ml-auto text-slate-500 flex items-center gap-4">
-          <span>SYSTEM READY</span>
-          <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-          <span>SALES MANAGER • V2.4.0</span>
-        </div>
-      </footer>
+      <ButtomAcionBar
+        shortcuts={[
+          { label: "Search", key: "CTR+K" },
+          { label: "Cancel", key: "ESC" },
+        ]}
+        pathname={"/sales"}
+      />
     </>
   );
 }

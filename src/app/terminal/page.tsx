@@ -19,7 +19,7 @@ export default async function TerminalPage() {
   return (
     <>
       {/* Top Navigation Bar */}
-      <Topbar page="Terminal" subPage="Register #04" />
+      <Topbar page="Terminal" />
 
       {/* POS Workspace hydrated with initial data */}
       <TerminalWorkspace products={products} />

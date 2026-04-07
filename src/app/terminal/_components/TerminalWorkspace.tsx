@@ -12,11 +12,13 @@ import {
   TerminalProduct,
   useTerminal,
 } from "../_context/TerminalContext";
+import { usePathname } from "next/navigation";
 
 function WorkspaceContent() {
   const { products, addToCart } = useTerminal();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScanning, setIsScanning] = useState(true);
+  const pathname = usePathname();
 
   const handleSelectProduct = (product: TerminalProduct) => {
     addToCart(product);
@@ -148,7 +150,14 @@ function WorkspaceContent() {
       </main>
 
       {/* Bottom Action Bar */}
-      <ButtomAcionBar />
+      <ButtomAcionBar
+        shortcuts={[
+          { label: "Scan", key: "F9" },
+          { label: "Search", key: "F10" },
+          { label: "Cancel", key: "ESC" },
+        ]}
+        pathname={pathname}
+      />
     </>
   );
 }

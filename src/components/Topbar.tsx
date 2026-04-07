@@ -9,7 +9,7 @@ export default function Topbar({
   subPage,
 }: {
   page: string;
-  subPage: string;
+  subPage?: string;
 }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 

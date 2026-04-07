@@ -12,6 +12,7 @@ import {
   Filter,
   TrendingUp,
 } from "lucide-react";
+import ButtomAcionBar from "../terminal/_components/ButtomAcionBar";
 
 export default function DebtManagementPage() {
   return (
@@ -314,24 +315,14 @@ export default function DebtManagementPage() {
         </main>
       </div>
 
-      {/* Bottom Action Bar (Shortcuts) */}
-      <footer className="h-10 bg-slate-900 text-slate-400 px-6 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider shrink-0 border-t border-slate-800 z-40">
-        <div className="flex gap-6">
-          <div className="flex items-center gap-1">
-            Terminal: <span className="text-slate-200">T-01</span>
-          </div>
-          <div className="flex items-center gap-1">
-            Operator: <span className="text-slate-200">Admin_Jane</span>
-          </div>
-        </div>
-        <div className="flex gap-6">
-          <div className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
-            System Online
-          </div>
-          <div className="text-slate-500">POS TERMINAL #04 • V2.4.0</div>
-        </div>
-      </footer>
+      {/* Bottom Status Bar */}
+      <ButtomAcionBar
+        shortcuts={[
+          { label: "Search", key: "CTR+K" },
+          { label: "Cancel", key: "ESC" },
+        ]}
+        pathname={"/customers"}
+      />
     </>
   );
 }

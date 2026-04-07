@@ -18,6 +18,7 @@ import {
 } from "./server";
 import { SalesTrendChart } from "./SalesTrendChart";
 import FilterButtons from "@/components/FilterButtons";
+import ButtomAcionBar from "../terminal/_components/ButtomAcionBar";
 // TODO: implement the dashboard stats to be dynamic based on the filter buttons and use the same pattern as the sales page
 function format_payment(method: string) {
   switch (method) {
@@ -69,7 +70,7 @@ export default async function DashboardPage({
 
   return (
     <>
-      <Topbar page="Dashboard" subPage="Overview" />
+      <Topbar page="Dashboard" />
 
       <main className="flex-1 overflow-y-auto bg-background-light dark:bg-[#1a110c]">
         <div className="max-w-360 mx-auto px-8 py-8">
@@ -358,20 +359,13 @@ export default async function DashboardPage({
       </main>
 
       {/* Bottom Status Bar */}
-      <footer className="h-10 bg-slate-900 text-slate-400 px-6 flex items-center gap-6 text-[10px] font-bold uppercase tracking-wider shrink-0 border-t border-white/5 z-40">
-        <div className="flex items-center gap-1">
-          <span className="bg-slate-700 px-1 rounded text-white">F1</span> HELP
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="bg-slate-700 px-1 rounded text-white">F10</span>{" "}
-          SEARCH
-        </div>
-        <div className="ml-auto text-slate-500 flex items-center gap-4">
-          <span>SYSTEM READY</span>
-          <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-          <span>DASHBOARD • V2.4.0</span>
-        </div>
-      </footer>
+      <ButtomAcionBar
+        shortcuts={[
+          { label: "Search", key: "CTR+K" },
+          { label: "Cancel", key: "ESC" },
+        ]}
+        pathname={"/dashboard"}
+      />
     </>
   );
 }
