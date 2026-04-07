@@ -116,6 +116,7 @@ export default function SalesClient({
     push_params({ page: String(p) });
   }
 
+  console.log(sales);
   const page_numbers = Array.from(
     { length: total_pages },
     (_, i) => i + 1,

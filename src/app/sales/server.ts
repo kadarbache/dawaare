@@ -46,8 +46,22 @@ export async function get_sales(
       skip: (page - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
       include: {
-        customer: { select: { name: true } },
+        customer: { select: { name: true, id: true } },
         _count: { select: { sale_items: true } },
+        sale_items: {
+          select: {
+            product_id: true,
+            quantity: true,
+            unit_price: true,
+            total_price: true,
+            product: {
+              select: {
+                name: true,
+                image: true,
+              },
+            },
+          },
+        },
       },
     }),
     prisma.sale.count({ where }),
@@ -65,6 +79,15 @@ export async function get_sales(
       notes: s.notes,
       items_count: s._count.sale_items,
       customer_name: s.customer?.name ?? null,
+      customer_id: s.customer?.id ?? null,
+      items: s.sale_items.map((si) => ({
+        quantity: si.quantity,
+        unit_price: si.unit_price,
+        total_price: si.total_price,
+        product_id: si.product_id,
+        name: si.product.name,
+        image: si.product.image,
+      })),
     })),
     total,
   };

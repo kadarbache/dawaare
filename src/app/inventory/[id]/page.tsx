@@ -46,7 +46,6 @@ export default async function ProductDetailPage({
       },
     },
     orderBy: { created_at: "desc" },
-    take: 20,
   });
 
   const all_sale_items = await prisma.saleItem.findMany({
