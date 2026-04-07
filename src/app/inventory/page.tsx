@@ -5,14 +5,23 @@ import ButtomAcionBar from "../terminal/_components/ButtomAcionBar";
 import InventoryClient from "./_components/InventoryClient";
 
 const PAGE_SIZE = 15;
+export type Filter =
+  | "newest"
+  | "oldest"
+  | "lowest price"
+  | "highest price"
+  | "out of stock"
+  | "low stock";
 
 export default async function InventoryPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; filter?: Filter }>;
 }) {
   const params = await searchParams;
   const currentPage = Math.max(1, parseInt(params.page ?? "1", 10));
+
+  const filter = params.filter ?? "newest";
 
   const data = await prisma.product.findMany({
     orderBy: {
@@ -72,13 +81,48 @@ export default async function InventoryPage({
   };
 
   const total = products.length;
-  // memory pagination since we already fetched all to calculate stats
-  const paginatedProducts = products.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
 
-  console.log(paginatedProducts);
+  // memory pagination and filtering since we already fetched all to calculate stats
+  const paginatedProducts = products
+    .slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+    .filter((product) => {
+      if (filter === "out of stock") {
+        return product.stock_qty === 0;
+      }
+      if (filter === "low stock") {
+        return product.is_low_stock;
+      }
+      if (filter === "newest") {
+        return product.created_at;
+      }
+      if (filter === "oldest") {
+        return product.created_at;
+      }
+      if (filter === "lowest price") {
+        return product.price;
+      }
+      if (filter === "highest price") {
+        return product.price;
+      }
+      return true;
+    });
+
+  if (filter === "lowest price") {
+    paginatedProducts.sort((a, b) => a.price - b.price);
+  }
+  if (filter === "highest price") {
+    paginatedProducts.sort((a, b) => b.price - a.price);
+  }
+  if (filter === "newest") {
+    paginatedProducts.sort(
+      (a, b) => b.created_at.getTime() - a.created_at.getTime(),
+    );
+  }
+  if (filter === "oldest") {
+    paginatedProducts.sort(
+      (a, b) => a.created_at.getTime() - b.created_at.getTime(),
+    );
+  }
 
   return (
     <>

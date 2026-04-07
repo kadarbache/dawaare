@@ -59,7 +59,7 @@ export default function SimpleDropdown({
             {selectedOption ? selectedOption.label : placeholder}
           </span>
         </div>
-        <ChevronDown size={20} className="text-slate-400" />
+        <ChevronDown size={20} className="ml-4 text-slate-400" />
       </button>
 
       {isOpen && (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Fragment, useTransition } from "react";
+import { Fragment, useState, useTransition } from "react";
 import Link from "next/link";
 import {
   AlertCircle,
@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import StatusCard from "@/components/StatusCard";
 import ButtonAddProduct from "@/components/buttonAddProduct";
+import SimpleDropdown from "@/components/ui/SimpleDropdown";
+import { Filter } from "../page";
 
 export const PAGE_SIZE = 15;
 
@@ -50,6 +52,11 @@ export type InventoryStats = {
   isInventoryValueDown: boolean;
 };
 
+type FilterOption = {
+  value: Filter;
+  label: string;
+};
+
 export default function InventoryClient({
   products,
   stats,
@@ -64,9 +71,20 @@ export default function InventoryClient({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const filterOptions: FilterOption[] = [
+    { value: "newest", label: "Newest" },
+    { value: "oldest", label: "Oldest" },
+    { value: "lowest price", label: "Lowest Price" },
+    { value: "highest price", label: "Highest Price" },
+    { value: "out of stock", label: "Out of Stock" },
+    { value: "low stock", label: "Low Stock" },
+  ];
+
+  const [selectedFilter, setSelectedFilter] = useState<Filter>("newest");
 
   const total_pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
+  // work on filtering functionality
   function push_params(params: Record<string, string>) {
     const next = new URLSearchParams(searchParams.toString());
     Object.entries(params).forEach(([k, v]) => next.set(k, v));
@@ -75,6 +93,10 @@ export default function InventoryClient({
 
   function handle_page(p: number) {
     push_params({ page: String(p) });
+  }
+
+  function handle_filter(value: Filter) {
+    push_params({ filter: value, page: "1" });
   }
 
   const page_numbers = Array.from(
@@ -99,10 +121,16 @@ export default function InventoryClient({
         <div className="flex gap-3">
           {/* Add Product Button */}
           <ButtonAddProduct />
-          <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-primary/10 border border-slate-200 dark:border-primary/30 rounded-md text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-50 dark:hover:bg-primary/20 transition-all cursor-pointer">
-            <SlidersHorizontal size={16} />
-            Filter
-          </button>
+          <SimpleDropdown
+            placeholder="Filter products"
+            options={filterOptions}
+            icon={<SlidersHorizontal size={20} className="text-primary" />}
+            value={selectedFilter}
+            onChange={(value) => {
+              handle_filter(value as Filter);
+              setSelectedFilter(value as Filter);
+            }}
+          />
         </div>
       </div>
 
@@ -174,7 +202,9 @@ export default function InventoryClient({
       </div>
 
       {/* Inventory Table */}
-      <div className={`bg-white dark:bg-primary/5 rounded-2xl border border-slate-200 dark:border-primary/20 shadow-xl overflow-hidden flex flex-col mb-12 transition-opacity duration-200 ${isPending ? "opacity-50" : ""}`}>
+      <div
+        className={`bg-white dark:bg-primary/5 rounded-2xl border border-slate-200 dark:border-primary/20 shadow-xl overflow-hidden flex flex-col mb-12 transition-opacity duration-200 ${isPending ? "opacity-50" : ""}`}
+      >
         <div className="p-4 border-b border-slate-200 dark:border-primary/10 flex justify-between items-center bg-slate-50 dark:bg-primary/10">
           <h3 className="font-bold flex items-center gap-2">
             <ListChecks size={20} className="text-primary" />
