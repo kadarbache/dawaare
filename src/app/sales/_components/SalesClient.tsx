@@ -276,9 +276,6 @@ export default function SalesClient({
               <thead>
                 <tr className="bg-white dark:bg-[#2d1e16] border-b border-slate-200 dark:border-primary/10">
                   <th className="px-6 py-4 text-slate-500 text-[10px] font-black uppercase tracking-widest">
-                    Order ID
-                  </th>
-                  <th className="px-6 py-4 text-slate-500 text-[10px] font-black uppercase tracking-widest">
                     Date &amp; Time
                   </th>
                   <th className="px-6 py-4 text-slate-500 text-[10px] font-black uppercase tracking-widest">
@@ -313,16 +310,12 @@ export default function SalesClient({
                     hour: "2-digit",
                     minute: "2-digit",
                   });
-                  const short_id = sale.id.slice(0, 8).toUpperCase();
 
                   return (
                     <tr
                       key={sale.id}
                       className="hover:bg-primary/5 transition-colors group"
                     >
-                      <td className="px-6 py-4 font-black text-sm text-primary">
-                        #{short_id}
-                      </td>
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
                           <span className="text-slate-900 dark:text-slate-100 text-xs">
