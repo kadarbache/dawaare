@@ -14,6 +14,15 @@ export type SaleRow = {
   notes: string | null;
   items_count: number;
   customer_name: string | null;
+  customer_id: string | null;
+  items: {
+    quantity: number;
+    unit_price: number;
+    total_price: number;
+    product_id: string;
+    name: string;
+    image: string;
+  }[];
 };
 
 export type SaleStats = {

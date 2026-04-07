@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import StatusCard from "@/components/StatusCard";
 import { PAGE_SIZE } from "../constants";
+import SaleDetails from "./SaleDetails";
 
 type SaleStatus = "paid" | "partial" | "unpaid";
 
@@ -99,6 +100,8 @@ export default function SalesClient({
 
   const [localStart, setLocalStart] = useState(startDate);
   const [localEnd, setLocalEnd] = useState(endDate);
+  const [selected_sale, set_selected_sale] = useState<SaleRow | null>(null);
+  const [is_modal_open, set_is_modal_open] = useState(false);
 
   const total_pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
@@ -114,6 +117,11 @@ export default function SalesClient({
 
   function handle_page(p: number) {
     push_params({ page: String(p) });
+  }
+
+  function handle_view_sale(sale: SaleRow) {
+    set_selected_sale(sale);
+    set_is_modal_open(true);
   }
 
   console.log(sales);
@@ -364,7 +372,10 @@ export default function SalesClient({
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button className="text-[10px] uppercase tracking-widest font-bold text-primary hover:underline flex items-center gap-1 ml-auto cursor-pointer">
+                        <button
+                          onClick={() => handle_view_sale(sale)}
+                          className="text-[10px] uppercase tracking-widest font-bold text-primary hover:underline flex items-center gap-1 ml-auto cursor-pointer"
+                        >
                           <Eye size={12} />
                           View
                         </button>
@@ -438,6 +449,11 @@ export default function SalesClient({
           </div>
         </div>
       </div>
+      <SaleDetails
+        is_open={is_modal_open}
+        on_close={() => set_is_modal_open(false)}
+        sale={selected_sale}
+      />
     </>
   );
 }
