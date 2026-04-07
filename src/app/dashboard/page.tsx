@@ -16,6 +16,7 @@ import {
   get_recent_transactions,
   get_recent_debt_clearances,
 } from "./server";
+import { SalesTrendChart } from "./SalesTrendChart";
 import FilterButtons from "@/components/FilterButtons";
 // TODO: implement the dashboard stats to be dynamic based on the filter buttons and use the same pattern as the sales page
 function format_payment(method: string) {
@@ -56,6 +57,7 @@ export default async function DashboardPage({
   const params = await searchParams;
   const filter = params.filter ?? "daily";
 
+  // the trend is the total amount of sales in that period of time
   const [stats, trend, best_sellers, transactions, debt_clearances] =
     await Promise.all([
       get_dashboard_stats(filter),
@@ -64,25 +66,6 @@ export default async function DashboardPage({
       get_recent_transactions(filter),
       get_recent_debt_clearances(filter),
     ]);
-
-  const max_trend_value = Math.max(...trend.map((d) => d.total), 1);
-
-  const chart_points = trend
-    .map((d, i) => {
-      const x = trend.length > 1 ? (i / (trend.length - 1)) * 100 : 50;
-      const y = 40 - (d.total / max_trend_value) * 35;
-      return `${x},${y}`;
-    })
-    .join(" ");
-
-  const chart_path = trend
-    .map((d, i) => {
-      const x = trend.length > 1 ? (i / (trend.length - 1)) * 100 : 50;
-      const y = 40 - (d.total / max_trend_value) * 35;
-      if (i === 0) return `M${x},${y}`;
-      return `L${x},${y}`;
-    })
-    .join(" ");
 
   return (
     <>
@@ -185,81 +168,7 @@ export default async function DashboardPage({
           {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Sales Trend (2/3 width) */}
-            <div className="lg:col-span-2 bg-white dark:bg-primary/5 rounded-2xl border border-slate-200 dark:border-primary/20 shadow-xl p-8 flex flex-col">
-              <div className="flex justify-between items-center mb-8">
-                <div>
-                  <h2 className="text-lg font-black text-slate-900 dark:text-slate-100 tracking-tight">
-                    Sales Trend
-                  </h2>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                    Last {filter === "monthly" || filter === "all" ? "30" : "7"}{" "}
-                    Operating Days
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-colors ${filter !== "monthly" && filter !== "all" ? "bg-primary text-white shadow-md shadow-primary/20" : "bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-primary"}`}
-                  >
-                    7D
-                  </button>
-                  <button
-                    className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-colors ${filter === "monthly" || filter === "all" ? "bg-primary text-white shadow-md shadow-primary/20" : "bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-primary"}`}
-                  >
-                    30D
-                  </button>
-                </div>
-              </div>
-              <div className="grow min-h-[250px] relative">
-                <svg
-                  className="w-full h-full"
-                  viewBox="0 0 100 40"
-                  preserveAspectRatio="none"
-                >
-                  {/* Gradient fill under line */}
-                  <defs>
-                    <linearGradient
-                      id="chartGradient"
-                      x1="0%"
-                      y1="0%"
-                      x2="0%"
-                      y2="100%"
-                    >
-                      <stop
-                        offset="0%"
-                        stopColor="#ec5b13"
-                        stopOpacity="0.15"
-                      />
-                      <stop offset="100%" stopColor="#ec5b13" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d={`${chart_path} L100,40 L0,40 Z`}
-                    fill="url(#chartGradient)"
-                  />
-                  <path
-                    d={chart_path}
-                    fill="none"
-                    stroke="#ec5b13"
-                    strokeWidth="0.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  {trend.map((d, i) => {
-                    const x =
-                      trend.length > 1 ? (i / (trend.length - 1)) * 100 : 50;
-                    const y = 40 - (d.total / max_trend_value) * 35;
-                    return (
-                      <circle key={i} cx={x} cy={y} r="0.8" fill="#ec5b13" />
-                    );
-                  })}
-                </svg>
-                <div className="flex justify-between mt-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                  {trend.map((d, i) => (
-                    <span key={i}>{d.label}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <SalesTrendChart trend={trend} filter={filter} />
 
             {/* Best Sellers (1/3 width) */}
             <div className="bg-white dark:bg-primary/5 rounded-2xl border border-slate-200 dark:border-primary/20 shadow-xl p-8">
