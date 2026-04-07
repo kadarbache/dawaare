@@ -6,7 +6,7 @@ trigger: always_on
 - always use nextjs v16 rules
 - every table should have created at and updated at (i'm using postgresql)
 - use snake_case format for naming
-
--- if we are doing any operation about react-qr-scanner do not write code just guide me i will write it on my own
+- for form submitions always use next js server actions with useactionstate
+  -- if we are doing any operation about react-qr-scanner do not write code just guide me i will write it on my own
 
 --- use pnpm as a package manager

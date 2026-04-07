@@ -17,7 +17,7 @@ import {
   get_recent_debt_clearances,
 } from "./server";
 import FilterButtons from "@/components/FilterButtons";
-
+// TODO: implement the dashboard stats to be dynamic based on the filter buttons and use the same pattern as the sales page
 function format_payment(method: string) {
   switch (method) {
     case "ZAAD":
@@ -29,14 +29,6 @@ function format_payment(method: string) {
     default:
       return method;
   }
-}
-
-function time_ago(date: Date) {
-  const diff = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-  if (diff < 60) return `${diff}s ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return `${Math.floor(diff / 86400)}d ago`;
 }
 
 function format_date(date: Date) {
@@ -54,14 +46,23 @@ function format_time(date: Date) {
   });
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    filter?: string;
+  }>;
+}) {
+  const params = await searchParams;
+  const filter = params.filter ?? "daily";
+
   const [stats, trend, best_sellers, transactions, debt_clearances] =
     await Promise.all([
-      get_dashboard_stats(),
-      get_sales_trend(),
-      get_best_sellers(),
-      get_recent_transactions(),
-      get_recent_debt_clearances(),
+      get_dashboard_stats(filter),
+      get_sales_trend(filter),
+      get_best_sellers(filter),
+      get_recent_transactions(filter),
+      get_recent_debt_clearances(filter),
     ]);
 
   const max_trend_value = Math.max(...trend.map((d) => d.total), 1);
@@ -105,15 +106,13 @@ export default async function DashboardPage() {
           {/* Quick Stats Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <StatusCard
-              title="Total Sales Today"
-              value={`$${stats.total_sales_today.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
-              description={`${stats.total_sales_today_change >= 0 ? "+" : ""}${stats.total_sales_today_change.toFixed(1)}% from yesterday`}
-              variant={
-                stats.total_sales_today_change >= 0 ? "success" : "danger"
-              }
+              title={`Total Sales ${filter === "weekly" ? "This Week" : filter === "monthly" ? "This Month" : filter === "all" ? "All Time" : "Today"}`}
+              value={`$${stats.total_sales.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
+              description={`${stats.total_sales_change >= 0 ? "+" : ""}${stats.total_sales_change.toFixed(1)}% from ${filter === "weekly" ? "last week" : filter === "monthly" ? "last month" : filter === "all" ? "beginning" : "yesterday"}`}
+              variant={stats.total_sales_change >= 0 ? "success" : "danger"}
               icon={<DollarSign size={20} className="text-primary" />}
               trendIcon={
-                stats.total_sales_today_change >= 0 ? (
+                stats.total_sales_change >= 0 ? (
                   <TrendingUp size={12} />
                 ) : (
                   <TrendingDown size={12} />
@@ -138,7 +137,7 @@ export default async function DashboardPage() {
                 <div
                   className="h-full bg-primary rounded-full transition-all"
                   style={{
-                    width: `${Math.min((stats.net_profit / (stats.total_sales_today || 1)) * 100, 100)}%`,
+                    width: `${Math.min((stats.net_profit / (stats.total_sales || 1)) * 100, 100)}%`,
                   }}
                 />
               </div>
@@ -193,19 +192,24 @@ export default async function DashboardPage() {
                     Sales Trend
                   </h2>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                    Last 7 Operating Days
+                    Last {filter === "monthly" || filter === "all" ? "30" : "7"}{" "}
+                    Operating Days
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <button className="px-3 py-1.5 bg-primary text-white text-[10px] font-bold uppercase tracking-widest rounded-lg shadow-md shadow-primary/20">
+                  <button
+                    className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-colors ${filter !== "monthly" && filter !== "all" ? "bg-primary text-white shadow-md shadow-primary/20" : "bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-primary"}`}
+                  >
                     7D
                   </button>
-                  <button className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-bold uppercase tracking-widest rounded-lg text-slate-500 hover:text-primary transition-colors">
+                  <button
+                    className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-colors ${filter === "monthly" || filter === "all" ? "bg-primary text-white shadow-md shadow-primary/20" : "bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-primary"}`}
+                  >
                     30D
                   </button>
                 </div>
               </div>
-              <div className="flex-grow min-h-[250px] relative">
+              <div className="grow min-h-[250px] relative">
                 <svg
                   className="w-full h-full"
                   viewBox="0 0 100 40"
@@ -265,7 +269,14 @@ export default async function DashboardPage() {
                     Best Sellers
                   </h2>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                    Top Products This Month
+                    Top Products{" "}
+                    {filter === "weekly"
+                      ? "This Week"
+                      : filter === "monthly"
+                        ? "This Month"
+                        : filter === "all"
+                          ? "All Time"
+                          : "Today"}
                   </p>
                 </div>
                 <BarChart3 size={20} className="text-primary" />
