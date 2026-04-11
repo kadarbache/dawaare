@@ -2,8 +2,46 @@ import { UserSearch } from "lucide-react";
 import { prisma } from "@/lib/db";
 import CustomerLink from "./CustomerLink";
 
+function formatRelativeTime(date: Date) {
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  const intervals = [
+    { label: "year", seconds: 31536000 },
+    { label: "month", seconds: 2592000 },
+    { label: "week", seconds: 604800 },
+    { label: "day", seconds: 86400 },
+    { label: "hour", seconds: 3600 },
+    { label: "minute", seconds: 60 },
+  ];
+
+  for (const interval of intervals) {
+    const count = Math.floor(diffInSeconds / interval.seconds);
+    if (count >= 1) {
+      return `${count} ${interval.label}${count > 1 ? "s" : ""} ago`;
+    }
+  }
+
+  return "just now";
+}
+
 export default async function CustomersList() {
   const customers = await prisma.customer.findMany();
+  const lastPurchase = await prisma.sale.findMany({
+    where: {
+      customer_id: {
+        in: customers.map((customer) => customer.id),
+      },
+    },
+    orderBy: { created_at: "desc" },
+    take: 1,
+  });
+
+  const lastPurchaseDate = lastPurchase[0]?.created_at;
+  const lastPurchaseStr = lastPurchaseDate
+    ? formatRelativeTime(new Date(lastPurchaseDate))
+    : "Never";
+
   return (
     <aside className="w-1/3 border-r border-slate-200 dark:border-primary/20 flex flex-col bg-slate-50 dark:bg-primary/5">
       <div className="p-6 border-b border-slate-200 dark:border-primary/20">
@@ -25,7 +63,12 @@ export default async function CustomersList() {
 
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         {customers.map((customer) => (
-          <CustomerLink key={customer.id} id={customer.id} name={customer.name} />
+          <CustomerLink
+            key={customer.id}
+            id={customer.id}
+            name={customer.name}
+            lastPurchase={lastPurchaseStr}
+          />
         ))}
       </div>
     </aside>

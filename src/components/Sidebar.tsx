@@ -82,7 +82,7 @@ export default function Sidebar() {
         </div>
       </nav>
 
-      <div className="p-4 border-t border-slate-200 dark:border-primary/10">
+      <div className="relative p-4">
         <div className="flex items-center gap-3 p-2 bg-slate-50 dark:bg-primary/5 rounded-md border border-transparent dark:border-primary/10">
           <div
             className="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-10 border border-primary/40"

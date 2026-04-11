@@ -1,7 +1,13 @@
 import { prisma } from "@/lib/db";
 import Topbar from "../../components/Topbar";
 import TerminalWorkspace from "./_components/TerminalWorkspace";
-export default async function TerminalPage() {
+export default async function TerminalPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ customer_id?: string }>;
+}) {
+  const { customer_id } = await searchParams;
+
   // Fetch active products to hydrate the fast-search POS client state
   const products = await prisma.product.findMany({
     select: {
@@ -16,13 +22,19 @@ export default async function TerminalPage() {
     },
   });
 
+  const customer = customer_id
+    ? await prisma.customer.findUnique({
+        where: { id: customer_id },
+      })
+    : null;
+
   return (
     <>
       {/* Top Navigation Bar */}
       <Topbar page="Terminal" />
 
       {/* POS Workspace hydrated with initial data */}
-      <TerminalWorkspace products={products} />
+      <TerminalWorkspace products={products} customer={customer} />
     </>
   );
 }

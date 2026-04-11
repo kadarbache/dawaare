@@ -41,11 +41,11 @@ export default function SimpleDropdown({
   const selectedOption = options.find((o) => o.value === value);
 
   return (
-    <div className={`relative ${className}`} ref={ref}>
+    <div className={`relative `} ref={ref}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+        className={`w-full flex items-center justify-between bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all ${className}`}
       >
         <div className="flex items-center gap-3">
           {icon && <span className="text-primary">{icon}</span>}

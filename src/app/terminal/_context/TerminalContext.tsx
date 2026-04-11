@@ -21,6 +21,17 @@ export type TerminalProduct = {
   category?: string;
 };
 
+export type Customer = {
+  id: string;
+  name: string;
+  phone: string;
+  email: string | null;
+  address: string | null;
+  notes: string | null;
+  created_at: Date;
+  updated_at: Date;
+};
+
 export type CartItem = {
   product: TerminalProduct;
   quantity: number;
@@ -36,8 +47,8 @@ interface TerminalContextValue {
   clearCart: () => void;
   cartTotal: number;
 
-  selectedCustomer: string | null;
-  setSelectedCustomer: (id: string | null) => void;
+  selectedCustomer: Customer | null;
+  setSelectedCustomer: (customer: Customer | null) => void;
 
   paymentMethod: string;
   setPaymentMethod: (method: string) => void;
@@ -53,13 +64,17 @@ const TerminalContext = createContext<TerminalContextValue | null>(null);
 export function TerminalProvider({
   children,
   initialProducts,
+  customer,
 }: {
   children: ReactNode;
   initialProducts: TerminalProduct[];
+  customer?: Customer | null;
 }) {
   const [products] = useState<TerminalProduct[]>(initialProducts);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    customer || null,
+  );
   const [paymentMethod, setPaymentMethod] = useState("ZAAD");
   const [amountPaid, setAmountPaid] = useState("");
 

@@ -11,6 +11,7 @@ import {
   TerminalProvider,
   TerminalProduct,
   useTerminal,
+  Customer,
 } from "../_context/TerminalContext";
 import { usePathname } from "next/navigation";
 
@@ -164,11 +165,13 @@ function WorkspaceContent() {
 
 export default function TerminalWorkspace({
   products,
+  customer,
 }: {
   products: TerminalProduct[];
+  customer: Customer | null;
 }) {
   return (
-    <TerminalProvider initialProducts={products}>
+    <TerminalProvider initialProducts={products} customer={customer}>
       <WorkspaceContent />
     </TerminalProvider>
   );

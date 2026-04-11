@@ -7,9 +7,14 @@ import { usePathname } from "next/navigation";
 interface CustomerLinkProps {
   id: string;
   name: string;
+  lastPurchase: string;
 }
 
-export default function CustomerLink({ id, name }: CustomerLinkProps) {
+export default function CustomerLink({
+  id,
+  name,
+  lastPurchase,
+}: CustomerLinkProps) {
   const pathname = usePathname();
   const isActive = pathname === `/customers/${id}`;
 
@@ -40,7 +45,7 @@ export default function CustomerLink({ id, name }: CustomerLinkProps) {
               {name}
             </p>
             <p className="text-[10px] uppercase tracking-wider text-slate-500">
-              Last visit: 1 week ago
+              Last visit: {lastPurchase}
             </p>
           </div>
         </div>
