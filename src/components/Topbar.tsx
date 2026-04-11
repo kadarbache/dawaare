@@ -49,7 +49,7 @@ export default function Topbar({
               size={14}
               className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-primary transition-colors"
             />
-            <div className="pl-10 pr-16 py-2 bg-slate-100 dark:bg-slate-800 border border-transparent rounded-lg text-sm text-slate-500 hover:border-primary/50 transition-colors w-72 sm:w-80 flex items-center">
+            <div className="pl-10 pr-16 py-2 bg-slate-100 dark:bg-slate-800 border border-transparent rounded-md text-sm text-slate-500 hover:border-primary/50 transition-colors w-72 sm:w-80 flex items-center">
               Search...
             </div>
             <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">

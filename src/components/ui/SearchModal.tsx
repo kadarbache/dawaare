@@ -30,7 +30,9 @@ function fetchProducts(query: string): Promise<Product[]> {
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<"products" | "customers">("products");
+  const [activeTab, setActiveTab] = useState<"products" | "customers">(
+    "products",
+  );
 
   // We manage the promise in state so use() doesn't suspend on every render
   const [productsPromise, setProductsPromise] = useState<Promise<Product[]>>(
@@ -132,10 +134,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 </div>
               }
             >
-              <SearchProductsList
-                query={query}
-                promise={productsPromise}
-              />
+              <SearchProductsList query={query} promise={productsPromise} />
             </Suspense>
           ) : (
             <div className="flex flex-col items-center justify-center p-8 text-slate-500 h-full min-h-[200px]">
