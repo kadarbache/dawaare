@@ -1,4 +1,3 @@
-import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 import { prisma } from "@/lib/db";
 import dayjs from "dayjs";
