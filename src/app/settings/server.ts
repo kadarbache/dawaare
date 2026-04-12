@@ -84,3 +84,32 @@ export async function edit_category(
     };
   }
 }
+
+export async function deleteCategory(id: string): Promise<ActionState> {
+  if (!id) {
+    return { status: "error", message: "Category ID is required" };
+  }
+
+  const existingCategory = await prisma.itemsCategory.findUnique({
+    where: { id },
+  });
+
+  if (!existingCategory) {
+    return { status: "error", message: "Category not found" };
+  }
+
+  try {
+    await prisma.itemsCategory.delete({
+      where: { id },
+    });
+
+    revalidatePath("/settings");
+    return { status: "success", message: "Category deleted successfully!" };
+  } catch (error: unknown) {
+    console.error("Failed to delete category:", error);
+    return {
+      status: "error",
+      message: "Failed to delete category. Please try again.",
+    };
+  }
+}

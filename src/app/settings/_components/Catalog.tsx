@@ -1,6 +1,8 @@
 import { ChevronLeft, ChevronRight, Edit, Plus, Trash } from "lucide-react";
 import toast from "react-hot-toast";
 import { Categories } from "../page";
+import { deleteCategory } from "../server";
+import { useTransition } from "react";
 
 export default function Catalog({
   categories,
@@ -11,6 +13,17 @@ export default function Catalog({
   handleAddCategory: () => void;
   handleEditCategory: (category: Categories) => void;
 }) {
+  const [isPending, startTransition] = useTransition();
+  const handleDeleteCategory = async (id: string) => {
+    startTransition(async () => {
+      const result = await deleteCategory(id);
+      if (result.status === "success") {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    });
+  };
   return (
     <section className="col-span-12">
       <div className="bg-white dark:bg-[#2d1e16] border border-primary/10 rounded-md overflow-hidden shadow-sm">
@@ -85,13 +98,15 @@ export default function Catalog({
                         </button>
                         <button
                           className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-md transition-all"
-                          onClick={() =>
-                            toast.error(
-                              `Deleting ${cat.name} is disabled in this UI preview`,
-                            )
-                          }
+                          onClick={() => handleDeleteCategory(cat.id)}
+                          disabled={isPending}
                         >
-                          <Trash className="w-4 h-4" />
+                          {/* TODO: FIXING THE SPINNER SHOWING ON EVERY BUTTON */}
+                          {isPending ? (
+                            <div className="w-4 h-4 border-2 border-red-500/30 border-t-red-500 rounded-full animate-spin" />
+                          ) : (
+                            <Trash className="w-4 h-4" />
+                          )}
                         </button>
                       </div>
                     </td>
