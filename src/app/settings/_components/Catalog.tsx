@@ -2,16 +2,12 @@ import { ChevronLeft, ChevronRight, Edit, Plus, Trash } from "lucide-react";
 import toast from "react-hot-toast";
 import { Categories } from "../page";
 
-const MOCK_CATEGORIES = [
-  { id: "1", name: "Electronics", count: 142 },
-  { id: "2", name: "Food", count: 3120 },
-  { id: "3", name: "Accessories", count: 84 },
-];
-
 export default function Catalog({
+  categories,
   handleAddCategory,
   handleEditCategory,
 }: {
+  categories: Categories[];
   handleAddCategory: () => void;
   handleEditCategory: (category: Categories) => void;
 }) {
@@ -53,45 +49,55 @@ export default function Catalog({
               </tr>
             </thead>
             <tbody className="divide-y divide-primary/5">
-              {MOCK_CATEGORIES.map((cat) => (
-                <tr
-                  key={cat.id}
-                  className="hover:bg-primary/5 transition-colors group"
-                >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <span className="font-bold text-slate-900 dark:text-slate-100">
-                        {cat.name}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black tracking-widest uppercase">
-                      {cat.count.toLocaleString()} Items
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => handleEditCategory(cat)}
-                        className="p-2 text-slate-500 hover:text-primary hover:bg-primary/10 rounded-md transition-all"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-md transition-all"
-                        onClick={() =>
-                          toast.error(
-                            `Deleting ${cat.name} is disabled in this UI preview`,
-                          )
-                        }
-                      >
-                        <Trash className="w-4 h-4" />
-                      </button>
-                    </div>
+              {categories.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="px-6 py-12 text-center">
+                    <p className="text-slate-500 dark:text-slate-400 text-sm mb-2">
+                      There are no categories configured yet.
+                    </p>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                categories.map((cat) => (
+                  <tr
+                    key={cat.id}
+                    className="hover:bg-primary/5 transition-colors group"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-slate-900 dark:text-slate-100">
+                          {cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black tracking-widest uppercase">
+                        {cat.count.toLocaleString()} Items
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleEditCategory(cat)}
+                          className="p-2 text-slate-500 hover:text-primary hover:bg-primary/10 rounded-md transition-all"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-md transition-all"
+                          onClick={() =>
+                            toast.error(
+                              `Deleting ${cat.name} is disabled in this UI preview`,
+                            )
+                          }
+                        >
+                          <Trash className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

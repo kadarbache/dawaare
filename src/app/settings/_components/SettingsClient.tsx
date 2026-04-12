@@ -79,6 +79,7 @@ export default function SettingsClient({
         />
         {/* Section 2: Categories */}
         <Catalog
+          categories={categories}
           handleAddCategory={handleAddCategory}
           handleEditCategory={handleEditCategory}
         />
