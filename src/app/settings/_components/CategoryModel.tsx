@@ -2,8 +2,7 @@ import DialogModal from "@/components/DialogModel";
 import toast from "react-hot-toast";
 import { Categories } from "../page";
 import { useActionState, useEffect, useRef } from "react";
-import { add_category, type ActionState } from "../server";
-
+import { add_category, edit_category, type ActionState } from "../server";
 export default function CategoryModel({
   isModalOpen,
   setIsModalOpen,
@@ -13,11 +12,13 @@ export default function CategoryModel({
   setIsModalOpen: (value: boolean) => void;
   editingCategory: Categories | null;
 }) {
-  const [state, formAction, isPending] = useActionState(add_category, {
-    status: "idle",
-    message: "",
-  } as ActionState);
-
+  const [state, formAction, isPending] = useActionState(
+    editingCategory ? edit_category : add_category,
+    {
+      status: "idle",
+      message: "",
+    } as ActionState
+  );
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -35,10 +36,13 @@ export default function CategoryModel({
       isOpen={isModalOpen}
       onClose={() => setIsModalOpen(false)}
       title={editingCategory ? "Edit Category" : "Add New Category"}
-      description="Please make sure the category name that you are about to add is not already in the product catalog."
+      description={editingCategory ? "Update the name of an existing product category." : "Please make sure the category name that you are about to add is not already in our product catalog."}
       max_width="max-w-md"
     >
-      <form ref={formRef} action={formAction} className="space-y-6">
+      <form key={editingCategory?.id || 'new'} ref={formRef} action={formAction} className="space-y-6">
+        {editingCategory && (
+          <input type="hidden" name="category_id" value={editingCategory.id} />
+        )}
         <div className="space-y-2">
           <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
             Category Name
