@@ -1,5 +1,6 @@
 import DialogModal from "@/components/DialogModel";
 import toast from "react-hot-toast";
+import { Categories } from "../page";
 
 export default function CategoryModel({
   isModalOpen,
@@ -8,7 +9,7 @@ export default function CategoryModel({
 }: {
   isModalOpen: boolean;
   setIsModalOpen: (value: boolean) => void;
-  editingCategory: any;
+  editingCategory: Categories | null;
 }) {
   return (
     <DialogModal

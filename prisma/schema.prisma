@@ -82,3 +82,13 @@ model SaleItem {
 
   @@map("sale_items")
 }
+
+model ItemsCategory {
+  id         String   @id @default(uuid())
+  name       String
+  count      Int      @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("items_categories")
+}

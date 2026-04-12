@@ -1,9 +1,11 @@
 import { ChevronLeft, ChevronRight, Edit, Plus, Trash } from "lucide-react";
 import toast from "react-hot-toast";
+import { Categories } from "../page";
+
 const MOCK_CATEGORIES = [
-  { id: "1", name: "Electronics", count: 142, icon: "devices" },
-  { id: "2", name: "Food", count: 3120, icon: "restaurant" },
-  { id: "3", name: "Accessories", count: 84, icon: "watch" },
+  { id: "1", name: "Electronics", count: 142 },
+  { id: "2", name: "Food", count: 3120 },
+  { id: "3", name: "Accessories", count: 84 },
 ];
 
 export default function Catalog({
@@ -11,7 +13,7 @@ export default function Catalog({
   handleEditCategory,
 }: {
   handleAddCategory: () => void;
-  handleEditCategory: (category: any) => void;
+  handleEditCategory: (category: Categories) => void;
 }) {
   return (
     <section className="col-span-12">

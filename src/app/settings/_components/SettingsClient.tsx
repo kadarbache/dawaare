@@ -5,19 +5,26 @@ import { toast } from "react-hot-toast";
 import CurrencyRate from "./CurrencyRate";
 import Catalog from "./Catalog";
 import CategoryModel from "./CategoryModel";
+import { Categories } from "../page";
 
-export default function SettingsClient() {
+export default function SettingsClient({
+  categories,
+}: {
+  categories: Categories[];
+}) {
   const [activeTab, setActiveTab] = useState("Currency & Categories");
   const [exchangeRate, setExchangeRate] = useState<number | "">(8500);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [editingCategory, setEditingCategory] = useState<Categories | null>(
+    null,
+  );
 
   const tabs = [
+    "Currency & Categories",
     "General (inactive)",
     "Receipts (inactive)",
     "Users (inactive)",
     "Currency (inactive)",
-    "Currency & Categories",
   ];
 
   const handleUpdateRate = () => {
@@ -29,7 +36,7 @@ export default function SettingsClient() {
     setIsModalOpen(true);
   };
 
-  const handleEditCategory = (category: any) => {
+  const handleEditCategory = (category: Categories) => {
     setEditingCategory(category);
     setIsModalOpen(true);
   };
