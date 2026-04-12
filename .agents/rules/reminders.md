@@ -9,6 +9,9 @@ trigger: always_on
 - for form submitions always use next js server actions with useactionstate
   -- if we are doing any operation about react-qr-scanner do not write code just guide me i will write it on my own
 
+- if you see rounded-xl in the tailwind styles change it to rounded-md
+- change bg-gradient to bg-linear cause bg-gradient is deprecated
+
 - When a new UI component is provided that includes its own internal Dialog/Modal logic, you must perform a "Component Swap" based on the following steps:
 
   Identify & Extract: Identify the core content (children elements, forms, or text) inside the new component's dialog.

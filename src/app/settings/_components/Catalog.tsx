@@ -1,0 +1,116 @@
+import { ChevronLeft, ChevronRight, Edit, Plus, Trash } from "lucide-react";
+import toast from "react-hot-toast";
+const MOCK_CATEGORIES = [
+  { id: "1", name: "Electronics", count: 142, icon: "devices" },
+  { id: "2", name: "Food", count: 3120, icon: "restaurant" },
+  { id: "3", name: "Accessories", count: 84, icon: "watch" },
+];
+
+export default function Catalog({
+  handleAddCategory,
+  handleEditCategory,
+}: {
+  handleAddCategory: () => void;
+  handleEditCategory: (category: any) => void;
+}) {
+  return (
+    <section className="col-span-12">
+      <div className="bg-white dark:bg-[#2d1e16] border border-primary/10 rounded-md overflow-hidden shadow-sm">
+        <div className="p-8 border-b border-primary/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest text-[12px] mb-1">
+              Product Categories
+            </h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Organize your products by category to optimize inventory
+              reporting.
+            </p>
+          </div>
+          <button
+            onClick={handleAddCategory}
+            className="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 font-bold py-2.5 px-5 rounded-md transition-all flex items-center justify-center gap-2 text-sm active:scale-95"
+          >
+            <Plus className="w-4 h-4" />
+            Add Category
+          </button>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-background-dark/30 border-b border-primary/10">
+                <th className="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                  Category Name
+                </th>
+                <th className="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                  Product Count
+                </th>
+                <th className="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-primary/5">
+              {MOCK_CATEGORIES.map((cat) => (
+                <tr
+                  key={cat.id}
+                  className="hover:bg-primary/5 transition-colors group"
+                >
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-slate-900 dark:text-slate-100">
+                        {cat.name}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black tracking-widest uppercase">
+                      {cat.count.toLocaleString()} Items
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => handleEditCategory(cat)}
+                        className="p-2 text-slate-500 hover:text-primary hover:bg-primary/10 rounded-md transition-all"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-md transition-all"
+                        onClick={() =>
+                          toast.error(
+                            `Deleting ${cat.name} is disabled in this UI preview`,
+                          )
+                        }
+                      >
+                        <Trash className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="p-4 border-t border-primary/10 bg-slate-50 dark:bg-background-dark/30 flex justify-between items-center px-8">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+            Showing 3 of 12 categories
+          </span>
+          <div className="flex gap-2">
+            <button className="p-2 border border-primary/10 rounded-md hover:bg-white dark:hover:bg-background-dark transition-all text-slate-500">
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button className="h-8 min-w-[32px] border border-primary bg-primary text-white transition-all text-[10px] font-bold px-3 rounded-md">
+              1
+            </button>
+            <button className="p-2 border border-primary/10 rounded-md hover:bg-white dark:hover:bg-background-dark transition-all text-slate-500">
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
