@@ -323,7 +323,7 @@ export default async function DashboardPage({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-primary/5">
-                      {debt_clearances.map((dc, i) => (
+                      {debt_clearances.map((dc) => (
                         <tr
                           key={`${dc.customer_name}-${dc.created_at.toISOString()}`}
                           className="hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors"
