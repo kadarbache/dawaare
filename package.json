@@ -16,6 +16,7 @@
     "@prisma/adapter-neon": "^7.6.0",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
+    "@react-email/components": "1.0.12",
     "@yudiel/react-qr-scanner": "^2.5.1",
     "better-auth": "^1.6.2",
     "class-variance-authority": "^0.7.1",
