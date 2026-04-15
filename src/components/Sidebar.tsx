@@ -11,7 +11,9 @@ import {
   Settings,
   Users,
   DollarSign,
+  User,
 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 const nav_items = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
@@ -27,6 +29,9 @@ const bottom_nav_items = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+  console.log(user);
 
   const get_link_class = (href: string) => {
     const is_active = pathname === href || pathname.startsWith(href + "/");
@@ -85,20 +90,43 @@ export default function Sidebar() {
       <div className="relative p-4">
         <div className="flex items-center gap-3 p-2 bg-slate-50 dark:bg-primary/5 rounded-md border border-transparent dark:border-primary/10">
           <div
-            className="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-10 border border-primary/40"
+            className="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-10 border border-primary/40 bg-slate-200 dark:bg-slate-800"
             data-alt="User profile avatar portrait"
-            style={{
-              backgroundImage:
-                'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDQSINJfNXAlsT4El4PBkY63-W-ECWcJvH150JVe8fX3Y1ly_dH1aKRNyVNjJvjRuIYhDcWv6CSaEUOGLYtvomGuwMp9idPBiiKGElvbsutPnr-C00B3NVcB_hzzMdLx2tr_JmySVVY7YZNR2nL0Jqpx_MDMnnr7kgfrN2wfz8pGU_ejv1-0oZXP1w8Yw4r3LnDLwOANd6DSWHk1xhVxhD3eWXbl-CDubq40zr_m1OUU858hWiRoD-ra1Imkgg7noCfIBDcjMLFZrM")',
-            }}
-          ></div>
+            style={
+              user?.image
+                ? {
+                    backgroundImage: `url(${user.image})`,
+                  }
+                : undefined
+            }
+          >
+            {!user?.image && (
+              <div
+                className="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-10 border border-primary/40 flex items-center justify-center"
+                data-alt="User profile avatar portrait"
+              >
+                <User size={20} className={"text-primary"} />
+              </div>
+            )}
+          </div>
           <div className="flex-1 overflow-hidden">
-            <p className="text-sm font-bold leading-none truncate">
-              Alex Morgan
-            </p>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 uppercase font-bold tracking-wider">
-              Admin Mode
-            </p>
+            {user ? (
+              <>
+                <p className="text-sm font-bold leading-none truncate">
+                  {user.name}
+                </p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 uppercase font-bold tracking-wider">
+                  {(user as any).role === "ADMIN"
+                    ? "Admin Mode"
+                    : "Seller Mode"}
+                </p>
+              </>
+            ) : (
+              <div className="animate-pulse space-y-2">
+                <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
+                <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+              </div>
+            )}
           </div>
         </div>
       </div>

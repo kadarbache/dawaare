@@ -1,11 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useActionState, useEffect } from "react";
 import Link from "next/link";
-import { Eye, EyeOff, Store } from "lucide-react";
+import { Eye, EyeOff, Store, Loader2 } from "lucide-react";
+import { loginAction } from "./actions";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [state, action, isPending] = useActionState(loginAction, null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success("Login successful");
+      router.push("/dashboard");
+    }
+  }, [state?.success, router]);
+
   return (
     <div className="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex items-center justify-center p-0 m-0">
       <div className="flex flex-col md:flex-row w-full min-h-screen">
@@ -60,7 +73,12 @@ export default function LoginPage() {
             </div>
 
             {/* Form */}
-            <form className="space-y-6">
+            <form className="space-y-6" action={action}>
+              {state?.error && (
+                <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm">
+                  {state.error}
+                </div>
+              )}
               <div className="space-y-2">
                 <div>
                   <label
@@ -73,8 +91,10 @@ export default function LoginPage() {
                 <input
                   className="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
                   id="email"
+                  name="email"
                   placeholder="Enter your email"
                   type="email"
+                  required
                 />
               </div>
 
@@ -97,8 +117,10 @@ export default function LoginPage() {
                   <input
                     className="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
                     id="password"
+                    name="password"
                     placeholder="Enter your password"
                     type={showPassword ? "text" : "password"}
+                    required
                   />
                   <button
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
@@ -115,9 +137,11 @@ export default function LoginPage() {
               </div>
 
               <button
-                className="w-full bg-slate-900 dark:bg-primary text-white font-bold py-3.5 rounded-lg hover:bg-slate-800 dark:hover:bg-primary/90 transition-colors shadow-lg cursor-pointer"
+                className="w-full flex justify-center items-center gap-2 bg-slate-900 dark:bg-primary text-white font-bold py-3.5 rounded-lg hover:bg-slate-800 dark:hover:bg-primary/90 transition-colors shadow-lg cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
                 type="submit"
+                disabled={isPending}
               >
+                {isPending && <Loader2 className="w-5 h-5 animate-spin" />}
                 Sign In
               </button>
 
