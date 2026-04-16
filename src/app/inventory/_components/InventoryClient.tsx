@@ -23,23 +23,9 @@ import StatusCard from "@/components/StatusCard";
 import ButtonAddProduct from "@/components/buttonAddProduct";
 import SimpleDropdown from "@/components/ui/SimpleDropdown";
 import { Filter } from "../page";
+import { Product } from "@/utils/types";
 
 export const PAGE_SIZE = 15;
-
-// Mirroring the Product type from prisma structure implied by the code
-export type ProductRow = {
-  id: string;
-  name: string;
-  sku: string;
-  category: string;
-  price: number;
-  cost_price: number;
-  stock_qty: number;
-  is_low_stock: boolean;
-  image: string | null;
-  created_at: Date;
-  updated_at: Date;
-};
 
 export type InventoryStats = {
   totalProducts: number;
@@ -63,7 +49,7 @@ export default function InventoryClient({
   total,
   currentPage,
 }: {
-  products: ProductRow[];
+  products: Product[];
   stats: InventoryStats;
   total: number;
   currentPage: number;
