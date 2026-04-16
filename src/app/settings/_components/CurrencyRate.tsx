@@ -1,4 +1,5 @@
 import { DollarSign, RefreshCcw } from "lucide-react";
+import { ChangeEvent } from "react";
 export default function CurrencyRate({
   exchangeRate,
   setExchangeRate,
@@ -56,7 +57,7 @@ export default function CurrencyRate({
                     placeholder="e.g 8500"
                     type="number"
                     value={exchangeRate}
-                    onChange={(e) =>
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       setExchangeRate(
                         e.target.value === "" ? "" : Number(e.target.value),
                       )

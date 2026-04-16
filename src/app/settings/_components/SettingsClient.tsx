@@ -56,7 +56,7 @@ export default function SettingsClient({
 
       {/* Tabs */}
       <div className="flex items-center gap-8 border-b border-primary/10 mb-10 overflow-x-auto whitespace-nowrap scrollbar-hide">
-        {tabs.map((tab) => (
+        {tabs.map((tab: string) => (
           <button
             key={tab}
             onClick={() => !tab.includes("(inactive)") && setActiveTab(tab)}

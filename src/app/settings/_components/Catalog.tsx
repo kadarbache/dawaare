@@ -71,7 +71,7 @@ export default function Catalog({
                   </td>
                 </tr>
               ) : (
-                categories.map((cat) => (
+                categories.map((cat: Categories) => (
                   <tr
                     key={cat.id}
                     className="hover:bg-primary/5 transition-colors group"
