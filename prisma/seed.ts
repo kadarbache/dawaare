@@ -1,4 +1,4 @@
-import { PrismaClient, PaymentMethod } from "./app/generated/prisma/client";
+import { PrismaClient, PaymentMethod } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import dotenv from "dotenv";
 dotenv.config();
