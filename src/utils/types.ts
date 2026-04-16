@@ -69,3 +69,9 @@ export type RecentTransactionsWithCustomerName = Prisma.SaleGetPayload<{
     };
   };
 }>;
+
+export type Customer = Prisma.CustomerGetPayload<{
+  include: {
+    sales: false;
+  };
+}>;

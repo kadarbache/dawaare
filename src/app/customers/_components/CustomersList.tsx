@@ -1,6 +1,7 @@
 import { UserSearch } from "lucide-react";
 import { prisma } from "@/lib/db";
 import CustomerLink from "./CustomerLink";
+import { Customer } from "@/utils/types";
 
 function formatRelativeTime(date: Date) {
   const now = new Date();
@@ -30,7 +31,7 @@ export default async function CustomersList() {
   const lastPurchase = await prisma.sale.findMany({
     where: {
       customer_id: {
-        in: customers.map((customer) => customer.id),
+        in: customers.map((customer: Customer) => customer.id),
       },
     },
     orderBy: { created_at: "desc" },
@@ -62,7 +63,7 @@ export default async function CustomersList() {
       </div>
 
       <div className="flex-1 overflow-y-auto custom-scrollbar">
-        {customers.map((customer) => (
+        {customers.map((customer: Customer) => (
           <CustomerLink
             key={customer.id}
             id={customer.id}
