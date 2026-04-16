@@ -143,7 +143,7 @@ export default async function CustomerDetailPage({
                   </td>
                 </tr>
               )}
-              {sales.map((sale) => (
+              {sales.map((sale: SaleWithItems) => (
                 <tr
                   key={sale.id}
                   className="hover:bg-primary/5 transition-colors"

@@ -50,7 +50,7 @@ export default function CustomerLink({
           </div>
         </div>
         <div className="text-right">
-          <p className="text-sm font-black text-primary">$0.00</p>
+          <p className="text-sm font-black text-primary"></p>
           <p className="text-[10px] uppercase text-slate-400 font-bold">
             Balance
           </p>
