@@ -1,11 +1,10 @@
-// @ts-expect-error this error can be savely ignored
 import "./globals.css";
 import type { Metadata } from "next";
 import { Poppins, Roboto } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 
-const roboto = Roboto({subsets:['latin'],variable:'--font-sans'});
+const roboto = Roboto({ subsets: ["latin"], variable: "--font-sans" });
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -14,8 +13,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Cogie",
-  description: "Elevate Your Workflow",
+  title: "Dawaare",
+  description: "Manage your shop with ease",
 };
 
 export default function RootLayout({

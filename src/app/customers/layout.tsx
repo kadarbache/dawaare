@@ -4,6 +4,11 @@ import CustomersList from "./_components/CustomersList";
 import Topbar from "@/components/Topbar";
 import ButtomAcionBar from "../terminal/_components/ButtomAcionBar";
 
+export const metadata = {
+  title: "Dawaare - Customers",
+  description: "Manage your customers",
+};
+
 export default function CustomersLayout({
   children,
 }: {

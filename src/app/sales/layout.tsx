@@ -1,6 +1,15 @@
 import Sidebar from "@/components/Sidebar";
 
-export default function SalesLayout({ children }: { children: React.ReactNode }) {
+export const metadata = {
+  title: "Dawaare - Sales",
+  description: "Manage your sales",
+};
+
+export default function SalesLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />

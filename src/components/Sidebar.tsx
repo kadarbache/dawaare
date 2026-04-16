@@ -14,6 +14,7 @@ import {
   User,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { User as AuthUser } from "@/lib/auth";
 
 const nav_items = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
@@ -30,8 +31,7 @@ const bottom_nav_items = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { data: session } = authClient.useSession();
-  const user = session?.user;
-  console.log(user);
+  const user = session?.user as AuthUser;
 
   const get_link_class = (href: string) => {
     const is_active = pathname === href || pathname.startsWith(href + "/");
@@ -116,9 +116,7 @@ export default function Sidebar() {
                   {user.name}
                 </p>
                 <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 uppercase font-bold tracking-wider">
-                  {(user as any).role === "ADMIN"
-                    ? "Admin Mode"
-                    : "Seller Mode"}
+                  {user.role === "ADMIN" ? "Admin Mode" : "Seller Mode"}
                 </p>
               </>
             ) : (

@@ -1,6 +1,15 @@
 import Sidebar from "@/components/Sidebar";
 
-export default function SettingsLayout({ children }: { children: React.ReactNode }) {
+export const metadata = {
+  title: "Dawaare - Settings",
+  description: "Manage your settings",
+};
+
+export default function SettingsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />

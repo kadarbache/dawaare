@@ -2,7 +2,6 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { Resend } from "resend";
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 import { prisma } from "./db";
@@ -16,8 +15,20 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: ["ADMIN", "SELLER"],
+        type: "string",
         default: "SELLER",
+      },
+      number: {
+        type: "string",
+        default: "",
+      },
+      image: {
+        type: "string",
+        default: "",
+      },
+      image_id: {
+        type: "string",
+        default: "",
       },
     },
   },
@@ -27,6 +38,7 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
+      const typedUser = user as (typeof auth.$Infer.Session)["user"];
       await resend.emails.send({
         from: "onboarding@resend.dev",
         to: user.email,
@@ -34,7 +46,7 @@ export const auth = betterAuth({
         text: `Click the link to verify your email: ${url}`,
         react: EmailVerfication({
           userName: user.name,
-          role: (user as any).role,
+          role: typedUser.role,
           verificationUrl: url,
           storeName: "Dawaare",
         }),
@@ -44,3 +56,5 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
   },
 });
+
+export type User = (typeof auth.$Infer.Session)["user"];

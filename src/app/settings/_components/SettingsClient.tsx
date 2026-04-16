@@ -6,6 +6,7 @@ import CurrencyRate from "./CurrencyRate";
 import Catalog from "./Catalog";
 import CategoryModel from "./CategoryModel";
 import { Categories } from "../page";
+import Profile from "./Profile";
 
 export default function SettingsClient({
   categories,
@@ -21,7 +22,7 @@ export default function SettingsClient({
 
   const tabs = [
     "Currency & Categories",
-    "General (inactive)",
+    "Profile",
     "Receipts (inactive)",
     "Users (inactive)",
     "Currency (inactive)",
@@ -70,20 +71,24 @@ export default function SettingsClient({
         ))}
       </div>
 
-      <div className="grid grid-cols-12 gap-8">
-        {/* Section 1: Currency Rate */}
-        <CurrencyRate
-          exchangeRate={exchangeRate}
-          setExchangeRate={setExchangeRate}
-          handleUpdateRate={handleUpdateRate}
-        />
-        {/* Section 2: Categories */}
-        <Catalog
-          categories={categories}
-          handleAddCategory={handleAddCategory}
-          handleEditCategory={handleEditCategory}
-        />
-      </div>
+      {activeTab === "Currency & Categories" && (
+        <div className="grid grid-cols-12 gap-8">
+          {/* Section 1: Currency Rate */}
+          <CurrencyRate
+            exchangeRate={exchangeRate}
+            setExchangeRate={setExchangeRate}
+            handleUpdateRate={handleUpdateRate}
+          />
+          {/* Section 2: Categories */}
+          <Catalog
+            categories={categories}
+            handleAddCategory={handleAddCategory}
+            handleEditCategory={handleEditCategory}
+          />
+        </div>
+      )}
+
+      {activeTab === "Profile" && <Profile />}
 
       {/* Category Modal - Component Swap implementation */}
       <CategoryModel

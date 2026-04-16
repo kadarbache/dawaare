@@ -104,6 +104,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  number        String?
+  image_id      String?
 
   @@unique([email])
   @@map("user")

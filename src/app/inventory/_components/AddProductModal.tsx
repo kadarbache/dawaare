@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 import React, { useActionState, useEffect, useRef, useState } from "react";
-import SimpleDropdown from "./ui/SimpleDropdown";
+import SimpleDropdown from "../../../components/ui/SimpleDropdown";
 interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;

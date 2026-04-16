@@ -1,6 +1,15 @@
 import Sidebar from "@/components/Sidebar";
 
-export default function InventoryLayout({ children }: { children: React.ReactNode }) {
+export const metadata = {
+  title: "Dawaare - Inventory",
+  description: "Manage your inventory",
+};
+
+export default function InventoryLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />

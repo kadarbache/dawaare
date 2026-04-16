@@ -10,22 +10,21 @@ export async function GET(request: Request) {
   }
 
   try {
-    const user = await auth.api.signUpEmail({
-      body: {
-        // IMPORTANT: Use your actual email address so you can receive the verification link!
-        // Your auth.ts requires email verification.
-        email: "[EMAIL_ADDRESS]",
-        password: "[PASSWORD]", // Change this to your password
-        name: "[NAME_OF_ADMIN]",
-        role: "ADMIN",
-      },
-      headers: request.headers,
-    });
+    // const user = await auth.api.signUpEmail({
+    //   body: {
+    //     // IMPORTANT: Use your actual email address so you can receive the verification link!
+    //     // Your auth.ts requires email verification.
+    //     email: "[EMAIL_ADDRESS]",
+    //     password: "[PASSWORD]", // Change this to your password
+    //     name: "[NAME_OF_ADMIN]",
+    //     role: "ADMIN",
+    //   },
+    //   headers: request.headers,
+    // });
 
     return NextResponse.json({
       success: true,
       message: "User created! Check your email to verify it.",
-      user,
     });
   } catch (error: any) {
     return NextResponse.json(

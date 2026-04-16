@@ -1,7 +1,7 @@
 "use client";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import AddProductModal from "./AddProductModal";
+import AddProductModal from "../app/inventory/_components/AddProductModal";
 
 export default function ButtonAddProduct() {
   const [isModalOpen, setIsModalOpen] = useState(false);
