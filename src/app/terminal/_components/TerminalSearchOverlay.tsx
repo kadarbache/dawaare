@@ -23,7 +23,7 @@ export default function TerminalSearchOverlay({
   // Filter products based on search term
   const filteredProducts = products
     .filter(
-      (p) =>
+      (p: TerminalProduct) =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.sku.toLowerCase().includes(searchTerm.toLowerCase()),
     )
@@ -107,77 +107,79 @@ export default function TerminalSearchOverlay({
                 No products found matching &quot;{searchTerm}&quot;
               </div>
             ) : (
-              filteredProducts.map((product, index) => {
-                const isSelected = index === selectedIndex;
-                return (
-                  <div
-                    key={product.id}
-                    onClick={() => {
-                      setSearchTerm("");
-                      onSelectProduct(product);
-                    }}
-                    className={`px-6 py-5 border-b border-slate-100 dark:border-primary/10 flex items-center justify-between cursor-pointer transition-all duration-200 group ${
-                      isSelected
-                        ? "bg-orange-50 dark:bg-orange-600/20 border-l-4 border-l-orange-500 dark:border-l-orange-600"
-                        : "hover:bg-slate-50 dark:hover:bg-stone-800/30 border-l-4 border-l-transparent"
-                    }`}
-                    onMouseEnter={() => setSelectedIndex(index)}
-                  >
-                    <div className="flex items-center gap-6">
-                      <div className="w-14 h-14 rounded-lg overflow-hidden border border-slate-200 dark:border-orange-500/30 bg-slate-100 dark:bg-background-dark flex items-center justify-center shrink-0">
-                        {product.image ? (
-                          <Image
-                            src={product.image}
-                            alt={product.name}
-                            width={56}
-                            height={56}
-                            className={`w-full h-full object-cover ${!isSelected && "opacity-80"}`}
-                          />
-                        ) : (
-                          <div className="text-xs text-slate-400 font-bold">
-                            No Img
-                          </div>
-                        )}
-                      </div>
-                      <div>
-                        <h3
-                          className={`text-lg font-semibold leading-tight ${isSelected ? "text-slate-900 dark:text-orange-50" : "text-slate-700 dark:text-slate-200"}`}
-                        >
-                          {product.name}
-                        </h3>
-                        <div className="flex items-center gap-3 mt-1">
-                          <span
-                            className={`text-[11px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded ${
-                              isSelected
-                                ? "text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-950/50"
-                                : "text-slate-500 dark:text-stone-500 bg-slate-100 dark:bg-background-dark"
-                            }`}
+              filteredProducts.map(
+                (product: TerminalProduct, index: number) => {
+                  const isSelected = index === selectedIndex;
+                  return (
+                    <div
+                      key={product.id}
+                      onClick={() => {
+                        setSearchTerm("");
+                        onSelectProduct(product);
+                      }}
+                      className={`px-6 py-5 border-b border-slate-100 dark:border-primary/10 flex items-center justify-between cursor-pointer transition-all duration-200 group ${
+                        isSelected
+                          ? "bg-orange-50 dark:bg-orange-600/20 border-l-4 border-l-orange-500 dark:border-l-orange-600"
+                          : "hover:bg-slate-50 dark:hover:bg-stone-800/30 border-l-4 border-l-transparent"
+                      }`}
+                      onMouseEnter={() => setSelectedIndex(index)}
+                    >
+                      <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 rounded-lg overflow-hidden border border-slate-200 dark:border-orange-500/30 bg-slate-100 dark:bg-background-dark flex items-center justify-center shrink-0">
+                          {product.image ? (
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              width={56}
+                              height={56}
+                              className={`w-full h-full object-cover ${!isSelected && "opacity-80"}`}
+                            />
+                          ) : (
+                            <div className="text-xs text-slate-400 font-bold">
+                              No Img
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <h3
+                            className={`text-lg font-semibold leading-tight ${isSelected ? "text-slate-900 dark:text-orange-50" : "text-slate-700 dark:text-slate-200"}`}
                           >
-                            {product.sku}
-                          </span>
-                          <span className="text-[11px] text-emerald-500 dark:text-emerald-400 font-semibold uppercase tracking-widest flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            In Stock: {product.stock_qty}
-                          </span>
+                            {product.name}
+                          </h3>
+                          <div className="flex items-center gap-3 mt-1">
+                            <span
+                              className={`text-[11px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded ${
+                                isSelected
+                                  ? "text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-950/50"
+                                  : "text-slate-500 dark:text-stone-500 bg-slate-100 dark:bg-background-dark"
+                              }`}
+                            >
+                              {product.sku}
+                            </span>
+                            <span className="text-[11px] text-emerald-500 dark:text-emerald-400 font-semibold uppercase tracking-widest flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                              In Stock: {product.stock_qty}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="text-right">
-                      <p
-                        className={`text-2xl font-bold transition-colors ${isSelected ? "text-primary" : "text-slate-700 dark:text-slate-300 group-hover:text-primary"}`}
-                      >
-                        ${product.price.toFixed(2)}
-                      </p>
-                      {isSelected && (
-                        <span className="text-[10px] text-slate-400 dark:text-stone-500 font-semibold uppercase tracking-widest">
-                          Press Enter to Add
-                        </span>
-                      )}
+                      <div className="text-right">
+                        <p
+                          className={`text-2xl font-bold transition-colors ${isSelected ? "text-primary" : "text-slate-700 dark:text-slate-300 group-hover:text-primary"}`}
+                        >
+                          ${product.price.toFixed(2)}
+                        </p>
+                        {isSelected && (
+                          <span className="text-[10px] text-slate-400 dark:text-stone-500 font-semibold uppercase tracking-widest">
+                            Press Enter to Add
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                },
+              )
             )}
           </div>
         </div>

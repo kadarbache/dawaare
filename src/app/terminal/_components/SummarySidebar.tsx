@@ -1,4 +1,4 @@
-import React, { useActionState, useEffect } from "react";
+import React, { ChangeEvent, useActionState, useEffect } from "react";
 import SimpleDropdown from "@/components/ui/SimpleDropdown";
 import { Banknote, ShoppingCart } from "lucide-react";
 import { useTerminal } from "../_context/TerminalContext";
@@ -115,7 +115,9 @@ export default function SummarySidebar() {
               name="amount_paid"
               step="0.01"
               value={amountPaid}
-              onChange={(e) => setAmountPaid(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setAmountPaid(e.target.value)
+              }
               className="bg-transparent border-none focus:ring-0 text-sm w-full p-0 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 font-medium outline-none"
               placeholder="Amount Paid"
               type="number"

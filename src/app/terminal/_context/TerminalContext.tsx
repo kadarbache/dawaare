@@ -80,9 +80,11 @@ export function TerminalProvider({
 
   const addToCart = useCallback((product: TerminalProduct) => {
     setCartItems((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id);
+      const existing = prev.find(
+        (item: CartItem) => item.product.id === product.id,
+      );
       if (existing) {
-        return prev.map((item) =>
+        return prev.map((item: CartItem) =>
           item.product.id === product.id
             ? {
                 ...item,
@@ -105,7 +107,7 @@ export function TerminalProvider({
 
   const removeFromCart = useCallback((productId: string) => {
     setCartItems((prev) =>
-      prev.filter((item) => item.product.id !== productId),
+      prev.filter((item: CartItem) => item.product.id !== productId),
     );
   }, []);
 
@@ -116,7 +118,7 @@ export function TerminalProvider({
         return;
       }
       setCartItems((prev) =>
-        prev.map((item) =>
+        prev.map((item: CartItem) =>
           item.product.id === productId
             ? {
                 ...item,
@@ -132,7 +134,7 @@ export function TerminalProvider({
 
   function updatePrice(productId: string, price: number) {
     setCartItems((prev) =>
-      prev.map((item) =>
+      prev.map((item: CartItem) =>
         item.product.id === productId
           ? {
               ...item,
@@ -152,7 +154,10 @@ export function TerminalProvider({
   }, []);
 
   const cartTotal = useMemo(() => {
-    return cartItems.reduce((total: number, item) => total + item.subtotal, 0);
+    return cartItems.reduce(
+      (total: number, item: CartItem) => total + item.subtotal,
+      0,
+    );
   }, [cartItems]);
 
   const value = {
