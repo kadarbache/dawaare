@@ -152,7 +152,7 @@ export function TerminalProvider({
   }, []);
 
   const cartTotal = useMemo(() => {
-    return cartItems.reduce((total, item) => total + item.subtotal, 0);
+    return cartItems.reduce((total: number, item) => total + item.subtotal, 0);
   }, [cartItems]);
 
   const value = {

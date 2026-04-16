@@ -52,17 +52,17 @@ export default async function ProductDetailPage({
   });
 
   const total_revenue = all_sale_items.reduce(
-    (sum, item) => sum + item.total_price,
+    (sum: number, item) => sum + item.total_price,
     0,
   );
 
   const total_units_sold = all_sale_items.reduce(
-    (sum, item) => sum + item.quantity,
+    (sum: number, item) => sum + item.quantity,
     0,
   );
 
   const total_cost = all_sale_items.reduce(
-    (sum, item) => sum + product.cost_price * item.quantity,
+    (sum: number, item) => sum + product.cost_price * item.quantity,
     0,
   );
 
@@ -77,11 +77,11 @@ export default async function ProductDetailPage({
   );
 
   const recent_revenue = recent_items.reduce(
-    (sum, item) => sum + item.total_price,
+    (sum: number, item) => sum + item.total_price,
     0,
   );
   const older_revenue = older_items.reduce(
-    (sum, item) => sum + item.total_price,
+    (sum: number, item) => sum + item.total_price,
     0,
   );
   const revenue_change =
@@ -90,23 +90,26 @@ export default async function ProductDetailPage({
       : 0;
 
   const recent_units = recent_items.reduce(
-    (sum, item) => sum + item.quantity,
+    (sum: number, item) => sum + item.quantity,
     0,
   );
-  const older_units = older_items.reduce((sum, item) => sum + item.quantity, 0);
+  const older_units = older_items.reduce(
+    (sum: number, item) => sum + item.quantity,
+    0,
+  );
   const units_change =
     older_units > 0 ? ((recent_units - older_units) / older_units) * 100 : 0;
 
   const recent_profit =
     recent_revenue -
     recent_items.reduce(
-      (sum, item) => sum + product.cost_price * item.quantity,
+      (sum: number, item) => sum + product.cost_price * item.quantity,
       0,
     );
   const older_profit =
     older_revenue -
     older_items.reduce(
-      (sum, item) => sum + product.cost_price * item.quantity,
+      (sum: number, item) => sum + product.cost_price * item.quantity,
       0,
     );
   const profit_change =
@@ -123,7 +126,10 @@ export default async function ProductDetailPage({
     );
     return {
       date: date.format("MMM DD"),
-      revenue: day_items.reduce((sum, item) => sum + item.total_price, 0),
+      revenue: day_items.reduce(
+        (sum: number, item) => sum + item.total_price,
+        0,
+      ),
     };
   });
 

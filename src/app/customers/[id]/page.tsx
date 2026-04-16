@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 import { History, PlusCircle, TrendingUp, Wallet } from "lucide-react";
 import { prisma } from "@/lib/db";
@@ -31,7 +30,7 @@ export default async function CustomerDetailPage({
 
   // Calculate outstanding balance (sum of remaining from unpaid/partial sales)
   const outstandingBalance = sales.reduce(
-    (sum, sale) => sum + sale.remaining,
+    (sum: number, sale) => sum + sale.remaining,
     0,
   );
 
@@ -41,8 +40,8 @@ export default async function CustomerDetailPage({
   ).length;
 
   // Calculate repayment rate
-  const totalOwed = sales.reduce((sum, sale) => sum + sale.total_amount, 0);
-  const totalPaid = sales.reduce((sum, sale) => sum + sale.amount_paid, 0);
+  const totalOwed = sales.reduce((sum: number, sale) => sum + sale.total_amount, 0);
+  const totalPaid = sales.reduce((sum: number, sale) => sum + sale.amount_paid, 0);
   const repaymentRate =
     totalOwed > 0 ? Math.round((totalPaid / totalOwed) * 100) : 100;
 

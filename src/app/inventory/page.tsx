@@ -50,7 +50,7 @@ export default async function InventoryPage({
   ).length;
 
   const inventoryValue = products.reduce(
-    (sum, product) => sum + product.price * product.stock_qty,
+    (sum: number, product) => sum + product.price * product.stock_qty,
     0,
   );
 
@@ -58,7 +58,10 @@ export default async function InventoryPage({
   const lastMonthCutoff = dayjs().subtract(1, "month");
   const inventoryValueFromLastMonth = products
     .filter((product) => dayjs(product.created_at).isBefore(lastMonthCutoff))
-    .reduce((sum, product) => sum + product.price * product.stock_qty, 0);
+    .reduce(
+      (sum: number, product) => sum + product.price * product.stock_qty,
+      0,
+    );
 
   const inventoryValueChange =
     inventoryValueFromLastMonth > 0

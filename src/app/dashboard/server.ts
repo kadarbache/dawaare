@@ -37,7 +37,9 @@ export type DebtClearance = {
   amount_paid: number;
 };
 
-export async function get_dashboard_stats(filter: string = "daily"): Promise<DashboardStats> {
+export async function get_dashboard_stats(
+  filter: string = "daily",
+): Promise<DashboardStats> {
   const today = dayjs();
   let current_start: Date;
   let current_end: Date;
@@ -66,42 +68,47 @@ export async function get_dashboard_stats(filter: string = "daily"): Promise<Das
     prev_end = today.subtract(1, "day").endOf("day").toDate();
   }
 
-  const [current_agg, prev_agg, pending_debts_agg, low_stock_count, sold_items] =
-    await Promise.all([
-      prisma.sale.aggregate({
-        where: {
+  const [
+    current_agg,
+    prev_agg,
+    pending_debts_agg,
+    low_stock_count,
+    sold_items,
+  ] = await Promise.all([
+    prisma.sale.aggregate({
+      where: {
+        created_at: { gte: current_start, lte: current_end },
+      },
+      _sum: { total_amount: true },
+    }),
+    prisma.sale.aggregate({
+      where: {
+        created_at: { gte: prev_start, lte: prev_end },
+      },
+      _sum: { total_amount: true },
+    }),
+    prisma.sale.aggregate({
+      where: {
+        remaining: { gt: 0 },
+      },
+      _sum: { remaining: true },
+    }),
+    prisma.product.count({
+      where: { is_low_stock: true },
+    }),
+    prisma.saleItem.findMany({
+      where: {
+        sale: {
           created_at: { gte: current_start, lte: current_end },
         },
-        _sum: { total_amount: true },
-      }),
-      prisma.sale.aggregate({
-        where: {
-          created_at: { gte: prev_start, lte: prev_end },
+      },
+      include: {
+        product: {
+          select: { cost_price: true },
         },
-        _sum: { total_amount: true },
-      }),
-      prisma.sale.aggregate({
-        where: {
-          remaining: { gt: 0 },
-        },
-        _sum: { remaining: true },
-      }),
-      prisma.product.count({
-        where: { is_low_stock: true },
-      }),
-      prisma.saleItem.findMany({
-        where: {
-          sale: {
-            created_at: { gte: current_start, lte: current_end },
-          },
-        },
-        include: {
-          product: {
-            select: { cost_price: true },
-          },
-        },
-      }),
-    ]);
+      },
+    }),
+  ]);
 
   const total_sales = current_agg._sum.total_amount ?? 0;
   const total_sales_prev = prev_agg._sum.total_amount ?? 0;
@@ -113,7 +120,7 @@ export async function get_dashboard_stats(filter: string = "daily"): Promise<Das
         : 0;
 
   // Calculate actual net profit: (unit_price - cost_price) * quantity
-  const net_profit = sold_items.reduce((acc, item) => {
+  const net_profit = sold_items.reduce((acc: number, item) => {
     const cost = item.product?.cost_price ?? 0;
     return acc + (item.unit_price - cost) * item.quantity;
   }, 0);
@@ -129,7 +136,9 @@ export async function get_dashboard_stats(filter: string = "daily"): Promise<Das
   };
 }
 
-export async function get_sales_trend(filter: string = "daily"): Promise<SalesTrendDay[]> {
+export async function get_sales_trend(
+  filter: string = "daily",
+): Promise<SalesTrendDay[]> {
   const days: SalesTrendDay[] = [];
   const today = dayjs();
 
@@ -155,10 +164,8 @@ export async function get_sales_trend(filter: string = "daily"): Promise<SalesTr
     const d = today.subtract(i, "day");
     const date_str = d.format("YYYY-MM-DD");
     const day_total = sales
-      .filter(
-        (s) => dayjs(s.created_at).format("YYYY-MM-DD") === date_str,
-      )
-      .reduce((sum, s) => sum + s.total_amount, 0);
+      .filter((s) => dayjs(s.created_at).format("YYYY-MM-DD") === date_str)
+      .reduce((sum: number, s) => sum + s.total_amount, 0);
 
     days.push({
       label: num_days > 7 ? d.format("MMM D") : d.format("ddd"),
@@ -170,7 +177,9 @@ export async function get_sales_trend(filter: string = "daily"): Promise<SalesTr
   return days;
 }
 
-export async function get_best_sellers(filter: string = "daily"): Promise<BestSeller[]> {
+export async function get_best_sellers(
+  filter: string = "daily",
+): Promise<BestSeller[]> {
   const today = dayjs();
   let current_start: Date;
   let current_end: Date;
@@ -213,7 +222,9 @@ export async function get_best_sellers(filter: string = "daily"): Promise<BestSe
   }));
 }
 
-export async function get_recent_transactions(filter: string = "daily"): Promise<RecentTransaction[]> {
+export async function get_recent_transactions(
+  filter: string = "daily",
+): Promise<RecentTransaction[]> {
   const today = dayjs();
   let current_start: Date;
   let current_end: Date;
@@ -252,7 +263,9 @@ export async function get_recent_transactions(filter: string = "daily"): Promise
   }));
 }
 
-export async function get_recent_debt_clearances(filter: string = "daily"): Promise<DebtClearance[]> {
+export async function get_recent_debt_clearances(
+  filter: string = "daily",
+): Promise<DebtClearance[]> {
   const today = dayjs();
   let current_start: Date;
   let current_end: Date;
@@ -288,7 +301,9 @@ export async function get_recent_debt_clearances(filter: string = "daily"): Prom
   // Keep only sales that were partial debts (updated_at differs from created_at)
   type PaymentResult = (typeof payments)[number];
   const cleared_debts = payments
-    .filter((p: PaymentResult) => p.updated_at.getTime() !== p.created_at.getTime())
+    .filter(
+      (p: PaymentResult) => p.updated_at.getTime() !== p.created_at.getTime(),
+    )
     .slice(0, 5);
 
   return cleared_debts.map((p) => {

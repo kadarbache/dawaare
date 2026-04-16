@@ -26,9 +26,12 @@ export async function GET(request: Request) {
       success: true,
       message: "User created! Check your email to verify it.",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { success: false, error: error.message },
+      {
+        success: false,
+        error: (error as Error).message || "An error occurred",
+      },
       { status: 400 },
     );
   }
