@@ -15,6 +15,9 @@ import {
   get_best_sellers,
   get_recent_transactions,
   get_recent_debt_clearances,
+  BestSeller,
+  RecentTransaction,
+  DebtClearance,
 } from "./server";
 import { SalesTrendChart } from "./SalesTrendChart";
 import FilterButtons from "@/components/FilterButtons";
@@ -198,7 +201,7 @@ export default async function DashboardPage({
                 </div>
               ) : (
                 <div className="space-y-6">
-                  {best_sellers.map((item, i) => {
+                  {best_sellers.map((item: BestSeller, i: number) => {
                     const max_qty = best_sellers[0].total_qty || 1;
                     const pct = (item.total_qty / max_qty) * 100;
                     return (
@@ -257,7 +260,7 @@ export default async function DashboardPage({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-primary/5">
-                      {transactions.map((tx) => (
+                      {transactions.map((tx: RecentTransaction) => (
                         <tr
                           key={tx.id}
                           className="hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors"
@@ -323,7 +326,7 @@ export default async function DashboardPage({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-primary/5">
-                      {debt_clearances.map((dc) => (
+                      {debt_clearances.map((dc: DebtClearance) => (
                         <tr
                           key={`${dc.customer_name}-${dc.created_at.toISOString()}`}
                           className="hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors"

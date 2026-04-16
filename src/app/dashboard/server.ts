@@ -191,6 +191,14 @@ export async function get_sales_trend(
   return days;
 }
 
+type SaleItemGroupByResult = {
+  product_id: string;
+  product_name: string;
+  _sum: {
+    quantity: number | null;
+  };
+};
+
 export async function get_best_sellers(
   filter: string = "daily",
 ): Promise<BestSeller[]> {
@@ -230,7 +238,7 @@ export async function get_best_sellers(
     take: 5,
   });
 
-  return sale_items.map((item) => ({
+  return sale_items.map((item: SaleItemGroupByResult) => ({
     product_name: item.product_name,
     total_qty: item._sum.quantity ?? 0,
   }));
