@@ -75,3 +75,24 @@ export type Customer = Prisma.CustomerGetPayload<{
     sales: false;
   };
 }>;
+
+export type SaleWithCustomerAndItems = Prisma.SaleGetPayload<{
+  include: {
+    customer: { select: { name: true; id: true } };
+    _count: { select: { sale_items: true } };
+    sale_items: {
+      select: {
+        product_id: true;
+        quantity: true;
+        unit_price: true;
+        total_price: true;
+        product: {
+          select: {
+            name: true;
+            image: true;
+          };
+        };
+      };
+    };
+  };
+}>;

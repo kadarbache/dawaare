@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/db";
 import { PAGE_SIZE } from "./constants";
+import { SaleWithCustomerAndItems } from "@/utils/types";
 
 export type SaleRow = {
   id: string;
@@ -77,7 +78,7 @@ export async function get_sales(
   ]);
 
   return {
-    sales: sales.map((s) => ({
+    sales: sales.map((s: SaleWithCustomerAndItems) => ({
       id: s.id,
       created_at: s.created_at,
       total_amount: s.total_amount,
@@ -89,14 +90,16 @@ export async function get_sales(
       items_count: s._count.sale_items,
       customer_name: s.customer?.name ?? null,
       customer_id: s.customer?.id ?? null,
-      items: s.sale_items.map((si) => ({
-        quantity: si.quantity,
-        unit_price: si.unit_price,
-        total_price: si.total_price,
-        product_id: si.product_id,
-        name: si.product.name,
-        image: si.product.image,
-      })),
+      items: s.sale_items.map(
+        (si: SaleWithCustomerAndItems["sale_items"][0]) => ({
+          quantity: si.quantity,
+          unit_price: si.unit_price,
+          total_price: si.total_price,
+          product_id: si.product_id,
+          name: si.product.name,
+          image: si.product.image,
+        }),
+      ),
     })),
     total,
   };
