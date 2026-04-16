@@ -2,6 +2,7 @@ import Link from "next/link";
 import { History, PlusCircle, TrendingUp, Wallet } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
+import { SaleWithItems } from "@/utils/types";
 
 export default async function CustomerDetailPage({
   params,
@@ -30,18 +31,25 @@ export default async function CustomerDetailPage({
 
   // Calculate outstanding balance (sum of remaining from unpaid/partial sales)
   const outstandingBalance = sales.reduce(
-    (sum: number, sale) => sum + sale.remaining,
+    (sum: number, sale: SaleWithItems) => sum + sale.remaining,
     0,
   );
 
   // Count unpaid transactions
   const unpaidCount = sales.filter(
-    (sale) => sale.status === "unpaid" || sale.status === "partial",
+    (sale: SaleWithItems) =>
+      sale.status === "unpaid" || sale.status === "partial",
   ).length;
 
   // Calculate repayment rate
-  const totalOwed = sales.reduce((sum: number, sale) => sum + sale.total_amount, 0);
-  const totalPaid = sales.reduce((sum: number, sale) => sum + sale.amount_paid, 0);
+  const totalOwed = sales.reduce(
+    (sum: number, sale: SaleWithItems) => sum + sale.total_amount,
+    0,
+  );
+  const totalPaid = sales.reduce(
+    (sum: number, sale: SaleWithItems) => sum + sale.amount_paid,
+    0,
+  );
   const repaymentRate =
     totalOwed > 0 ? Math.round((totalPaid / totalOwed) * 100) : 100;
 

@@ -1,6 +1,10 @@
 // Server-side data fetching helpers (not Server Actions)
 
 import { prisma } from "@/lib/db";
+import {
+  RecentTransactionsWithCustomerName,
+  SaleItemsWithProductCostPrice,
+} from "@/utils/types";
 import dayjs from "dayjs";
 
 export type DashboardStats = {
@@ -120,10 +124,13 @@ export async function get_dashboard_stats(
         : 0;
 
   // Calculate actual net profit: (unit_price - cost_price) * quantity
-  const net_profit = sold_items.reduce((acc: number, item) => {
-    const cost = item.product?.cost_price ?? 0;
-    return acc + (item.unit_price - cost) * item.quantity;
-  }, 0);
+  const net_profit = sold_items.reduce(
+    (acc: number, item: SaleItemsWithProductCostPrice) => {
+      const cost = item.product?.cost_price ?? 0;
+      return acc + (item.unit_price - cost) * item.quantity;
+    },
+    0,
+  );
 
   const pending_debts = pending_debts_agg._sum.remaining ?? 0;
 
@@ -150,6 +157,11 @@ export async function get_sales_trend(
   const start_date = today.subtract(num_days, "day").startOf("day").toDate();
   const end_date = today.endOf("day").toDate();
 
+  type Sale = {
+    created_at: Date;
+    total_amount: number;
+  };
+
   const sales = await prisma.sale.findMany({
     where: {
       created_at: { gte: start_date, lte: end_date },
@@ -164,8 +176,10 @@ export async function get_sales_trend(
     const d = today.subtract(i, "day");
     const date_str = d.format("YYYY-MM-DD");
     const day_total = sales
-      .filter((s) => dayjs(s.created_at).format("YYYY-MM-DD") === date_str)
-      .reduce((sum: number, s) => sum + s.total_amount, 0);
+      .filter(
+        (s: Sale) => dayjs(s.created_at).format("YYYY-MM-DD") === date_str,
+      )
+      .reduce((sum: number, s: Sale) => sum + s.total_amount, 0);
 
     days.push({
       label: num_days > 7 ? d.format("MMM D") : d.format("ddd"),
@@ -254,7 +268,7 @@ export async function get_recent_transactions(
     },
   });
 
-  return sales.map((s) => ({
+  return sales.map((s: RecentTransactionsWithCustomerName) => ({
     id: s.id,
     created_at: s.created_at,
     customer_name: s.customer?.name ?? "Walk-in",
@@ -306,7 +320,7 @@ export async function get_recent_debt_clearances(
     )
     .slice(0, 5);
 
-  return cleared_debts.map((p) => {
+  return cleared_debts.map((p: RecentTransactionsWithCustomerName) => {
     const name = p.customer?.name ?? "Unknown";
     const parts = name.split(" ");
     const initial =

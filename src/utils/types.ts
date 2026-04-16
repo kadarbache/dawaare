@@ -49,3 +49,23 @@ export type Product = Prisma.ProductGetPayload<{
     sale_items: false;
   };
 }>;
+
+export type SaleItemsWithProductCostPrice = Prisma.SaleItemGetPayload<{
+  include: {
+    product: {
+      select: {
+        cost_price: true;
+      };
+    };
+  };
+}>;
+
+export type RecentTransactionsWithCustomerName = Prisma.SaleGetPayload<{
+  include: {
+    customer: {
+      select: {
+        name: true;
+      };
+    };
+  };
+}>;

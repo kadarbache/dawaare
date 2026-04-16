@@ -19,7 +19,10 @@ export async function createCustomer(
   const notes = formData.get("notes") as string | null;
 
   if (!name || !phone) {
-    return { success: false, error: "Please fill in all required fields (Name and Phone)." };
+    return {
+      success: false,
+      error: "Please fill in all required fields (Name and Phone).",
+    };
   }
 
   try {
@@ -27,9 +30,12 @@ export async function createCustomer(
     const existing = await prisma.customer.findUnique({
       where: { phone },
     });
-    
+
     if (existing) {
-      return { success: false, error: "A customer with this phone number already exists." };
+      return {
+        success: false,
+        error: "A customer with this phone number already exists.",
+      };
     }
 
     await prisma.customer.create({
