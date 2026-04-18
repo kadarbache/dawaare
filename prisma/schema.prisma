@@ -37,6 +37,8 @@ model Product {
 
   sale_items SaleItem[]
 
+  // cat_id      String
+  // cat         ItemsCategory @relation(fields: [cat_id], references: [id])
   @@map("products")
 }
 
@@ -88,6 +90,8 @@ model ItemsCategory {
   count      Int      @default(0)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  // products Product[]
 
   @@map("items_categories")
 }

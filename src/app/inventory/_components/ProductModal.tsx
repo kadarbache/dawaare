@@ -1,6 +1,5 @@
 "use client";
 
-import { createProduct } from "@/app/inventory/server";
 import { deleteImage, uploadImage } from "@/lib/upload";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import {
@@ -21,27 +20,46 @@ import React, {
   useState,
 } from "react";
 import SimpleDropdown from "../../../components/ui/SimpleDropdown";
-import { ItemsCategory } from "@/utils/types";
+import { ItemsCategory, Product } from "@/utils/types";
 import toast from "react-hot-toast";
 
-interface AddProductModalProps {
+interface ActionResult {
+  status: string;
+  message: string;
+}
+
+interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   categories: ItemsCategory[];
+  editProduct?: Product | null;
+  action: (
+    prev: ActionResult | null,
+    formData: FormData,
+  ) => Promise<ActionResult>;
 }
 
-export default function AddProductModal({
+export default function ProductModal({
   isOpen,
   onClose,
   categories,
-}: AddProductModalProps) {
-  const [state, formAction, isPending] = useActionState(createProduct, null);
-  const [category, setCategory] = useState("");
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
-  const [uploadedPublicId, setUploadedPublicId] = useState<string | null>(null);
+  editProduct,
+  action,
+}: ProductModalProps) {
+  console.log(editProduct);
+  const [state, formAction, isPending] = useActionState(action, null);
+  const [category, setCategory] = useState(editProduct?.category || "");
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    editProduct?.image || null,
+  );
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(
+    editProduct?.image || null,
+  );
+  const [uploadedPublicId, setUploadedPublicId] = useState<string | null>(
+    editProduct?.public_id || null,
+  );
   const [isUploading, setIsUploading] = useState(false);
-  const [sku, setSku] = useState("");
+  const [sku, setSku] = useState(editProduct?.sku || "");
   const [catId, setCatId] = useState("");
   const [isScanning, setIsScanning] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -64,6 +82,17 @@ export default function AddProductModal({
   }, [uploadedPublicId]);
 
   useEffect(() => {
+    if (editProduct) {
+      setSku(editProduct.sku || "");
+      setCategory(editProduct.category || "");
+      // setCatId(editProduct.catId || "");
+      setPreviewImage(editProduct.image || null);
+      setUploadedUrl(editProduct.image || null);
+      setUploadedPublicId(editProduct.public_id || null);
+    }
+  }, [editProduct]);
+
+  useEffect(() => {
     if (state?.status === "success") {
       setCategory("");
       setCatId("");
@@ -77,6 +106,7 @@ export default function AddProductModal({
     } else if (state?.status === "error") {
       toast.error(state?.message || "Failed to create product");
       handleRemoveImage();
+      formRef.current?.reset();
     }
   }, [state, handleRemoveImage, onClose]);
 
@@ -131,7 +161,7 @@ export default function AddProductModal({
           <div className="flex items-center gap-3">
             <X size={20} className="text-primary" />
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-              Add New Product
+              {editProduct ? "Edit Product" : "Add New Product"}
             </h2>
           </div>
           <button
@@ -147,14 +177,22 @@ export default function AddProductModal({
           action={formAction}
           className="p-6 space-y-5 overflow-y-auto max-h-[70vh]"
         >
-          <input type="hidden" name="image" value={uploadedUrl ?? ""} />
+          <input
+            type="hidden"
+            name="image"
+            defaultValue={editProduct?.image}
+            value={uploadedUrl ?? ""}
+          />
           <input
             type="hidden"
             name="public_id"
+            defaultValue={editProduct?.public_id}
             value={uploadedPublicId ?? ""}
           />
           <input type="hidden" name="category" value={category} />
           <input type="hidden" name="catId" value={catId} />
+          <input type="hidden" name="oldCat" value={editProduct?.category} />
+          <input type="hidden" name="id" value={editProduct?.id} />
 
           {state?.status === "error" && (
             <div className="px-4 py-3 rounded-md bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 text-sm font-semibold">
@@ -231,6 +269,7 @@ export default function AddProductModal({
             </label>
             <input
               name="name"
+              defaultValue={editProduct?.name}
               className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
               placeholder="e.g. Wireless Ergonomic Mouse"
               type="text"
@@ -323,6 +362,7 @@ export default function AddProductModal({
                 </span>
                 <input
                   name="price"
+                  defaultValue={editProduct?.price}
                   className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md pl-8 pr-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                   placeholder="0.00"
                   step="0.01"
@@ -342,6 +382,7 @@ export default function AddProductModal({
                 </span>
                 <input
                   name="cost_price"
+                  defaultValue={editProduct?.cost_price}
                   className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md pl-8 pr-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                   placeholder="0.00"
                   step="0.01"
@@ -361,6 +402,7 @@ export default function AddProductModal({
                 </span>
                 <input
                   name="stock_qty"
+                  defaultValue={editProduct?.stock_qty}
                   className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md pl-10 pr-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                   placeholder="0"
                   type="number"
@@ -387,7 +429,13 @@ export default function AddProductModal({
             ) : (
               <Check size={20} />
             )}
-            {isPending ? "Saving..." : "Save Changes"}
+            {isPending
+              ? editProduct
+                ? "Updating..."
+                : "Adding..."
+              : editProduct
+                ? "Update Product"
+                : "Add Product"}
           </button>
         </div>
       </div>

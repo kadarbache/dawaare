@@ -1,29 +1,20 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { Fragment, useState, useTransition } from "react";
-import Link from "next/link";
-import {
-  AlertCircle,
-  AlertTriangle,
-  Ban,
-  BarChart3,
-  ChevronLeft,
-  ChevronRight,
-  Layers,
-  ListChecks,
-  PackageOpen,
-  Pencil,
-  SlidersHorizontal,
-  TrendingDown,
-  TrendingUp,
-  Wallet,
-} from "lucide-react";
-import StatusCard from "@/components/StatusCard";
 import ButtonAddProduct from "@/components/buttonAddProduct";
 import SimpleDropdown from "@/components/ui/SimpleDropdown";
-import { Filter } from "../page";
 import { ItemsCategory, Product } from "@/utils/types";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ListChecks,
+  PackageOpen,
+  SlidersHorizontal,
+} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Fragment, useState, useTransition } from "react";
+import { Filter } from "../page";
+import ProductList from "./ProductList";
+import Status from "./Status";
 
 export const PAGE_SIZE = 15;
 
@@ -123,71 +114,7 @@ export default function InventoryClient({
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatusCard
-          title="Total Products"
-          value={stats.totalProducts.toString()}
-          description={`${stats.productsAddedLastMonth} added since last month`}
-          variant="success"
-          icon={<Layers size={20} className="text-primary" />}
-          trendIcon={<TrendingUp size={12} />}
-        />
-
-        <StatusCard
-          title="Low Stock Items"
-          value={stats.lowStockProducts.toString()}
-          description={
-            stats.lowStockProducts > 0
-              ? "Critical attention"
-              : "All items well stocked"
-          }
-          variant={stats.lowStockProducts > 0 ? "danger" : "success"}
-          icon={<AlertTriangle size={20} className="text-primary" />}
-          trendIcon={<AlertCircle size={12} />}
-        />
-
-        <StatusCard
-          title="Out of Stock"
-          value={stats.outOfStockProducts.toString()}
-          description={
-            stats.outOfStockSinceYesterday > 0
-              ? `${stats.outOfStockSinceYesterday} went out of stock since yesterday`
-              : "No change from yesterday"
-          }
-          variant={stats.outOfStockProducts > 0 ? "danger" : "success"}
-          icon={<Ban size={20} className="text-primary" />}
-          trendIcon={<AlertCircle size={12} />}
-        />
-
-        <div className="flex flex-col gap-2 rounded-2xl p-6 border border-slate-200 dark:border-primary/30 bg-white dark:bg-background-dark shadow-lg">
-          <div className="flex justify-between items-start">
-            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">
-              Inventory Value
-            </p>
-            <Wallet size={20} className="text-primary" />
-          </div>
-          <p className="text-primary text-3xl font-black">
-            $
-            {stats.inventoryValue.toLocaleString("en-US", {
-              minimumFractionDigits: 2,
-            })}
-          </p>
-          <p
-            className={`text-xs font-bold flex items-center gap-1 ${
-              stats.isInventoryValueDown ? "text-red-500" : "text-emerald-500"
-            }`}
-          >
-            {stats.isInventoryValueDown ? (
-              <TrendingDown size={12} />
-            ) : (
-              <TrendingUp size={12} />
-            )}
-            {stats.inventoryValueChange === 0
-              ? "No change from last month"
-              : `${stats.isInventoryValueDown ? "" : "+"}${stats.inventoryValueChange.toFixed(1)}% vs last month`}
-          </p>
-        </div>
-      </div>
+      <Status stats={stats} />
 
       {/* Inventory Table */}
       <div
@@ -216,102 +143,7 @@ export default function InventoryClient({
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-white dark:bg-[#2d1e16] border-b border-slate-200 dark:border-primary/10">
-                    <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-widest">
-                      Image
-                    </th>
-                    <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-widest">
-                      Product Name
-                    </th>
-                    <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-widest">
-                      Category
-                    </th>
-                    <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-widest">
-                      Price
-                    </th>
-                    <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-widest">
-                      Cost Price
-                    </th>
-                    <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-widest">
-                      Stock Count
-                    </th>
-                    <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-widest text-right">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-primary/5">
-                  {products.map((product) => (
-                    <tr
-                      key={product.id}
-                      className="hover:bg-primary/5 transition-colors group"
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div
-                          className="bg-center bg-no-repeat aspect-square bg-cover rounded-md size-12 border border-slate-200 dark:border-primary/30 group-hover:border-primary/50 transition-colors"
-                          data-alt={product.name}
-                          style={{
-                            backgroundImage: `url("${product.image}")`,
-                          }}
-                        ></div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col">
-                          <Link
-                            href={`/inventory/${product.id}`}
-                            className="text-slate-900 dark:text-slate-100 font-bold text-sm hover:text-primary transition-colors"
-                          >
-                            {product.name}
-                          </Link>
-                          <span className="text-slate-400 dark:text-slate-500 font-mono text-xs">
-                            SKU: {product.sku}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-sm">
-                        {product.category}
-                      </td>
-                      <td className="px-6 py-4 text-slate-900 dark:text-slate-100 font-bold text-sm">
-                        {product.price}
-                      </td>
-                      <td className="px-6 py-4 text-slate-500 dark:text-slate-400 font-medium text-sm">
-                        {product.cost_price}
-                      </td>
-                      <td className="px-6 py-4">
-                        {product.is_low_stock ? (
-                          <span className="text-primary font-black text-sm flex items-center gap-1">
-                            {product.stock_qty}{" "}
-                            <span className="text-[10px] font-bold uppercase tracking-widest">
-                              (Low)
-                            </span>
-                          </span>
-                        ) : (
-                          <span className="text-slate-900 dark:text-slate-100 font-bold text-sm">
-                            {product.stock_qty}
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex justify-end gap-2">
-                          <button className="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer">
-                            <Pencil size={14} />
-                            Edit
-                          </button>
-                          <Link
-                            href={`/inventory/${product.id}`}
-                            className="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg text-xs font-bold hover:scale-105 transition-all flex items-center gap-1 cursor-pointer"
-                          >
-                            <BarChart3 size={14} />
-                            Analytics
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <ProductList products={products} categories={categories} />
             </div>
 
             {/* Pagination */}
