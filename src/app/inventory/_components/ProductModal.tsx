@@ -39,6 +39,16 @@ interface ProductModalProps {
   ) => Promise<ActionResult>;
 }
 
+const buildInitialFormState = (product?: Product | null) => ({
+  category: product?.category || "",
+  previewImage: product?.image || null,
+  uploadedUrl: product?.image || null,
+  uploadedPublicId: product?.public_id || null,
+  sku: product?.sku || "",
+  catId: "",
+  isScanning: false,
+});
+
 export default function ProductModal({
   isOpen,
   onClose,
@@ -46,24 +56,27 @@ export default function ProductModal({
   editProduct,
   action,
 }: ProductModalProps) {
-  console.log(editProduct);
+  const isEditMode = Boolean(editProduct);
+  const initialState = buildInitialFormState(editProduct);
+
   const [state, formAction, isPending] = useActionState(action, null);
-  const [category, setCategory] = useState(editProduct?.category || "");
+  const [category, setCategory] = useState(initialState.category);
   const [previewImage, setPreviewImage] = useState<string | null>(
-    editProduct?.image || null,
+    initialState.previewImage,
   );
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(
-    editProduct?.image || null,
+    initialState.uploadedUrl,
   );
   const [uploadedPublicId, setUploadedPublicId] = useState<string | null>(
-    editProduct?.public_id || null,
+    initialState.uploadedPublicId,
   );
   const [isUploading, setIsUploading] = useState(false);
-  const [sku, setSku] = useState(editProduct?.sku || "");
-  const [catId, setCatId] = useState("");
-  const [isScanning, setIsScanning] = useState(false);
+  const [sku, setSku] = useState(initialState.sku);
+  const [catId, setCatId] = useState(initialState.catId);
+  const [isScanning, setIsScanning] = useState(initialState.isScanning);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const initialPublicIdRef = useRef(editProduct?.public_id || null);
 
   const options = categories.map((category) => ({
     id: category.id,
@@ -71,44 +84,56 @@ export default function ProductModal({
     value: category.name,
   }));
 
-  const handleRemoveImage = useCallback(async () => {
-    if (uploadedPublicId) await deleteImage(uploadedPublicId);
+  const clearImageState = useCallback(() => {
     setPreviewImage(null);
     setUploadedUrl(null);
     setUploadedPublicId(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  }, [uploadedPublicId]);
+  }, []);
+
+  const handleRemoveImage = useCallback(async () => {
+    if (uploadedPublicId) await deleteImage(uploadedPublicId);
+    clearImageState();
+  }, [uploadedPublicId, clearImageState]);
+
+  const resetFormState = useCallback(
+    (product?: Product | null) => {
+      const next = buildInitialFormState(product);
+      setSku(next.sku);
+      setCategory(next.category);
+      setCatId(next.catId);
+      setPreviewImage(next.previewImage);
+      setUploadedUrl(next.uploadedUrl);
+      setUploadedPublicId(next.uploadedPublicId);
+      setIsScanning(next.isScanning);
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
-    if (editProduct) {
-      setSku(editProduct.sku || "");
-      setCategory(editProduct.category || "");
-      // setCatId(editProduct.catId || "");
-      setPreviewImage(editProduct.image || null);
-      setUploadedUrl(editProduct.image || null);
-      setUploadedPublicId(editProduct.public_id || null);
+    initialPublicIdRef.current = editProduct?.public_id || null;
+    if (isOpen) {
+      resetFormState(editProduct);
     }
-  }, [editProduct]);
+  }, [editProduct, isOpen, resetFormState]);
 
   useEffect(() => {
     if (state?.status === "success") {
-      setCategory("");
-      setCatId("");
-      setPreviewImage(null);
-      setUploadedUrl(null);
-      setUploadedPublicId(null);
-      setSku("");
-      setIsScanning(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      resetFormState(null);
       onClose();
     } else if (state?.status === "error") {
-      toast.error(state?.message || "Failed to create product");
-      handleRemoveImage();
-      formRef.current?.reset();
+      toast.error(
+        state?.message ||
+          (isEditMode ? "Failed to update product" : "Failed to create product"),
+      );
     }
-  }, [state, handleRemoveImage, onClose]);
+  }, [state, isEditMode, onClose, resetFormState]);
 
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -141,14 +166,13 @@ export default function ProductModal({
     fileInputRef.current?.click();
   };
 
-  const handleCloseModal = () => {
-    if (uploadedPublicId) deleteImage(uploadedPublicId);
-    setPreviewImage(null);
-    setUploadedUrl(null);
-    setUploadedPublicId(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  const handleCloseModal = async () => {
+    const hasNewUpload =
+      uploadedPublicId && uploadedPublicId !== initialPublicIdRef.current;
+    if (hasNewUpload) {
+      await deleteImage(uploadedPublicId);
     }
+    resetFormState(editProduct);
     onClose();
   };
 
@@ -161,7 +185,7 @@ export default function ProductModal({
           <div className="flex items-center gap-3">
             <X size={20} className="text-primary" />
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-              {editProduct ? "Edit Product" : "Add New Product"}
+              {isEditMode ? "Edit Product" : "Add New Product"}
             </h2>
           </div>
           <button
@@ -414,7 +438,7 @@ export default function ProductModal({
 
         <div className="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 dark:bg-background-dark/20 border-t border-slate-200 dark:border-primary/10">
           <button
-            onClick={onClose}
+            onClick={handleCloseModal}
             className="px-5 py-2.5 rounded-md text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-primary/10 transition-colors"
           >
             Cancel
@@ -430,10 +454,10 @@ export default function ProductModal({
               <Check size={20} />
             )}
             {isPending
-              ? editProduct
+              ? isEditMode
                 ? "Updating..."
                 : "Adding..."
-              : editProduct
+              : isEditMode
                 ? "Update Product"
                 : "Add Product"}
           </button>

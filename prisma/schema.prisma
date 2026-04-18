@@ -54,8 +54,9 @@ model Sale {
   created_at     DateTime      @default(now())
   updated_at     DateTime      @updatedAt
 
-  customer   Customer?  @relation(fields: [customer_id], references: [id], onDelete: SetNull)
+  customer   Customer?   @relation(fields: [customer_id], references: [id], onDelete: SetNull)
   sale_items SaleItem[]
+  repayments Repayment[]
 
   @@map("sales")
 }
@@ -175,4 +176,16 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Repayment {
+  id         String   @id @default(uuid())
+  sale_id    String
+  amount     Float
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  sale Sale @relation(fields: [sale_id], references: [id], onDelete: Cascade)
+
+  @@map("repayments")
 }

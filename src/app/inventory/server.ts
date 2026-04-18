@@ -36,6 +36,17 @@ export async function createProduct(
   }
 
   try {
+    const existingProduct = await prisma.product.findUnique({
+      where: { sku },
+    });
+
+    if (existingProduct) {
+      return {
+        status: "error",
+        message: "Product with this SKU already exists.",
+      };
+    }
+
     await prisma.product.create({
       data: {
         name,
