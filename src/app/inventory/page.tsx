@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import Topbar from "../../components/Topbar";
 import ButtomAcionBar from "../terminal/_components/ButtomAcionBar";
 import InventoryClient from "./_components/InventoryClient";
-import { Product } from "@/utils/types";
+import { ItemsCategory, Product } from "@/utils/types";
 
 const PAGE_SIZE = 15;
 export type Filter =
@@ -29,6 +29,8 @@ export default async function InventoryPage({
       created_at: "desc",
     },
   });
+
+  const categories: ItemsCategory[] = await prisma.itemsCategory.findMany();
 
   const products: Product[] = data;
 
@@ -145,6 +147,7 @@ export default async function InventoryPage({
           stats={stats}
           total={total}
           currentPage={currentPage}
+          categories={categories}
         />
       </main>
 

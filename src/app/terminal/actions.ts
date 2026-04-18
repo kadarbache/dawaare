@@ -35,14 +35,18 @@ export async function submitSale(
       cartTotal += item.quantity * item.product.price;
     }
 
-    const tax = cartTotal * 0.05;
-    const grandTotal = cartTotal + tax;
+    const grandTotal = cartTotal;
 
     const parsedAmountPaid = amountPaidInput
       ? parseFloat(amountPaidInput)
       : grandTotal;
     const remaining = grandTotal - parsedAmountPaid;
-
+    const status =
+      remaining === grandTotal
+        ? "unpaid"
+        : remaining > 0.01
+          ? "partial"
+          : "paid";
     // Process all operations in a database transaction
     await prisma.$transaction(async (tx) => {
       const sale = await tx.sale.create({
@@ -51,8 +55,7 @@ export async function submitSale(
           total_amount: grandTotal,
           amount_paid: parsedAmountPaid,
           remaining: remaining > 0 ? remaining : 0,
-          // TODO: add unpaid state
-          status: remaining > 0.01 ? "partial" : "paid",
+          status: status,
           payment_method: paymentMethod || "ZAAD",
           notes: notes,
         },

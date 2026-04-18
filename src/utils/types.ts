@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export type Sale = {
   id: string;
   notes: string | null;
@@ -17,7 +19,13 @@ enum PaymentMethod {
   CASH,
 }
 
-import { Prisma } from "@prisma/client";
+export type ItemsCategory = {
+  id: string;
+  name: string;
+  count: number;
+  created_at: Date;
+  updated_at: Date;
+};
 
 // This defines a type for a Sale that MUST include its sale_items
 export type SaleWithItems = Prisma.SaleGetPayload<{

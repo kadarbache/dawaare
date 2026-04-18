@@ -13,16 +13,27 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import React, { useActionState, useEffect, useRef, useState } from "react";
+import React, {
+  useActionState,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import SimpleDropdown from "../../../components/ui/SimpleDropdown";
+import { ItemsCategory } from "@/utils/types";
+import toast from "react-hot-toast";
+
 interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
+  categories: ItemsCategory[];
 }
 
 export default function AddProductModal({
   isOpen,
   onClose,
+  categories,
 }: AddProductModalProps) {
   const [state, formAction, isPending] = useActionState(createProduct, null);
   const [category, setCategory] = useState("");
@@ -31,13 +42,31 @@ export default function AddProductModal({
   const [uploadedPublicId, setUploadedPublicId] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [sku, setSku] = useState("");
+  const [catId, setCatId] = useState("");
   const [isScanning, setIsScanning] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
+  const options = categories.map((category) => ({
+    id: category.id,
+    label: category.name,
+    value: category.name,
+  }));
+
+  const handleRemoveImage = useCallback(async () => {
+    if (uploadedPublicId) await deleteImage(uploadedPublicId);
+    setPreviewImage(null);
+    setUploadedUrl(null);
+    setUploadedPublicId(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, [uploadedPublicId]);
+
   useEffect(() => {
-    if (state?.success) {
+    if (state?.status === "success") {
       setCategory("");
+      setCatId("");
       setPreviewImage(null);
       setUploadedUrl(null);
       setUploadedPublicId(null);
@@ -45,8 +74,11 @@ export default function AddProductModal({
       setIsScanning(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
       onClose();
+    } else if (state?.status === "error") {
+      toast.error(state?.message || "Failed to create product");
+      handleRemoveImage();
     }
-  }, [state, onClose]);
+  }, [state, handleRemoveImage, onClose]);
 
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -61,6 +93,10 @@ export default function AddProductModal({
     setIsUploading(true);
     try {
       const result = await uploadImage(file);
+      if (!result) {
+        toast.error("Failed to upload image");
+        return;
+      }
       setUploadedUrl(result.url);
       setUploadedPublicId(result.publicId);
     } catch {
@@ -68,16 +104,6 @@ export default function AddProductModal({
       if (fileInputRef.current) fileInputRef.current.value = "";
     } finally {
       setIsUploading(false);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    if (uploadedPublicId) deleteImage(uploadedPublicId);
-    setPreviewImage(null);
-    setUploadedUrl(null);
-    setUploadedPublicId(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
     }
   };
 
@@ -128,10 +154,11 @@ export default function AddProductModal({
             value={uploadedPublicId ?? ""}
           />
           <input type="hidden" name="category" value={category} />
+          <input type="hidden" name="catId" value={catId} />
 
-          {state?.error && (
+          {state?.status === "error" && (
             <div className="px-4 py-3 rounded-md bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 text-sm font-semibold">
-              {state.error}
+              {state.message}
             </div>
           )}
 
@@ -217,15 +244,10 @@ export default function AddProductModal({
                 Category
               </label>
               <SimpleDropdown
-                options={[
-                  { label: "Electronics", value: "electronics" },
-                  { label: "books", value: "books" },
-                  { label: "Furniture", value: "furniture" },
-                  { label: "Clothing", value: "clothing" },
-                  { label: "Accessories", value: "accessories" },
-                ]}
+                options={options}
                 value={category}
                 onChange={setCategory}
+                setCatId={setCatId}
                 placeholder="Select category"
               />
             </div>

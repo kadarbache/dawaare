@@ -1,14 +1,28 @@
 import { DollarSign, RefreshCcw } from "lucide-react";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useTransition } from "react";
+import { addExchangeRate } from "../server";
+import toast from "react-hot-toast";
 export default function CurrencyRate({
   exchangeRate,
   setExchangeRate,
-  handleUpdateRate,
 }: {
   exchangeRate: number | "";
-  setExchangeRate: (value: number | "") => void;
-  handleUpdateRate: () => void;
+  setExchangeRate: (value: number | 0) => void;
 }) {
+  const [isPending, startTransition] = useTransition();
+
+  const handleUpdateRate = () => {
+    const rate = Number(exchangeRate);
+    startTransition(async () => {
+      const res = await addExchangeRate(rate);
+      if (res.status === "success") {
+        toast.success(res.message);
+      } else {
+        toast.error(res.message);
+      }
+    });
+  };
+
   return (
     <section className="col-span-12">
       <div className="bg-white dark:bg-[#2d1e16] border border-primary/10 rounded-md p-8 shadow-sm relative overflow-hidden group">
@@ -59,7 +73,7 @@ export default function CurrencyRate({
                     value={exchangeRate}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       setExchangeRate(
-                        e.target.value === "" ? "" : Number(e.target.value),
+                        e.target.value === "" ? 0 : Number(e.target.value),
                       )
                     }
                   />
@@ -73,10 +87,15 @@ export default function CurrencyRate({
         </div>
         <button
           onClick={handleUpdateRate}
+          disabled={isPending}
           className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-md transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-95 mt-8"
         >
-          <RefreshCcw className="w-4 h-4" />
-          Update Rate
+          {isPending ? (
+            <RefreshCcw className="w-4 h-4 animate-spin" />
+          ) : (
+            <RefreshCcw className="w-4 h-4" />
+          )}
+          {isPending ? "Updating..." : "Update Rate"}
         </button>
       </div>
     </section>

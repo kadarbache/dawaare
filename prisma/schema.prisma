@@ -92,6 +92,16 @@ model ItemsCategory {
   @@map("items_categories")
 }
 
+model ExchangeRate {
+  id         String   @id @default(uuid())
+  currency   String   @unique
+  rate       Float // USD to SHILLING
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("exchange_rates")
+}
+
 model User {
   id            String    @id
   name          String

@@ -23,7 +23,7 @@ import StatusCard from "@/components/StatusCard";
 import ButtonAddProduct from "@/components/buttonAddProduct";
 import SimpleDropdown from "@/components/ui/SimpleDropdown";
 import { Filter } from "../page";
-import { Product } from "@/utils/types";
+import { ItemsCategory, Product } from "@/utils/types";
 
 export const PAGE_SIZE = 15;
 
@@ -48,11 +48,13 @@ export default function InventoryClient({
   stats,
   total,
   currentPage,
+  categories,
 }: {
   products: Product[];
   stats: InventoryStats;
   total: number;
   currentPage: number;
+  categories: ItemsCategory[];
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -106,7 +108,7 @@ export default function InventoryClient({
         </div>
         <div className="flex gap-3">
           {/* Add Product Button */}
-          <ButtonAddProduct />
+          <ButtonAddProduct categories={categories} />
           <SimpleDropdown
             placeholder="Filter products"
             options={filterOptions}

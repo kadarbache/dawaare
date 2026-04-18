@@ -5,8 +5,8 @@ import { deleteImage } from "@/lib/upload";
 import { revalidatePath } from "next/cache";
 
 interface ActionResult {
-  success: boolean;
-  error?: string;
+  status: string;
+  message: string;
 }
 
 export async function createProduct(
@@ -16,6 +16,7 @@ export async function createProduct(
   const name = formData.get("name") as string;
   const sku = formData.get("sku") as string;
   const category = formData.get("category") as string;
+  const catId = formData.get("catId") as string;
   const price = parseFloat(formData.get("price") as string);
   const cost_price = parseFloat(formData.get("cost_price") as string);
   const stock_qty = parseInt(formData.get("stock_qty") as string);
@@ -31,7 +32,7 @@ export async function createProduct(
     isNaN(stock_qty) ||
     !image
   ) {
-    return { success: false, error: "Please fill in all required fields." };
+    return { status: "error", message: "Please fill in all required fields." };
   }
 
   try {
@@ -49,8 +50,19 @@ export async function createProduct(
       },
     });
 
+    await prisma.itemsCategory.update({
+      where: {
+        id: catId,
+      },
+      data: {
+        count: {
+          increment: 1,
+        },
+      },
+    });
+
     revalidatePath("/inventory");
-    return { success: true };
+    return { status: "success", message: "Product created successfully" };
   } catch (error) {
     console.error("Failed to create product:", error);
 
@@ -63,8 +75,8 @@ export async function createProduct(
     }
 
     return {
-      success: false,
-      error: "Failed to save product. Please try again.",
+      status: "error",
+      message: "Failed to save product. Please try again.",
     };
   }
 }

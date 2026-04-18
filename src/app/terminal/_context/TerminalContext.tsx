@@ -57,6 +57,8 @@ interface TerminalContextValue {
   setAmountPaid: (amount: string) => void;
 
   products: TerminalProduct[];
+
+  exchangeRate: number | undefined;
 }
 
 const TerminalContext = createContext<TerminalContextValue | null>(null);
@@ -65,10 +67,12 @@ export function TerminalProvider({
   children,
   initialProducts,
   customer,
+  exchangeRate,
 }: {
   children: ReactNode;
   initialProducts: TerminalProduct[];
   customer?: Customer | null;
+  exchangeRate: number | undefined;
 }) {
   const [products] = useState<TerminalProduct[]>(initialProducts);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -175,6 +179,7 @@ export function TerminalProvider({
     setAmountPaid,
     products,
     updatePrice,
+    exchangeRate,
   };
 
   return (

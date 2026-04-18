@@ -22,6 +22,7 @@ export default function SummarySidebar() {
     selectedCustomer,
     amountPaid,
     setAmountPaid,
+    exchangeRate,
   } = useTerminal();
 
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
@@ -40,8 +41,8 @@ export default function SummarySidebar() {
     }
   }, [state, clearCart]);
 
-  const tax = cartTotal * 0.05;
-  const grandTotal = cartTotal + tax;
+  const grandTotal = cartTotal;
+  const slshAmount = grandTotal * (exchangeRate || 0);
 
   const liveUnpaidBalance = grandTotal - Number(amountPaid || 0);
 
@@ -64,9 +65,9 @@ export default function SummarySidebar() {
               </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Tax (5%)</span>
+              <span className="text-slate-500">SLSH</span>
               <span className="font-bold text-slate-900 dark:text-white">
-                ${tax.toFixed(2)}
+                {slshAmount.toLocaleString()}
               </span>
             </div>
           </div>
