@@ -44,7 +44,7 @@ export default async function CustomersList() {
     : "Never";
 
   return (
-    <aside className="w-1/3 border-r border-slate-200 dark:border-primary/20 flex flex-col bg-slate-50 dark:bg-primary/5">
+    <aside className="w-1/4 border-r border-slate-200 dark:border-primary/20 flex flex-col bg-slate-50 dark:bg-primary/5">
       <div className="p-6 border-b border-slate-200 dark:border-primary/20">
         <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">
           Debt Customers

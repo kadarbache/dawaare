@@ -127,6 +127,9 @@ export default async function CustomerDetailPage({
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
                   Remaining
                 </th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  Repayment Date
+                </th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
                   Status
                 </th>
@@ -171,6 +174,13 @@ export default async function CustomerDetailPage({
                   </td>
                   <td className="px-6 py-4 font-medium text-red-500">
                     ${sale.remaining.toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4 text-sm font-medium">
+                    {new Date(sale.created_at).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-center">
