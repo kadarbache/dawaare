@@ -19,11 +19,14 @@ export async function submitSale(
       (formData.get("payment_method") as "ZAAD") || "CASH" || "E_DAHAB";
     const customerId = formData.get("customer_id") as string;
     const amountPaidInput = formData.get("amount_paid") as string;
+    const repaymentDate = formData.get("repayment_date") as string;
 
     if (!rawCart) {
       return { error: "Cart is empty." };
     }
-
+    if (!repaymentDate) {
+      return { error: "Repayment date is required." };
+    }
     const cartItems = JSON.parse(rawCart);
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
       return { error: "Invalid cart payload." };
@@ -58,6 +61,7 @@ export async function submitSale(
           status: status,
           payment_method: paymentMethod || "ZAAD",
           notes: notes,
+          repayment_date: new Date(repaymentDate),
         },
       });
 

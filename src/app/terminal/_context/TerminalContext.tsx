@@ -59,6 +59,9 @@ interface TerminalContextValue {
   products: TerminalProduct[];
 
   exchangeRate: number | undefined;
+
+  repaymentDate: Date | undefined;
+  setRepaymentDate: (date: Date | undefined) => void;
 }
 
 const TerminalContext = createContext<TerminalContextValue | null>(null);
@@ -81,6 +84,9 @@ export function TerminalProvider({
   );
   const [paymentMethod, setPaymentMethod] = useState("ZAAD");
   const [amountPaid, setAmountPaid] = useState("");
+  const [repaymentDate, setRepaymentDate] = useState<Date | undefined>(
+    undefined,
+  );
 
   const addToCart = useCallback((product: TerminalProduct) => {
     setCartItems((prev) => {
@@ -180,6 +186,8 @@ export function TerminalProvider({
     products,
     updatePrice,
     exchangeRate,
+    repaymentDate,
+    setRepaymentDate,
   };
 
   return (

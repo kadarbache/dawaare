@@ -176,7 +176,7 @@ export default async function CustomerDetailPage({
                     ${sale.remaining.toFixed(2)}
                   </td>
                   <td className="px-6 py-4 text-sm font-medium">
-                    {new Date(sale.created_at).toLocaleDateString("en-US", {
+                    {new Date(sale.repayment_date).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",

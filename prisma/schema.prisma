@@ -51,6 +51,7 @@ model Sale {
   status         String        @default("paid")
   notes          String?
   payment_method PaymentMethod
+  repayment_date DateTime      @default(now())
   created_at     DateTime      @default(now())
   updated_at     DateTime      @updatedAt
 
@@ -179,11 +180,11 @@ model Verification {
 }
 
 model Repayment {
-  id         String   @id @default(uuid())
-  sale_id    String
-  amount     Float
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id            String   @id @default(uuid())
+  sale_id       String
+  repaid_amount Float
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 
   sale Sale @relation(fields: [sale_id], references: [id], onDelete: Cascade)
 
