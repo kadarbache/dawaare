@@ -1,14 +1,17 @@
 "use client";
 import { SaleWithCustomerAndItems } from "@/utils/types";
-import { BanknoteArrowUp } from "lucide-react";
+import { Eye } from "lucide-react";
 import { useState } from "react";
 import { format_sale_row } from "@/utils/helpers";
 import SaleDetails from "@/app/sales/_components/SaleDetails";
+import { useRouter } from "next/navigation";
+
 export default function DebtList({
   sales,
 }: {
   sales: SaleWithCustomerAndItems[];
 }) {
+  const router = useRouter();
   const [openView, setopenView] = useState(false);
   const [selectedSale, setSelectedSale] =
     useState<SaleWithCustomerAndItems | null>(null);
@@ -28,12 +31,14 @@ export default function DebtList({
   }
 
   const HandleSaleView = (sale: SaleWithCustomerAndItems) => {
-    setSelectedSale(sale);
-    setopenView(true);
+    if (sale.customer_id) {
+      router.push(`/customers/${sale.customer_id}/${sale.id}`);
+    } else {
+      setSelectedSale(sale);
+      setopenView(true);
+    }
   };
 
-  //   if (!selectedSale) return null;
-  // 2. Instead, do this:
   const rowSales = selectedSale ? format_sale_row(selectedSale) : null;
 
   return (
@@ -63,7 +68,7 @@ export default function DebtList({
               Status
             </th>
             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
-              Repaid
+              view
             </th>
           </tr>
         </thead>
@@ -81,7 +86,7 @@ export default function DebtList({
           {sales.map((sale: SaleWithCustomerAndItems) => (
             <tr
               key={sale.id}
-              className="hover:bg-primary/5 transition-colors"
+              className="hover:bg-primary/5 transition-colors cursor-pointer"
               onClick={() => HandleSaleView(sale)}
             >
               <td className="px-6 py-4 text-sm font-medium">
@@ -124,13 +129,17 @@ export default function DebtList({
                   </span>
                 </div>
               </td>
-              <td className="px-6 py-4 text-right">
-                <button
-                  // onClick={() => handle_view_sale(sale)}
-                  className="text-[10px] uppercase tracking-widest font-bold text-primary hover:underline flex items-center gap-1 ml-auto cursor-pointer"
-                >
-                  <BanknoteArrowUp size={12} />
-                  Repay
+              <td
+                className="px-6 py-4 text-right"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedSale(sale);
+                  setopenView(true);
+                }}
+              >
+                <button className="text-[10px] uppercase tracking-widest font-bold text-primary hover:underline flex items-center gap-1 ml-auto cursor-pointer">
+                  <Eye size={12} />
+                  View
                 </button>
               </td>
             </tr>

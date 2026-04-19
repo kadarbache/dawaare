@@ -98,23 +98,20 @@ export default function EditProductModel({
     clearImageState();
   }, [uploadedPublicId, clearImageState]);
 
-  const resetFormState = useCallback(
-    (product: Product) => {
-      const next = buildInitialFormState(product);
-      setSku(next.sku);
-      setCategory(next.category);
-      setCatId(next.catId);
-      setPreviewImage(next.previewImage);
-      setUploadedUrl(next.uploadedUrl);
-      setUploadedPublicId(next.uploadedPublicId);
-      setIsScanning(next.isScanning);
-      setIsUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    },
-    [],
-  );
+  const resetFormState = useCallback((product: Product) => {
+    const next = buildInitialFormState(product);
+    setSku(next.sku);
+    setCategory(next.category);
+    setCatId(next.catId);
+    setPreviewImage(next.previewImage);
+    setUploadedUrl(next.uploadedUrl);
+    setUploadedPublicId(next.uploadedPublicId);
+    setIsScanning(next.isScanning);
+    setIsUploading(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, []);
 
   useEffect(() => {
     initialPublicIdRef.current = editProduct.public_id || null;
@@ -180,11 +177,7 @@ export default function EditProductModel({
       description="Update the details for this product below."
       max_width="max-w-xl"
     >
-      <form
-        ref={formRef}
-        action={formAction}
-        className="space-y-5"
-      >
+      <form ref={formRef} action={formAction} className="space-y-5">
         <input
           type="hidden"
           name="image"
@@ -199,8 +192,8 @@ export default function EditProductModel({
         />
         <input type="hidden" name="category" value={category} />
         <input type="hidden" name="catId" value={catId} />
-        <input type="hidden" name="oldCat" value={editProduct.category} />
-        <input type="hidden" name="id" value={editProduct.id} />
+        <input type="hidden" name="oldCat" value={editProduct.category || ""} />
+        <input type="hidden" name="id" value={editProduct.id || ""} />
 
         {state?.status === "error" && (
           <div className="px-4 py-3 rounded-md bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 text-sm font-semibold">

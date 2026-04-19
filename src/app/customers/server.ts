@@ -59,3 +59,82 @@ export async function createCustomer(
     };
   }
 }
+
+export async function repayDebt(
+  _prev: ActionResult | null,
+  formData: FormData,
+): Promise<ActionResult> {
+  const saleId = formData.get("saleId") as string;
+  const paymentAmountStr = formData.get("paymentAmount") as string;
+  const paymentMethod = formData.get("paymentMethod") as string;
+
+  if (!saleId || !paymentAmountStr || !paymentMethod) {
+    return { success: false, error: "Missing required fields." };
+  }
+
+  const paymentAmount = parseFloat(paymentAmountStr);
+
+  if (isNaN(paymentAmount) || paymentAmount <= 0) {
+    return { success: false, error: "Invalid payment amount." };
+  }
+
+  if (!["ZAAD", "E_DAHAB", "CASH"].includes(paymentMethod)) {
+    return { success: false, error: "Invalid payment method." };
+  }
+
+  try {
+    const sale = await prisma.sale.findUnique({
+      where: { id: saleId },
+    });
+
+    if (!sale) {
+      return { success: false, error: "Sale not found." };
+    }
+
+    if (paymentAmount > sale.remaining) {
+      return {
+        success: false,
+        error: "Payment amount exceeds remaining debt.",
+      };
+    }
+
+    const newRemaining = Math.max(0, sale.remaining - paymentAmount);
+    const newAmountPaid = sale.amount_paid + paymentAmount;
+    const newStatus =
+      newRemaining === sale.total_amount
+        ? "unpaid"
+        : newRemaining > 0.01
+          ? "partial"
+          : "paid";
+
+    await prisma.$transaction(async (tx) => {
+      await tx.sale.update({
+        where: { id: saleId },
+        data: {
+          amount_paid: newAmountPaid,
+          remaining: newRemaining,
+          status: newStatus,
+        },
+      });
+
+      await tx.repayment.create({
+        data: {
+          sale_id: saleId,
+          repaid_amount: paymentAmount,
+          payment_method: paymentMethod as "ZAAD" | "E_DAHAB" | "CASH",
+        },
+      });
+    });
+
+    revalidatePath("/customers");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to process payment:", error);
+
+    return {
+      success: false,
+      error: "Failed to process payment. Please try again.",
+    };
+  }
+}

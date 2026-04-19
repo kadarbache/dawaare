@@ -129,3 +129,31 @@ export type CustomerWithSales = Prisma.CustomerGetPayload<{
     };
   };
 }>;
+
+export type Repayment = Prisma.RepaymentGetPayload<{
+  include: {
+    sale: false;
+  };
+}>;
+
+export type SaleWithCustomerWithRepaymentsAndItems = Prisma.SaleGetPayload<{
+  include: {
+    customer: { select: { name: true; id: true } };
+    _count: { select: { sale_items: true } };
+    sale_items: {
+      select: {
+        product_id: true;
+        quantity: true;
+        unit_price: true;
+        total_price: true;
+        product: {
+          select: {
+            name: true;
+            image: true;
+          };
+        };
+      };
+    };
+    repayments: true;
+  };
+}>;
