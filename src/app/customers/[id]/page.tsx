@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { SaleWithCustomerAndItems } from "@/utils/types";
-import { History, PlusCircle, TrendingUp, Wallet } from "lucide-react";
+import { History, PlusCircle, TrendingUp, User, Wallet } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DebtList from "../_components/DebtList";
@@ -118,12 +118,55 @@ export default async function CustomerDetailPage({
       {/* Additional Stats/Notes */}
       <div className="mt-8 grid grid-cols-2 gap-6 pb-8">
         <div className="p-6 rounded-2xl border border-slate-200 dark:border-primary/20 bg-white dark:bg-background-dark shadow-lg">
-          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">
-            Customer Notes
-          </h4>
-          <p className="text-sm text-slate-500 leading-relaxed">
-            {customer.notes || "No notes for this customer."}
-          </p>
+          <div className="flex items-center gap-2 mb-4">
+            {/* circle round */}
+            <div className="h-10 w-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary">
+              <User size={20} />
+            </div>
+            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+              Customer Details
+            </h4>
+          </div>
+          {/* customer name: kadare */}
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-slate-500 leading-relaxed font-bold">
+              Name:
+            </p>
+            <p className="text-sm text-slate-500 leading-relaxed">
+              {customer.name}
+            </p>
+          </div>
+          {/* customer phone */}
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-slate-500 leading-relaxed font-bold">
+              Phone:
+            </p>
+            <p className="text-sm text-slate-500 leading-relaxed">
+              {customer.phone}
+            </p>
+          </div>
+          {/* email */}
+          {customer.email && (
+            <div className="flex items-center gap-2 ">
+              <p className="text-sm text-slate-500 leading-relaxed font-bold">
+                Email:
+              </p>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                {customer.email}
+              </p>
+            </div>
+          )}
+          {/* address */}
+          {customer.address && (
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-slate-500 leading-relaxed font-bold">
+                Address:
+              </p>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                {customer.address}
+              </p>
+            </div>
+          )}
         </div>
         <div className="p-6 rounded-2xl border border-slate-200 dark:border-primary/20 bg-white dark:bg-background-dark shadow-lg flex items-center gap-6">
           <div className="h-14 w-14 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary">
