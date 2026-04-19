@@ -1,7 +1,7 @@
 import { Product } from "@/utils/types";
 import { Pencil } from "lucide-react";
 import React, { useState } from "react";
-import ProductModal from "./ProductModal";
+import EditProductModel from "./EditProductModel";
 import { updateProduct } from "../server";
 import { ItemsCategory } from "@prisma/client";
 
@@ -28,8 +28,8 @@ export default function EditProductBtn({
         <Pencil size={14} />
         Edit
       </button>
-      {openModal && (
-        <ProductModal
+      {openModal && editProduct && (
+        <EditProductModel
           isOpen={openModal}
           onClose={() => setOpenModal(false)}
           categories={categories}
@@ -40,3 +40,4 @@ export default function EditProductBtn({
     </>
   );
 }
+
