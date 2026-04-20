@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
-import SaleDetailClient from "./_components/SaleDetailClient";
+import SaleDetailClient from "../../_components/SaleDetailClient";
 
 export default async function CustomerSaleDetailPage({
   params,

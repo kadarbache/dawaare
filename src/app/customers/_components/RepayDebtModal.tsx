@@ -25,7 +25,7 @@ export default function RepayDebtModal({
   sale,
 }: RepayDebtModalProps) {
   const [paymentAmount, setPaymentAmount] = useState<string>("");
-  const [paymentMethod, setPaymentMethod] = useState<string>("CASH");
+  const [paymentMethod, setPaymentMethod] = useState<string>("ZAAD");
 
   // Hook up server action using useActionState (React 19+)
   const [state, formAction, isPending] = useActionState(repayDebt, null);

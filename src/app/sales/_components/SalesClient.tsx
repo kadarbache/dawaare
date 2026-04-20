@@ -1,26 +1,28 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { Fragment, useState, useTransition } from "react";
-import type { SaleRow, SaleStats } from "../server";
+import AlertWindow from "@/components/AlertWindow";
+import StatusCard from "@/components/StatusCard";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  Printer,
-  ShoppingBag,
-  DollarSign,
-  TrendingUp,
   Activity,
   Calendar,
-  Filter,
-  Eye,
+  ChevronLeft,
+  ChevronRight,
   Clock,
+  DollarSign,
+  Download,
+  Filter,
+  Printer,
+  ShoppingBag,
+  Trash,
+  TrendingUp,
 } from "lucide-react";
-import StatusCard from "@/components/StatusCard";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Fragment, useState, useTransition } from "react";
+import toast from "react-hot-toast";
 import { PAGE_SIZE } from "../constants";
+import type { SaleRow, SaleStats } from "../server";
+import { delete_sale } from "../server";
 import SaleDetails from "./SaleDetails";
-
 type SaleStatus = "paid" | "partial" | "unpaid";
 
 function get_status_class(status: string) {
@@ -102,6 +104,8 @@ export default function SalesClient({
   const [localEnd, setLocalEnd] = useState(endDate);
   const [selected_sale, set_selected_sale] = useState<SaleRow | null>(null);
   const [is_modal_open, set_is_modal_open] = useState(false);
+  const [is_alert_open, set_is_alert_open] = useState(false);
+  const [sale_to_delete, set_sale_to_delete] = useState<SaleRow | null>(null);
 
   const total_pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
@@ -131,6 +135,26 @@ export default function SalesClient({
   ).filter(
     (p) => p === 1 || p === total_pages || Math.abs(p - currentPage) <= 1,
   );
+
+  const handle_delete_click = (sale: SaleRow) => {
+    set_sale_to_delete(sale);
+    set_is_alert_open(true);
+  };
+
+  const handle_confirm_delete = async () => {
+    if (!sale_to_delete) return;
+
+    const toastId = toast.loading("Deleting sale...");
+    const result = await delete_sale(sale_to_delete.id);
+
+    if (result.success) {
+      toast.success("Sale deleted successfully", { id: toastId });
+      set_is_alert_open(false);
+      set_sale_to_delete(null);
+    } else {
+      toast.error(result.error || "Failed to delete sale", { id: toastId });
+    }
+  };
 
   // Inside SalesClient component
   const today = new Date().toISOString().split("T")[0];
@@ -288,6 +312,9 @@ export default function SalesClient({
                     Date &amp; Time
                   </th>
                   <th className="px-6 py-4 text-slate-500 text-[10px] font-black uppercase tracking-widest">
+                    Seller
+                  </th>
+                  <th className="px-6 py-4 text-slate-500 text-[10px] font-black uppercase tracking-widest">
                     Customer
                   </th>
                   <th className="px-6 py-4 text-slate-500 text-[10px] font-black uppercase tracking-widest">
@@ -323,7 +350,10 @@ export default function SalesClient({
                   return (
                     <tr
                       key={sale.id}
-                      className="hover:bg-primary/5 transition-colors group"
+                      className="hover:bg-primary/5 transition-colors group cursor-pointer"
+                      onClick={() => {
+                        handle_view_sale(sale);
+                      }}
                     >
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
@@ -332,6 +362,16 @@ export default function SalesClient({
                           </span>
                           <span className="text-slate-400 dark:text-slate-500 text-[10px]">
                             {time_str}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="size-7 rounded-full bg-slate-700 flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+                            kd
+                          </div>
+                          <span className="text-slate-900 dark:text-slate-100 text-sm font-medium">
+                            kadar
                           </span>
                         </div>
                       </td>
@@ -371,14 +411,18 @@ export default function SalesClient({
                           {sale.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={() => handle_view_sale(sale)}
-                          className="text-[10px] uppercase tracking-widest font-bold text-primary hover:underline flex items-center gap-1 ml-auto cursor-pointer"
-                        >
-                          <Eye size={12} />
-                          View
-                        </button>
+                      <td className="flex items-center gap-2 justify-center px-6 py-4 text-right">
+                        <div className="flex items-center gap-2 ml-auto">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handle_delete_click(sale);
+                            }}
+                            className="text-[10px] uppercase tracking-widest font-bold text-primary hover:underline flex items-center cursor-pointer"
+                          >
+                            <Trash size={18} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -453,6 +497,13 @@ export default function SalesClient({
         is_open={is_modal_open}
         on_close={() => set_is_modal_open(false)}
         sale={selected_sale}
+      />
+      <AlertWindow
+        isOpen={is_alert_open}
+        onClose={() => set_is_alert_open(false)}
+        onConfirm={handle_confirm_delete}
+        title="Delete Sale"
+        description="This action cannot be undone. This will permanently delete the sale record and return items to stock."
       />
     </>
   );

@@ -68,7 +68,7 @@ export default function TerminalSearchOverlay({
     <div className="absolute inset-0 z-50 flex flex-col items-center pt-24 px-6 bg-background-dark/40 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="w-full max-w-3xl relative animate-in slide-in-from-top-4 duration-300">
         {/* Search Input Box */}
-        <div className="w-full bg-white dark:bg-[#1a110c] rounded-t-xl border-x border-t border-slate-200 dark:border-primary/30 shadow-2xl flex items-center px-6 h-20 transition-all duration-300 relative z-10">
+        <div className="w-full bg-white dark:bg-[#1a110c] rounded-t-md border-x border-t border-slate-200 dark:border-primary/30 shadow-2xl flex items-center px-6 h-20 transition-all duration-300 relative z-10">
           <SearchIcon className="text-primary text-3xl mr-4" size={28} />
           <input
             ref={inputRef}
@@ -92,7 +92,7 @@ export default function TerminalSearchOverlay({
         </div>
 
         {/* Dropdown Menu */}
-        <div className="w-full bg-white dark:bg-[#1a110c] rounded-b-xl border-x border-b border-slate-200 dark:border-primary/30 shadow-2xl overflow-hidden flex flex-col relative z-10">
+        <div className="w-full bg-white dark:bg-[#1a110c] rounded-b-md border-x border-b border-slate-200 dark:border-primary/30 shadow-2xl overflow-hidden flex flex-col relative z-10">
           {/* Header Label */}
           <div className="px-6 py-3 border-b border-slate-200 dark:border-primary/20 bg-slate-50 dark:bg-primary/5">
             <span className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">
@@ -125,7 +125,7 @@ export default function TerminalSearchOverlay({
                       onMouseEnter={() => setSelectedIndex(index)}
                     >
                       <div className="flex items-center gap-6">
-                        <div className="w-14 h-14 rounded-lg overflow-hidden border border-slate-200 dark:border-orange-500/30 bg-slate-100 dark:bg-background-dark flex items-center justify-center shrink-0">
+                        <div className="w-14 h-14 rounded-md overflow-hidden border border-slate-200 dark:border-orange-500/30 bg-slate-100 dark:bg-background-dark flex items-center justify-center shrink-0">
                           {product.image ? (
                             <Image
                               src={product.image}

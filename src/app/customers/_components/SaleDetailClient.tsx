@@ -178,16 +178,17 @@ export default function SaleDetailClient({ sale }: SaleDetailClientProps) {
                     </tr>
                   ))
                 )}
-                <tr className="bg-orange-600/2]">
-                  <td className="px-8 py-10 text-center" colSpan={4}>
-                    <div className="flex flex-col items-center opacity-40">
-                      <p className="text-[10px] font-black tracking-widest uppercase italic">
-                        End of recorded history for #
-                        {sale.id.slice(0, 8).toUpperCase()}
-                      </p>
-                    </div>
-                  </td>
-                </tr>
+                {sale.repayments?.length > 0 && (
+                  <tr className="bg-orange-600/2]">
+                    <td className="px-8 py-10 text-center" colSpan={4}>
+                      <div className="flex flex-col items-center opacity-40">
+                        <p className="text-[10px] font-black tracking-widest uppercase italic">
+                          {sale.repayments?.length} repayments recorded
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

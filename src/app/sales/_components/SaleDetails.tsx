@@ -3,14 +3,12 @@
 import DialogModel from "@/components/DialogModel";
 import dayjs from "dayjs";
 import { SaleRow } from "../server";
-import {
-  Package,
-  User,
-  CreditCard,
-  CheckCircle2,
-  AlertCircle,
-} from "lucide-react";
+import { AlertCircle, CheckCircle2, CreditCard, Package, Trash, User } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
+import { delete_sale } from "../server";
+import toast from "react-hot-toast";
+import AlertWindow from "@/components/AlertWindow";
 
 interface SaleDetailsProps {
   is_open: boolean;
@@ -23,7 +21,22 @@ export default function SaleDetails({
   on_close,
   sale,
 }: SaleDetailsProps) {
+  const [is_alert_open, set_is_alert_open] = useState(false);
+
   if (!sale) return null;
+
+  const handle_delete = async () => {
+    const toastId = toast.loading("Deleting sale...");
+    const result = await delete_sale(sale.id);
+
+    if (result.success) {
+      toast.success("Sale deleted successfully", { id: toastId });
+      set_is_alert_open(false);
+      on_close();
+    } else {
+      toast.error(result.error || "Failed to delete sale", { id: toastId });
+    }
+  };
 
   const get_status_styles = (status: string) => {
     switch (status.toLowerCase()) {
@@ -166,8 +179,16 @@ export default function SaleDetails({
           </div>
         </div>
 
-        {/* Footer with Grand Total */}
-        <div className="flex flex-col md:flex-row justify-end items-center gap-6 mt-4 p-6 bg-slate-50 dark:bg-primary/10 border-t border-primary/10 -mx-6 -mb-6">
+        {/* Footer with Grand Total and Actions */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 mt-4 p-6 bg-slate-50 dark:bg-primary/10 border-t border-primary/10 -mx-6 -mb-6">
+          <button
+            onClick={() => set_is_alert_open(true)}
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest text-primary hover:bg-primary/10 rounded-md transition-all cursor-pointer"
+          >
+            <Trash size={16} />
+            Void Sale
+          </button>
+          
           <div className="text-right">
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 block">
               Grand Total
@@ -181,6 +202,14 @@ export default function SaleDetails({
           </div>
         </div>
       </div>
+      
+      <AlertWindow
+        isOpen={is_alert_open}
+        onClose={() => set_is_alert_open(false)}
+        onConfirm={handle_delete}
+        title="Void Sale"
+        description="This action cannot be undone. This will permanently delete the sale record and return items to stock."
+      />
     </DialogModel>
   );
 }

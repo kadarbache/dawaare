@@ -119,3 +119,63 @@ export async function get_sale_stats(
     last_sale_at: lastSale?.created_at ?? null,
   };
 }
+
+import { revalidatePath } from "next/cache";
+
+export async function delete_sale(
+  sale_id: string,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const repaymentsCount = await prisma.repayment.count({
+      where: { sale_id },
+    });
+
+    if (repaymentsCount > 0) {
+      return {
+        success: false,
+        error: "Cannot delete sale with expected repayment tracking.",
+      };
+    }
+
+    const sale = await prisma.sale.findUnique({
+      where: { id: sale_id },
+      include: { sale_items: true },
+    });
+
+    if (!sale) {
+      return { success: false, error: "Sale not found." };
+    }
+
+    await prisma.$transaction(async (tx) => {
+      for (const item of sale.sale_items) {
+        await tx.product.update({
+          where: { id: item.product_id },
+          data: {
+            stock_qty: {
+              increment: item.quantity,
+            },
+          },
+        });
+      }
+
+      await tx.sale.delete({
+        where: { id: sale_id },
+      });
+    });
+
+    revalidatePath("/sales");
+    return { success: true };
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Failed to delete sale:", error.message);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+    return {
+      success: false,
+      error: "An unexpected error occurred while deleting the sale.",
+    };
+  }
+}

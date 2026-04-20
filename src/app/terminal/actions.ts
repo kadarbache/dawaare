@@ -24,9 +24,10 @@ export async function submitSale(
     if (!rawCart) {
       return { error: "Cart is empty." };
     }
-    if (!repaymentDate) {
+    if (customerId && !repaymentDate) {
       return { error: "Repayment date is required." };
     }
+
     const cartItems = JSON.parse(rawCart);
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
       return { error: "Invalid cart payload." };
