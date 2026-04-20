@@ -100,7 +100,7 @@ export default function Sidebar() {
                 : undefined
             }
           >
-            {!user?.image && (
+            {user?.image === null && (
               <div
                 className="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-10 border border-primary/40 flex items-center justify-center"
                 data-alt="User profile avatar portrait"

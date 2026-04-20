@@ -320,22 +320,24 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="mt-8 flex items-center justify-between">
-            <div className="flex items-center gap-4 p-4 bg-primary/5 border border-primary/10 rounded-md max-w-2xl">
+          <div className="mt-8 flex flex-col gap-4">
+            <div className="flex items-center gap-4 p-4 bg-primary/5 border border-primary/10 rounded-md w-full">
               <CircleAlert className="text-primary w-5 h-5 shrink-0" />
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
                 Security tip: Use a combination of uppercase letters, numbers,
                 and special characters to ensure your vault stays secure.
               </p>
             </div>
-            <button
-              type="submit"
-              disabled={passwordPending}
-              className="bg-slate-900 hover:bg-slate-800 dark:bg-primary dark:hover:bg-primary/90 text-white px-8 py-3 rounded-md text-sm font-black uppercase tracking-widest shadow-lg transition-all active:scale-95 disabled:opacity-70 flex items-center gap-2 border border-transparent"
-            >
-              {passwordPending && <Loader2 className="w-4 h-4 animate-spin" />}
-              Update Security
-            </button>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={passwordPending}
+                className="bg-slate-900 hover:bg-slate-800 dark:bg-primary dark:hover:bg-primary/90 text-white px-8 py-3 rounded-md text-sm font-black uppercase tracking-widest shadow-lg transition-all active:scale-95 disabled:opacity-70 flex items-center gap-2 border border-transparent"
+              >
+                {passwordPending && <Loader2 className="w-4 h-4 animate-spin" />}
+                Update Security
+              </button>
+            </div>
           </div>
         </form>
       </section>
