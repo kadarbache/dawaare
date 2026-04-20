@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "react-hot-toast";
 import CurrencyRate from "./CurrencyRate";
 import Catalog from "./Catalog";
 import CategoryModel from "./CategoryModel";
@@ -10,11 +9,13 @@ import Profile from "./Profile";
 
 export default function SettingsClient({
   categories,
+  rate,
 }: {
   categories: Categories[];
+  rate: number | undefined;
 }) {
   const [activeTab, setActiveTab] = useState("Currency & Categories");
-  const [exchangeRate, setExchangeRate] = useState<number | "">(8500);
+  const [exchangeRate, setExchangeRate] = useState<number>(rate || 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Categories | null>(
     null,
@@ -27,10 +28,6 @@ export default function SettingsClient({
     "Users (inactive)",
     "Currency (inactive)",
   ];
-
-  const handleUpdateRate = () => {
-    toast.success(`Exchange rate updated to 1 USD = ${exchangeRate} SLSH`);
-  };
 
   const handleAddCategory = () => {
     setEditingCategory(null);
@@ -56,7 +53,7 @@ export default function SettingsClient({
 
       {/* Tabs */}
       <div className="flex items-center gap-8 border-b border-primary/10 mb-10 overflow-x-auto whitespace-nowrap scrollbar-hide">
-        {tabs.map((tab) => (
+        {tabs.map((tab: string) => (
           <button
             key={tab}
             onClick={() => !tab.includes("(inactive)") && setActiveTab(tab)}
@@ -77,7 +74,6 @@ export default function SettingsClient({
           <CurrencyRate
             exchangeRate={exchangeRate}
             setExchangeRate={setExchangeRate}
-            handleUpdateRate={handleUpdateRate}
           />
           {/* Section 2: Categories */}
           <Catalog

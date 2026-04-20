@@ -2,6 +2,7 @@ import React, { use } from "react";
 import { Product } from "./ui/SearchModal";
 import Image from "next/image";
 import { Search } from "lucide-react";
+import Link from "next/link";
 
 export default function SearchProductsList({
   promise,
@@ -100,12 +101,14 @@ export default function SearchProductsList({
               )}
             </div>
           </div>
-          <button
-            type="button"
-            className="px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-200 hover:bg-slate-300 dark:bg-background-dark dark:hover:bg-primary/20 border border-slate-300 dark:border-primary/20 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold rounded-lg transition-colors shrink-0"
-          >
-            Select
-          </button>
+          <Link href={`/inventory/${product.id}`}>
+            <button
+              type="button"
+              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-200 hover:bg-slate-300 dark:bg-background-dark dark:hover:bg-primary/20 border border-slate-300 dark:border-primary/20 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold rounded-lg transition-colors shrink-0"
+            >
+              Select
+            </button>
+          </Link>
         </div>
       ))}
     </div>

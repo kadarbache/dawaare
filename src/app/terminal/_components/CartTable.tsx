@@ -1,5 +1,5 @@
 import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
-import { useTerminal } from "../_context/TerminalContext";
+import { CartItem, useTerminal } from "../_context/TerminalContext";
 import toast from "react-hot-toast";
 
 export default function CartTable() {
@@ -54,7 +54,7 @@ export default function CartTable() {
                 </td>
               </tr>
             ) : (
-              cartItems.map((item) => (
+              cartItems.map((item: CartItem) => (
                 <tr
                   key={item.product.id}
                   className="hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors"

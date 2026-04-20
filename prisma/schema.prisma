@@ -37,6 +37,8 @@ model Product {
 
   sale_items SaleItem[]
 
+  // cat_id      String
+  // cat         ItemsCategory @relation(fields: [cat_id], references: [id])
   @@map("products")
 }
 
@@ -49,11 +51,13 @@ model Sale {
   status         String        @default("paid")
   notes          String?
   payment_method PaymentMethod
+  repayment_date DateTime      @default(now())
   created_at     DateTime      @default(now())
   updated_at     DateTime      @updatedAt
 
-  customer   Customer?  @relation(fields: [customer_id], references: [id], onDelete: SetNull)
+  customer   Customer?   @relation(fields: [customer_id], references: [id], onDelete: SetNull)
   sale_items SaleItem[]
+  repayments Repayment[]
 
   @@map("sales")
 }
@@ -89,7 +93,19 @@ model ItemsCategory {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  // products Product[]
+
   @@map("items_categories")
+}
+
+model ExchangeRate {
+  id         String   @id @default(uuid())
+  currency   String   @unique
+  rate       Float // USD to SHILLING
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("exchange_rates")
 }
 
 model User {
@@ -161,4 +177,17 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Repayment {
+  id             String        @id @default(uuid())
+  sale_id        String
+  repaid_amount  Float
+  payment_method PaymentMethod
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+
+  sale Sale @relation(fields: [sale_id], references: [id], onDelete: Cascade)
+
+  @@map("repayments")
 }

@@ -166,12 +166,18 @@ function WorkspaceContent() {
 export default function TerminalWorkspace({
   products,
   customer,
+  exchangeRate,
 }: {
   products: TerminalProduct[];
   customer: Customer | null;
+  exchangeRate: number | undefined;
 }) {
   return (
-    <TerminalProvider initialProducts={products} customer={customer}>
+    <TerminalProvider
+      initialProducts={products}
+      customer={customer}
+      exchangeRate={exchangeRate}
+    >
       <WorkspaceContent />
     </TerminalProvider>
   );

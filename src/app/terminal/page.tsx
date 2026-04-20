@@ -28,13 +28,21 @@ export default async function TerminalPage({
       })
     : null;
 
+  const exchangeRate = await prisma.exchangeRate.findUnique({
+    where: { currency: "SLSH" },
+  });
+
   return (
     <>
       {/* Top Navigation Bar */}
       <Topbar page="Terminal" />
 
       {/* POS Workspace hydrated with initial data */}
-      <TerminalWorkspace products={products} customer={customer} />
+      <TerminalWorkspace
+        products={products}
+        customer={customer}
+        exchangeRate={exchangeRate?.rate}
+      />
     </>
   );
 }

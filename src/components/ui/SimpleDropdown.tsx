@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
 export interface DropdownOption {
   label: string;
   value: string;
+  id?: string;
 }
 
 interface SimpleDropdownProps {
@@ -15,6 +16,7 @@ interface SimpleDropdownProps {
   placeholder?: string;
   className?: string;
   icon?: React.ReactNode;
+  setCatId?: (val: string) => void;
 }
 
 export default function SimpleDropdown({
@@ -24,6 +26,7 @@ export default function SimpleDropdown({
   placeholder = "Select...",
   className = "",
   icon,
+  setCatId,
 }: SimpleDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -70,6 +73,7 @@ export default function SimpleDropdown({
                 key={option.value}
                 onClick={() => {
                   onChange(option.value);
+                  setCatId?.(option?.id || "");
                   setIsOpen(false);
                 }}
                 className={`px-4 py-2 text-sm cursor-pointer transition-colors ${

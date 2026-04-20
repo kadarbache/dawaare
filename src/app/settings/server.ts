@@ -113,3 +113,55 @@ export async function deleteCategory(id: string): Promise<ActionState> {
     };
   }
 }
+
+export async function addExchangeRate(rate: number): Promise<ActionState> {
+  const currency = "SLSH";
+
+  if (!rate || rate <= 8500) {
+    return {
+      status: "error",
+      message: "Rate is required and must be greater than 8500",
+    };
+  }
+
+  const existingExchangeRate = await prisma.exchangeRate.findUnique({
+    where: { currency },
+  });
+
+  if (existingExchangeRate) {
+    await prisma.exchangeRate.update({
+      where: { currency },
+      data: {
+        rate,
+        updated_at: new Date(),
+      },
+    });
+
+    revalidatePath("/settings");
+    return {
+      status: "success",
+      message: "Exchange rate updated successfully!",
+    };
+  }
+
+  try {
+    await prisma.exchangeRate.create({
+      data: {
+        currency: currency,
+        rate,
+      },
+    });
+
+    revalidatePath("/settings");
+    return {
+      status: "success",
+      message: "Exchange rate created successfully!",
+    };
+  } catch (error: unknown) {
+    console.error("Failed to add exchange rate:", error);
+    return {
+      status: "error",
+      message: "Failed to create exchange rate. Please try again.",
+    };
+  }
+}

@@ -56,7 +56,7 @@ export default function DialogModal({
         {/* Header Section */}
         {title && (
           <header className="p-4 sm:p-6 border-b border-primary/10 shrink-0 flex items-center justify-between">
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 text-left">
               <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                 {title}
               </h2>

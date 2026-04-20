@@ -1,10 +1,23 @@
-import React, { useActionState, useEffect } from "react";
+import React, { ChangeEvent, useActionState, useEffect } from "react";
 import SimpleDropdown from "@/components/ui/SimpleDropdown";
-import { Banknote, ShoppingCart } from "lucide-react";
+import {
+  Banknote,
+  ShoppingCart,
+  ChevronDownIcon,
+  Calendar as CalendarIcon,
+} from "lucide-react";
 import { useTerminal } from "../_context/TerminalContext";
 import { submitSale, ActionState } from "../actions";
 import toast from "react-hot-toast";
 import CustomerProfile from "@/components/CustomerProfile";
+import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const paymentOptions = [
   { label: "Cash", value: "CASH" },
@@ -22,6 +35,9 @@ export default function SummarySidebar() {
     selectedCustomer,
     amountPaid,
     setAmountPaid,
+    exchangeRate,
+    repaymentDate,
+    setRepaymentDate,
   } = useTerminal();
 
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
@@ -40,8 +56,8 @@ export default function SummarySidebar() {
     }
   }, [state, clearCart]);
 
-  const tax = cartTotal * 0.05;
-  const grandTotal = cartTotal + tax;
+  const grandTotal = cartTotal;
+  const slshAmount = grandTotal * (exchangeRate || 0);
 
   const liveUnpaidBalance = grandTotal - Number(amountPaid || 0);
 
@@ -58,15 +74,15 @@ export default function SummarySidebar() {
           </h1>
           <div className="mt-6 flex flex-col gap-3 pt-6 border-t border-slate-200 dark:border-primary/10">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Subtotal</span>
+              <span className="text-slate-500">Paid</span>
               <span className="font-bold text-slate-900 dark:text-white">
-                ${cartTotal.toFixed(2)}
+                ${amountPaid}
               </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Tax (5%)</span>
+              <span className="text-slate-500">SLSH</span>
               <span className="font-bold text-slate-900 dark:text-white">
-                ${tax.toFixed(2)}
+                {slshAmount.toLocaleString()}
               </span>
             </div>
           </div>
@@ -104,6 +120,13 @@ export default function SummarySidebar() {
         {selectedCustomer && (
           <input type="hidden" name="customer_id" value={selectedCustomer.id} />
         )}
+        {selectedCustomer && (
+          <input
+            type="hidden"
+            name="repayment_date"
+            value={repaymentDate?.toISOString() || ""}
+          />
+        )}
 
         {selectedCustomer && (
           <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
@@ -115,22 +138,55 @@ export default function SummarySidebar() {
               name="amount_paid"
               step="0.01"
               value={amountPaid}
-              onChange={(e) => setAmountPaid(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setAmountPaid(e.target.value)
+              }
               className="bg-transparent border-none focus:ring-0 text-sm w-full p-0 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 font-medium outline-none"
               placeholder="Amount Paid"
               type="number"
             />
           </div>
         )}
-        <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-lg">
-          <Banknote size={20} className="text-slate-400 dark:text-slate-500" />
-          <input
-            name="notes"
-            className="bg-transparent border-none focus:ring-0 text-sm w-full p-0 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 font-medium outline-none"
-            placeholder="Notes (Optional)"
-            type="text"
-          />
-        </div>
+        {selectedCustomer && (
+          <div className="flex flex-col gap-2">
+            <p className="text-slate-500 uppercase tracking-widest text-[10px] font-black">
+              Repayment Date
+            </p>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-between px-5 py-7 bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all shadow-md font-medium text-sm"
+                >
+                  <div className="flex items-center gap-3">
+                    <CalendarIcon
+                      size={20}
+                      className="text-slate-400 dark:text-slate-500"
+                    />
+                    {repaymentDate ? (
+                      format(repaymentDate, "PPP")
+                    ) : (
+                      <span className="text-slate-400 dark:text-slate-600">
+                        Pick a repayment date
+                      </span>
+                    )}
+                  </div>
+                  <ChevronDownIcon
+                    size={16}
+                    className="text-slate-400 dark:text-slate-500"
+                  />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={repaymentDate}
+                  onSelect={setRepaymentDate}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        )}
         <button
           disabled={cartItems.length === 0 || isPending}
           className="w-full py-4 bg-primary text-white rounded-md flex items-center justify-center gap-3 hover:bg-primary/90 active:scale-[0.98] transition-all shadow-lg font-bold text-lg uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"

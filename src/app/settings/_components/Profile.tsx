@@ -1,6 +1,12 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { authClient } from "@/lib/auth-client";
 import {
   updateProfile,
@@ -174,7 +180,9 @@ export default function Profile() {
                   <input
                     name="firstName"
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      setFirstName(e.target.value)
+                    }
                     className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-sm"
                     type="text"
                     required
@@ -187,7 +195,9 @@ export default function Profile() {
                   <input
                     name="lastName"
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      setLastName(e.target.value)
+                    }
                     className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-sm"
                     type="text"
                   />
@@ -310,22 +320,24 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="mt-8 flex items-center justify-between">
-            <div className="flex items-center gap-4 p-4 bg-primary/5 border border-primary/10 rounded-md max-w-2xl">
+          <div className="mt-8 flex flex-col gap-4">
+            <div className="flex items-center gap-4 p-4 bg-primary/5 border border-primary/10 rounded-md w-full">
               <CircleAlert className="text-primary w-5 h-5 shrink-0" />
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
                 Security tip: Use a combination of uppercase letters, numbers,
                 and special characters to ensure your vault stays secure.
               </p>
             </div>
-            <button
-              type="submit"
-              disabled={passwordPending}
-              className="bg-slate-900 hover:bg-slate-800 dark:bg-primary dark:hover:bg-primary/90 text-white px-8 py-3 rounded-md text-sm font-black uppercase tracking-widest shadow-lg transition-all active:scale-95 disabled:opacity-70 flex items-center gap-2 border border-transparent"
-            >
-              {passwordPending && <Loader2 className="w-4 h-4 animate-spin" />}
-              Update Security
-            </button>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={passwordPending}
+                className="bg-slate-900 hover:bg-slate-800 dark:bg-primary dark:hover:bg-primary/90 text-white px-8 py-3 rounded-md text-sm font-black uppercase tracking-widest shadow-lg transition-all active:scale-95 disabled:opacity-70 flex items-center gap-2 border border-transparent"
+              >
+                {passwordPending && <Loader2 className="w-4 h-4 animate-spin" />}
+                Update Security
+              </button>
+            </div>
           </div>
         </form>
       </section>

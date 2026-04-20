@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import Topbar from "../../components/Topbar";
 import ButtomAcionBar from "../terminal/_components/ButtomAcionBar";
 import InventoryClient from "./_components/InventoryClient";
+import { ItemsCategory, Product } from "@/utils/types";
 
 const PAGE_SIZE = 15;
 export type Filter =
@@ -29,37 +30,42 @@ export default async function InventoryPage({
     },
   });
 
-  const products = data;
+  const categories: ItemsCategory[] = await prisma.itemsCategory.findMany();
+
+  const products: Product[] = data;
 
   const lowStockProducts = products.filter(
-    (product) => product.is_low_stock,
+    (product: Product) => product.is_low_stock,
   ).length;
 
   const outOfStockProducts = products.filter(
-    (product) => product.stock_qty === 0,
+    (product: Product) => product.stock_qty === 0,
   ).length;
 
   const outOfStockSinceYesterday = products.filter(
-    (product) =>
+    (product: Product) =>
       product.stock_qty === 0 &&
       dayjs(product.updated_at).isAfter(dayjs().subtract(1, "day")),
   ).length;
 
-  const productsAddedLastMonth = products.filter((product) =>
+  const productsAddedLastMonth = products.filter((product: Product) =>
     dayjs(product.created_at).isAfter(dayjs().subtract(1, "month")),
   ).length;
 
   const inventoryValue = products.reduce(
-    (sum: number, product) => sum + product.price * product.stock_qty,
+    (sum: number, product: Product) => sum + product.price * product.stock_qty,
     0,
   );
 
   // inventory value from last month (products that existed before last month)
   const lastMonthCutoff = dayjs().subtract(1, "month");
   const inventoryValueFromLastMonth = products
-    .filter((product) => dayjs(product.created_at).isBefore(lastMonthCutoff))
+    .filter((product: Product) =>
+      dayjs(product.created_at).isBefore(lastMonthCutoff),
+    )
     .reduce(
-      (sum: number, product) => sum + product.price * product.stock_qty,
+      (sum: number, product: Product) =>
+        sum + product.price * product.stock_qty,
       0,
     );
 
@@ -86,9 +92,9 @@ export default async function InventoryPage({
   const total = products.length;
 
   // memory pagination and filtering since we already fetched all to calculate stats
-  const paginatedProducts = products
+  const paginatedProducts: Product[] = products
     .slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
-    .filter((product) => {
+    .filter((product: Product) => {
       if (filter === "out of stock") {
         return product.stock_qty === 0;
       }
@@ -111,19 +117,21 @@ export default async function InventoryPage({
     });
 
   if (filter === "lowest price") {
-    paginatedProducts.sort((a, b) => a.price - b.price);
+    paginatedProducts.sort((a: Product, b: Product) => a.price - b.price);
   }
   if (filter === "highest price") {
-    paginatedProducts.sort((a, b) => b.price - a.price);
+    paginatedProducts.sort((a: Product, b: Product) => b.price - a.price);
   }
   if (filter === "newest") {
     paginatedProducts.sort(
-      (a, b) => b.created_at.getTime() - a.created_at.getTime(),
+      (a: Product, b: Product) =>
+        b.created_at.getTime() - a.created_at.getTime(),
     );
   }
   if (filter === "oldest") {
     paginatedProducts.sort(
-      (a, b) => a.created_at.getTime() - b.created_at.getTime(),
+      (a: Product, b: Product) =>
+        a.created_at.getTime() - b.created_at.getTime(),
     );
   }
 
@@ -139,6 +147,7 @@ export default async function InventoryPage({
           stats={stats}
           total={total}
           currentPage={currentPage}
+          categories={categories}
         />
       </main>
 

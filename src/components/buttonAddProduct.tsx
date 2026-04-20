@@ -1,9 +1,15 @@
 "use client";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import AddProductModal from "../app/inventory/_components/AddProductModal";
+import ProductModal from "../app/inventory/_components/ProductModal";
+import { ItemsCategory } from "@/utils/types";
+import { createProduct } from "@/app/inventory/server";
 
-export default function ButtonAddProduct() {
+export default function ButtonAddProduct({
+  categories,
+}: {
+  categories: ItemsCategory[];
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -24,7 +30,13 @@ export default function ButtonAddProduct() {
         Add Product
       </button>
       {/* Add Product Modal */}
-      <AddProductModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        categories={categories}
+        action={createProduct}
+      />
     </>
   );
 }
+
