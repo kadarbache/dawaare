@@ -6,13 +6,17 @@ import Catalog from "./Catalog";
 import CategoryModel from "./CategoryModel";
 import { Categories } from "../page";
 import Profile from "./Profile";
+import Sellers from "./Sellers";
+import { User } from "@prisma/client";
 
 export default function SettingsClient({
   categories,
   rate,
+  users,
 }: {
   categories: Categories[];
   rate: number | undefined;
+  users: User[];
 }) {
   const [activeTab, setActiveTab] = useState("Currency & Categories");
   const [exchangeRate, setExchangeRate] = useState<number>(rate || 0);
@@ -24,8 +28,8 @@ export default function SettingsClient({
   const tabs = [
     "Currency & Categories",
     "Profile",
+    "Sellers",
     "Receipts (inactive)",
-    "Users (inactive)",
     "Currency (inactive)",
   ];
 
@@ -85,6 +89,7 @@ export default function SettingsClient({
       )}
 
       {activeTab === "Profile" && <Profile />}
+      {activeTab === "Sellers" && <Sellers users={users} />}
 
       {/* Category Modal - Component Swap implementation */}
       <CategoryModel

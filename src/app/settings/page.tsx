@@ -15,11 +15,15 @@ export default async function SettingsPage() {
   const exchangeRate = await prisma.exchangeRate.findUnique({
     where: { currency: "SLSH" },
   });
+  const users = await prisma.user.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  
   return (
     <>
       <Topbar page="Settings" subPage="Currency & Categories" />
       <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-        <SettingsClient categories={categories} rate={exchangeRate?.rate} />
+        <SettingsClient categories={categories} rate={exchangeRate?.rate} users={users} />
       </main>
     </>
   );
