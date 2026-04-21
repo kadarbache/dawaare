@@ -1,3 +1,4 @@
+import { authClient } from "@/lib/auth-client";
 import { SaleWithCustomerAndItems } from "./types";
 import { SaleRow } from "@/app/sales/server";
 
@@ -24,4 +25,9 @@ export function format_sale_row(s: SaleWithCustomerAndItems): SaleRow {
       image: si.product.image,
     })),
   };
+}
+
+// logout function
+export async function logout() {
+  await authClient.signOut();
 }

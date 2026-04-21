@@ -12,9 +12,11 @@ import {
   Users,
   DollarSign,
   User,
+  LogOut,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { User as AuthUser } from "@/lib/auth";
+import { logout } from "@/utils/helpers";
 
 const nav_items = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
@@ -25,7 +27,8 @@ const nav_items = [
 ];
 
 const bottom_nav_items = [
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/settings", label: "Settings", icon: Settings, onClick: () => {} },
+  { href: "#", label: "Logout", icon: LogOut, onClick: logout },
 ];
 
 export default function Sidebar() {
@@ -78,6 +81,7 @@ export default function Sidebar() {
                 key={item.href}
                 href={item.href}
                 className={get_link_class(item.href)}
+                onClick={item.onClick}
               >
                 <Icon size={20} className={get_icon_class(item.href)} />
                 {item.label}

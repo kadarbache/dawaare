@@ -2,6 +2,7 @@
 
 import React, { useState, useActionState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Eye, EyeOff, Store, Loader2 } from "lucide-react";
 import { loginAction } from "./actions";
 import { useRouter } from "next/navigation";
@@ -39,14 +40,12 @@ export default function LoginPage() {
           </div>
 
           {/* Abstract Background Image Reference */}
-          <div
-            className="absolute inset-0 opacity-30 mix-blend-overlay pointer-events-none bg-cover bg-center"
-            title="Abstract vibrant flowing neon purple and blue curves on dark background"
-            style={{
-              backgroundImage:
-                "url('https://lh3.googleusercontent.com/aida-public/AB6AXuABGw4Gsyqz0_dU0slUhU5FhJl1kb_xqvHtp_FimX8koVaM6-jfCiSiKzEYcZpT2eiBjupEGsZMGvQIHsaJEN6XrTeWAHBV1Od2ksEwmtMt17pST4Vd0RoajFQq4VV7_ckIumktsnFRGKj_bffqBk1bxADI115OmlJIiqUl2N9QBXfq2sUYWzhm7xHapxMsKlueuCpicuVvtvdL4x2XqIOvikkBsNOwdP0oK8ZZlE_NmUtAYx6amIHJ3yk2o-LfJrCUUNAAXvAOr5U')",
-            }}
-          ></div>
+          <Image
+            src="/login-image.png"
+            alt="Abstract vibrant flowing neon purple and blue curves on dark background"
+            fill
+            className="opacity-30 mix-blend-overlay pointer-events-none object-cover object-center z-0"
+          />
         </div>
 
         {/* Right Login Section */}
