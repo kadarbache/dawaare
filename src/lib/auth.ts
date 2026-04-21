@@ -39,7 +39,8 @@ export const auth = betterAuth({
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
       const typedUser = user as (typeof auth.$Infer.Session)["user"];
-      await resend.emails.send({
+      console.log(`Attempting to send verification email to: ${user.email}`);
+      const { data, error } = await resend.emails.send({
         from: "onboarding@resend.dev",
         to: user.email,
         subject: "Verify your email address",
@@ -51,6 +52,12 @@ export const auth = betterAuth({
           storeName: "Dawaare",
         }),
       });
+      
+      if (error) {
+        console.error("Resend API Error:", error);
+      } else {
+        console.log("Resend success:", data);
+      }
     },
     sendOnSignUp: true,
     autoSignInAfterVerification: true,

@@ -181,13 +181,11 @@ export default function EditProductModel({
         <input
           type="hidden"
           name="image"
-          defaultValue={editProduct.image}
           value={uploadedUrl ?? ""}
         />
         <input
           type="hidden"
           name="public_id"
-          defaultValue={editProduct.public_id}
           value={uploadedPublicId ?? ""}
         />
         <input type="hidden" name="category" value={category} />
