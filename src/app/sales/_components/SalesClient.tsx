@@ -9,9 +9,7 @@ import {
   ChevronRight,
   Clock,
   DollarSign,
-  Download,
   Filter,
-  Printer,
   ShoppingBag,
   Trash,
   TrendingUp,
@@ -285,7 +283,8 @@ export default function SalesClient({
             <DollarSign size={20} className="text-primary" />
             Transaction Registry
           </h3>
-          <div className="flex gap-2">
+          {/* TODO: implement export and print */}
+          {/* <div className="flex gap-2">
             <button className="text-[10px] uppercase tracking-widest font-bold text-slate-500 hover:text-primary transition-colors flex items-center gap-1 cursor-pointer">
               <Download size={14} />
               Export CSV
@@ -294,7 +293,7 @@ export default function SalesClient({
               <Printer size={14} />
               Print
             </button>
-          </div>
+          </div> */}
         </div>
 
         <div className="overflow-x-auto">

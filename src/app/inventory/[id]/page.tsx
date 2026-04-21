@@ -12,7 +12,6 @@ import {
   Edit,
   Package,
   RefreshCw,
-  Share,
   ShoppingCart,
   TrendingDown,
   TrendingUp,
@@ -213,14 +212,16 @@ export default async function ProductDetailPage({
                 </div>
               </div>
               <div className="flex gap-3 w-full lg:w-auto">
+                {/* TODO: implement edit product */}
                 <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-primary/20 text-primary font-bold hover:bg-primary/5 transition-colors cursor-pointer">
                   <Edit size={16} />
                   Edit Product
                 </button>
-                <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-md bg-primary text-white font-bold hover:brightness-110 transition-all cursor-pointer shadow-lg shadow-primary/20">
+                {/* TODO: implement export data */}
+                {/* <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-md bg-primary text-white font-bold hover:brightness-110 transition-all cursor-pointer shadow-lg shadow-primary/20">
                   <Share size={16} />
                   Export Data
-                </button>
+                </button> */}
               </div>
             </section>
 
@@ -339,14 +340,15 @@ export default async function ProductDetailPage({
                     Daily revenue over the last 30 days
                   </p>
                 </div>
-                <div className="flex gap-2">
+                {/* TODO: implement 30 and 90 days filter */}
+                {/* <div className="flex gap-2">
                   <button className="px-3 py-1 text-xs font-bold rounded-lg bg-primary/10 text-primary cursor-pointer">
                     30 Days
                   </button>
                   <button className="px-3 py-1 text-xs font-bold rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
                     90 Days
                   </button>
-                </div>
+                </div> */}
               </div>
               <div className="h-64 w-full relative">
                 <div className="absolute inset-0 flex items-end justify-between gap-1 px-2">
@@ -538,11 +540,6 @@ export default async function ProductDetailPage({
                       </div>
                     ))
                   )}
-                </div>
-                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 text-center border-t border-slate-200 dark:border-primary/10">
-                  <button className="text-primary text-xs font-bold hover:underline cursor-pointer">
-                    View Full Logs
-                  </button>
                 </div>
               </section>
             </div>

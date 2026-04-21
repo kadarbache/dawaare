@@ -2,7 +2,9 @@ import { ChevronLeft, ChevronRight, Edit, Plus, Trash } from "lucide-react";
 import toast from "react-hot-toast";
 import { Categories } from "../page";
 import { deleteCategory } from "../server";
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
+
+const PAGE_SIZE = 5;
 
 export default function Catalog({
   categories,
@@ -14,6 +16,15 @@ export default function Catalog({
   handleEditCategory: (category: Categories) => void;
 }) {
   const [isPending, startTransition] = useTransition();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(categories.length / PAGE_SIZE);
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const paginatedCategories = categories.slice(
+    startIndex,
+    startIndex + PAGE_SIZE,
+  );
+
   const handleDeleteCategory = async (id: string) => {
     startTransition(async () => {
       const result = await deleteCategory(id);
@@ -71,7 +82,7 @@ export default function Catalog({
                   </td>
                 </tr>
               ) : (
-                categories.map((cat: Categories) => (
+                paginatedCategories.map((cat: Categories) => (
                   <tr
                     key={cat.id}
                     className="hover:bg-primary/5 transition-colors group"
@@ -117,22 +128,36 @@ export default function Catalog({
           </table>
         </div>
 
-        <div className="p-4 border-t border-primary/10 bg-slate-50 dark:bg-background-dark/30 flex justify-between items-center px-8">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-            Showing 3 of 12 categories
-          </span>
-          <div className="flex gap-2">
-            <button className="p-2 border border-primary/10 rounded-md hover:bg-white dark:hover:bg-background-dark transition-all text-slate-500">
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button className="h-8 min-w-[32px] border border-primary bg-primary text-white transition-all text-[10px] font-bold px-3 rounded-md">
-              1
-            </button>
-            <button className="p-2 border border-primary/10 rounded-md hover:bg-white dark:hover:bg-background-dark transition-all text-slate-500">
-              <ChevronRight className="w-4 h-4" />
-            </button>
+        {categories.length > 0 && (
+          <div className="p-4 border-t border-primary/10 bg-slate-50 dark:bg-background-dark/30 flex justify-between items-center px-8">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+              Showing {Math.min(startIndex + 1, categories.length)} to{" "}
+              {Math.min(startIndex + PAGE_SIZE, categories.length)} of{" "}
+              {categories.length} categories
+            </span>
+            <div className="flex gap-2">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                className="p-2 border border-primary/10 rounded-md hover:bg-white dark:hover:bg-background-dark transition-all text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button className="h-8 min-w-[32px] border border-primary bg-primary text-white transition-all text-[10px] font-bold px-3 rounded-md">
+                {currentPage}
+              </button>
+              <button
+                disabled={currentPage === totalPages || totalPages === 0}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                className="p-2 border border-primary/10 rounded-md hover:bg-white dark:hover:bg-background-dark transition-all text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

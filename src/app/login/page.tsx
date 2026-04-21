@@ -145,13 +145,13 @@ export default function LoginPage() {
                 Sign In
               </button>
 
-              <div className="relative flex items-center py-2">
+              <div className="relative hidden items-center py-2">
                 <div className="grow border-t border-slate-200 dark:border-slate-700"></div>
                 <span className="shrink mx-4 text-slate-400 text-sm">OR</span>
                 <div className="grow border-t border-slate-200 dark:border-slate-700"></div>
               </div>
-
-              <button
+              {/* TODO: implement google sign in */}
+              {/* <button
                 className="w-full flex items-center justify-center gap-3 bg-white dark:bg-transparent border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold py-3.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm cursor-pointer"
                 type="button"
               >
@@ -174,7 +174,7 @@ export default function LoginPage() {
                   ></path>
                 </svg>
                 Sign In with Google
-              </button>
+              </button> */}
             </form>
 
             {/* Footer Link */}
