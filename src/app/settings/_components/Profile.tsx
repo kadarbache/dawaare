@@ -34,6 +34,7 @@ export default function Profile() {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatar, setAvatar] = useState({
     url: "",
@@ -53,6 +54,13 @@ export default function Profile() {
         url: user.image,
         id: user.image_id,
       });
+    }
+    if (user?.number) {
+      if (user.number.startsWith("+252 ")) {
+        setPhoneNumber(user.number.replace("+252 ", ""));
+      } else {
+        setPhoneNumber(user.number);
+      }
     }
   }, [user]);
 
@@ -230,12 +238,25 @@ export default function Profile() {
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
                     Phone Number
                   </label>
-                  <input
-                    name="number"
-                    defaultValue={user.number || ""}
-                    className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-sm"
-                    type="tel"
-                  />
+                  <div className="flex items-stretch w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all shadow-sm overflow-hidden">
+                    <span className="flex items-center justify-center px-4 bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 border-r border-slate-300 dark:border-primary/20 font-bold select-none text-sm font-mono">
+                      +252
+                    </span>
+                    <input
+                      type="hidden"
+                      name="number"
+                      value={`+252 ${phoneNumber}`}
+                    />
+                    <input
+                      placeholder="6X XXXXXXX"
+                      className="flex-1 bg-transparent px-4 py-2.5 text-slate-900 dark:text-slate-100 outline-none w-full"
+                      type="tel"
+                      value={phoneNumber}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        setPhoneNumber(e.target.value)
+                      }
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
