@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center bg-background-light dark:bg-[#1a110c]">
+    <div className="h-full w-full flex flex-col items-center justify-center bg-background-light dark:bg-[#1a110c]">
       <div className="flex flex-col items-center gap-6">
         <div className="flex gap-2">
           <span className="size-3 animate-ping rounded-full bg-primary/80"></span>

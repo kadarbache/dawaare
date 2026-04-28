@@ -54,10 +54,11 @@ model Sale {
   repayment_date DateTime      @default(now())
   created_at     DateTime      @default(now())
   updated_at     DateTime      @updatedAt
-
-  customer   Customer?   @relation(fields: [customer_id], references: [id], onDelete: SetNull)
-  sale_items SaleItem[]
-  repayments Repayment[]
+  seller_id      String?
+  seller         User?         @relation(fields: [seller_id], references: [id])
+  customer       Customer?     @relation(fields: [customer_id], references: [id], onDelete: SetNull)
+  sale_items     SaleItem[]
+  repayments     Repayment[]
 
   @@map("sales")
 }
@@ -121,6 +122,7 @@ model User {
   accounts      Account[]
   number        String?
   image_id      String?
+  sales         Sale[]
 
   @@unique([email])
   @@map("user")

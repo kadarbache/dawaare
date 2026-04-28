@@ -21,6 +21,7 @@ import { PAGE_SIZE } from "../constants";
 import type { SaleRow, SaleStats } from "../server";
 import { delete_sale } from "../server";
 import SaleDetails from "./SaleDetails";
+import Image from "next/image";
 type SaleStatus = "paid" | "partial" | "unpaid";
 
 function get_status_class(status: string) {
@@ -365,14 +366,31 @@ export default function SalesClient({
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <div className="size-7 rounded-full bg-slate-700 flex items-center justify-center text-[10px] font-bold text-white shrink-0">
-                            kd
+                          <div className="flex items-center gap-2">
+                            {sale.seller_image ? (
+                              <div className="size-7 rounded-full relative overflow-hidden shrink-0 border border-slate-200 dark:border-primary/20">
+                                <Image
+                                  src={sale.seller_image}
+                                  alt={sale.seller_name || "Seller"}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                            ) : (
+                              <div className="size-7 rounded-full bg-slate-200 dark:bg-primary/20 flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-primary/60 shrink-0 border border-slate-300 dark:border-primary/30 uppercase">
+                                {sale.seller_name ? sale.seller_name.charAt(0) : "S"}
+                              </div>
+                            )}
+                            <span className="text-slate-900 dark:text-slate-100 text-sm font-medium">
+                              {sale.seller_name ? (
+                                sale.seller_name.split(" ")[0]
+                              ) : (
+                                <span className="text-slate-400 italic text-xs">
+                                  System
+                                </span>
+                              )}
+                            </span>
                           </div>
-                          <span className="text-slate-900 dark:text-slate-100 text-sm font-medium">
-                            kadar
-                          </span>
-                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">

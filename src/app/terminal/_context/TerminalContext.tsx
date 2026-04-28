@@ -8,6 +8,7 @@ import React, {
   ReactNode,
   useCallback,
 } from "react";
+import { authClient } from "@/lib/auth-client";
 
 // Using a simplified type for Product to avoid complex Prisma imports in the context unless necessary
 export type TerminalProduct = {
@@ -48,8 +49,6 @@ interface TerminalContextValue {
   cartTotal: number;
 
   selectedCustomer: Customer | null;
-  setSelectedCustomer: (customer: Customer | null) => void;
-
   paymentMethod: string;
   setPaymentMethod: (method: string) => void;
 
@@ -62,6 +61,8 @@ interface TerminalContextValue {
 
   repaymentDate: Date | undefined;
   setRepaymentDate: (date: Date | undefined) => void;
+
+  sellerId: string | null;
 }
 
 const TerminalContext = createContext<TerminalContextValue | null>(null);
@@ -87,6 +88,13 @@ export function TerminalProvider({
   const [repaymentDate, setRepaymentDate] = useState<Date | undefined>(
     undefined,
   );
+
+  const { data: session, isPending: sessionLoading } = authClient.useSession();
+  const user = session?.user;
+  let sellerId: string | null = null;
+  if (user && !sessionLoading) {
+    sellerId = user.id;
+  }
 
   const addToCart = useCallback((product: TerminalProduct) => {
     setCartItems((prev) => {
@@ -178,7 +186,6 @@ export function TerminalProvider({
     clearCart,
     cartTotal,
     selectedCustomer,
-    setSelectedCustomer,
     paymentMethod,
     setPaymentMethod,
     amountPaid,
@@ -188,6 +195,7 @@ export function TerminalProvider({
     exchangeRate,
     repaymentDate,
     setRepaymentDate,
+    sellerId,
   };
 
   return (

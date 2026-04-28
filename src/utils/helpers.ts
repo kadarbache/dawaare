@@ -23,5 +23,8 @@ export function format_sale_row(s: SaleWithCustomerAndItems): SaleRow {
       name: si.product.name,
       image: si.product.image,
     })),
+    seller_name: s.seller?.name ?? null,
+    seller_id: s.seller?.id ?? null,
+    seller_image: s.seller?.image ?? null,
   };
 }

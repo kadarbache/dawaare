@@ -25,6 +25,9 @@ export type SaleRow = {
     name: string;
     image: string;
   }[];
+  seller_name: string | null;
+  seller_id: string | null;
+  seller_image: string | null;
 };
 
 export type SaleStats = {
@@ -71,6 +74,13 @@ export async function get_sales(
                 image: true,
               },
             },
+          },
+        },
+        seller: {
+          select: {
+            name: true,
+            id: true,
+            image: true,
           },
         },
       },

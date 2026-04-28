@@ -12,6 +12,7 @@ export async function submitSale(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const sellerId = formData.get("seller_id") as string;
   try {
     const rawCart = formData.get("cart_payload") as string;
     const notes = formData.get("notes") as string;
@@ -55,6 +56,7 @@ export async function submitSale(
     await prisma.$transaction(async (tx) => {
       const sale = await tx.sale.create({
         data: {
+          seller_id: sellerId,
           customer_id: customerId && customerId.length > 0 ? customerId : null,
           total_amount: grandTotal,
           amount_paid: parsedAmountPaid,
