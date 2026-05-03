@@ -1,10 +1,10 @@
 "use client";
 
+import type { User } from "@prisma/client";
+import { MoreHorizontal, Plus } from "lucide-react";
 import Image from "next/image";
-import { Plus, Filter, ChevronDown, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import SellerModal from "./SellerModal";
-import type { User } from "@prisma/client";
 
 interface SellersListProps {
   users?: User[];
@@ -42,28 +42,10 @@ export default function SellersList({ users = [] }: SellersListProps) {
 
         {/* Table Controls */}
         <div className="flex justify-between items-center mb-6 relative z-10">
-          <div className="flex gap-4">
-            <div className="relative">
-              <Filter
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                size={14}
-              />
-              <select className="appearance-none bg-slate-50 dark:bg-primary/5 border border-slate-200 dark:border-primary/10 rounded-md py-2 pl-9 pr-8 text-sm text-slate-700 dark:text-slate-300 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 cursor-pointer">
-                <option>All Statuses</option>
-                <option>Active</option>
-                <option>Inactive</option>
-                <option>Banned</option>
-              </select>
-              <ChevronDown
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-                size={14}
-              />
-            </div>
-          </div>
+          <div className="flex gap-4"></div>
           <div className="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold">
-            Showing{" "}
-            {users.length > 0 ? `1-${users.length} of ${users.length}` : "0"}{" "}
-            entries
+            {" "}
+            sellers {users?.filter((s) => s.role == "SELLER").length}
           </div>
         </div>
 

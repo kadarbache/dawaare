@@ -282,7 +282,7 @@ export default function SalesClient({
         <div className="p-4 border-b border-slate-200 dark:border-primary/10 flex justify-between items-center bg-slate-50 dark:bg-primary/10">
           <h3 className="font-bold flex items-center gap-2 text-slate-900 dark:text-slate-100">
             <DollarSign size={20} className="text-primary" />
-            Transaction Registry
+            Sales Registry
           </h3>
           {/* TODO: implement export and print */}
           {/* <div className="flex gap-2">
@@ -301,8 +301,8 @@ export default function SalesClient({
           {sales.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-slate-400 dark:text-slate-600">
               <ShoppingBag size={48} className="mb-4 opacity-30" />
-              <p className="text-lg font-bold">No transactions found</p>
-              <p className="text-sm mt-1">Try adjusting your date filter</p>
+              <p className="text-lg font-bold">No sales found...</p>
+              <p className="text-sm mt-1">Try adjusting your date filters</p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
@@ -366,31 +366,33 @@ export default function SalesClient({
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            {sale.seller_image ? (
-                              <div className="size-7 rounded-full relative overflow-hidden shrink-0 border border-slate-200 dark:border-primary/20">
-                                <Image
-                                  src={sale.seller_image}
-                                  alt={sale.seller_name || "Seller"}
-                                  fill
-                                  className="object-cover"
-                                />
-                              </div>
+                        <div className="flex items-center gap-2">
+                          {sale.seller_image ? (
+                            <div className="size-7 rounded-full relative overflow-hidden shrink-0 border border-slate-200 dark:border-primary/20">
+                              <Image
+                                src={sale.seller_image}
+                                alt={sale.seller_name || "Seller"}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="size-7 rounded-full bg-slate-200 dark:bg-primary/20 flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-primary/60 shrink-0 border border-slate-300 dark:border-primary/30 uppercase">
+                              {sale.seller_name
+                                ? sale.seller_name.charAt(0)
+                                : "S"}
+                            </div>
+                          )}
+                          <span className="text-slate-900 dark:text-slate-100 text-sm font-medium">
+                            {sale.seller_name ? (
+                              sale.seller_name.split(" ")[0]
                             ) : (
-                              <div className="size-7 rounded-full bg-slate-200 dark:bg-primary/20 flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-primary/60 shrink-0 border border-slate-300 dark:border-primary/30 uppercase">
-                                {sale.seller_name ? sale.seller_name.charAt(0) : "S"}
-                              </div>
+                              <span className="text-slate-400 italic text-xs">
+                                System
+                              </span>
                             )}
-                            <span className="text-slate-900 dark:text-slate-100 text-sm font-medium">
-                              {sale.seller_name ? (
-                                sale.seller_name.split(" ")[0]
-                              ) : (
-                                <span className="text-slate-400 italic text-xs">
-                                  System
-                                </span>
-                              )}
-                            </span>
-                          </div>
+                          </span>
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
@@ -461,7 +463,7 @@ export default function SalesClient({
             <span className="font-bold text-slate-900 dark:text-slate-100">
               {total.toLocaleString()}
             </span>{" "}
-            transactions
+            sales
           </div>
           <div className="flex items-center gap-1">
             <button

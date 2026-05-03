@@ -25,13 +25,7 @@ export default function SettingsClient({
     null,
   );
 
-  const tabs = [
-    "Currency & Categories",
-    "Profile",
-    "Sellers",
-    "Receipts (inactive)",
-    "Currency (inactive)",
-  ];
+  const tabs = ["Currency & Categories", "Profile", "Sellers"];
 
   const handleAddCategory = () => {
     setEditingCategory(null);

@@ -76,8 +76,8 @@ export default function DebtList({
           {sales.length === 0 && (
             <tr>
               <td
-                colSpan={6}
-                className="px-6 py-12 text-center text-slate-400 italic"
+                colSpan={9}
+                className="w-full px-6 py-12 text-center text-slate-400 italic"
               >
                 No sales recorded yet
               </td>

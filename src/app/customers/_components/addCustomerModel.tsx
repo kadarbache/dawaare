@@ -16,6 +16,7 @@ export default function AddCustomerModal({
 }: AddCustomerModalProps) {
   const [state, formAction, isPending] = useActionState(createCustomer, null);
   const formRef = useRef<HTMLFormElement>(null);
+  const hiddenPhoneRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (state?.success) {
@@ -65,13 +66,23 @@ export default function AddCustomerModal({
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
               Phone Number *
             </label>
-            <input
-              name="phone"
-              required
-              className="w-full bg-slate-50 dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
-              placeholder="e.g. +252634444444"
-              type="tel"
-            />
+            <div className="flex items-stretch w-full bg-slate-50 dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all overflow-hidden">
+              <span className="flex items-center justify-center px-4 bg-slate-100 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 border-r border-slate-300 dark:border-primary/20 font-bold select-none text-sm font-mono">
+                +252
+              </span>
+              <input type="hidden" name="phone" ref={hiddenPhoneRef} />
+              <input
+                placeholder="6X XXXXXXX"
+                className="flex-1 bg-transparent px-4 py-2.5 text-slate-900 dark:text-slate-100 outline-none w-full"
+                type="tel"
+                onChange={(e) => {
+                  if (hiddenPhoneRef.current) {
+                    hiddenPhoneRef.current.value = `+252 ${e.target.value}`;
+                  }
+                }}
+                required
+              />
+            </div>
           </div>
 
           {/* Email */}
