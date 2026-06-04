@@ -1,6 +1,13 @@
 import { prisma } from "@/lib/db";
 import { SaleWithCustomerAndItems } from "@/utils/types";
-import { History, PlusCircle, TrendingUp, User, Wallet } from "lucide-react";
+import {
+  History,
+  Pencil,
+  PlusCircle,
+  TrendingUp,
+  User,
+  Wallet,
+} from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DebtList from "../_components/DebtList";
@@ -126,6 +133,10 @@ export default async function CustomerDetailPage({
             <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">
               Customer Details
             </h4>
+            {/* edit button */}
+            <Link href={`/customers/${id}/edit`} className="ml-auto">
+              <Pencil size={16} className="text-primary" />
+            </Link>
           </div>
           {/* customer name: kadare */}
           <div className="flex items-center gap-2">
