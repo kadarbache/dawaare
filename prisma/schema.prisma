@@ -60,6 +60,8 @@ model Sale {
   sale_items     SaleItem[]
   repayments     Repayment[]
 
+  @@index([customer_id])
+  @@index([seller_id])
   @@map("sales")
 }
 
@@ -77,6 +79,9 @@ model SaleItem {
   quantity     Int
   unit_price   Float
   total_price  Float
+  // Cost at the moment of sale. Null on rows created before this was tracked;
+  // profit calculations fall back to the product's current cost_price.
+  cost_price   Float?
 
   sale    Sale    @relation(fields: [sale_id], references: [id], onDelete: Cascade)
   product Product @relation(fields: [product_id], references: [id])
@@ -84,6 +89,8 @@ model SaleItem {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  @@index([sale_id])
+  @@index([product_id])
   @@map("sale_items")
 }
 
@@ -191,5 +198,6 @@ model Repayment {
 
   sale Sale @relation(fields: [sale_id], references: [id], onDelete: Cascade)
 
+  @@index([sale_id])
   @@map("repayments")
 }

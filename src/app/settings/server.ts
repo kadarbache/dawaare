@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { requireAdmin, AuthError } from "@/lib/auth-guard";
 
 export type ActionState = {
   status: "idle" | "success" | "error";
@@ -20,15 +21,17 @@ export async function add_category(
 
   name = name.toLowerCase().trim();
 
-  const existingCategory = await prisma.itemsCategory.findUnique({
-    where: { name },
-  });
-
-  if (existingCategory) {
-    return { status: "error", message: "Category already exists" };
-  }
-
   try {
+    await requireAdmin();
+
+    const existingCategory = await prisma.itemsCategory.findUnique({
+      where: { name },
+    });
+
+    if (existingCategory) {
+      return { status: "error", message: "Category already exists" };
+    }
+
     await prisma.itemsCategory.create({
       data: {
         name: name,
@@ -39,6 +42,9 @@ export async function add_category(
     revalidatePath("/settings");
     return { status: "success", message: "Category created successfully!" };
   } catch (error) {
+    if (error instanceof AuthError) {
+      return { status: "error", message: error.message };
+    }
     console.error("Failed to add category:", error);
     return {
       status: "error",
@@ -58,17 +64,19 @@ export async function edit_category(
     return { status: "error", message: "Category ID and name are required" };
   }
 
-  const existingCategory = await prisma.itemsCategory.findUnique({
-    where: { id },
-  });
-
-  if (!existingCategory) {
-    return { status: "error", message: "Category not found" };
-  }
-
   name = name.toLowerCase().trim();
 
   try {
+    await requireAdmin();
+
+    const existingCategory = await prisma.itemsCategory.findUnique({
+      where: { id },
+    });
+
+    if (!existingCategory) {
+      return { status: "error", message: "Category not found" };
+    }
+
     await prisma.itemsCategory.update({
       where: { id },
       data: { name },
@@ -77,6 +85,9 @@ export async function edit_category(
     revalidatePath("/settings");
     return { status: "success", message: "Category updated successfully!" };
   } catch (error: unknown) {
+    if (error instanceof AuthError) {
+      return { status: "error", message: error.message };
+    }
     console.error("Failed to update category:", error);
     return {
       status: "error",
@@ -90,15 +101,17 @@ export async function deleteCategory(id: string): Promise<ActionState> {
     return { status: "error", message: "Category ID is required" };
   }
 
-  const existingCategory = await prisma.itemsCategory.findUnique({
-    where: { id },
-  });
-
-  if (!existingCategory) {
-    return { status: "error", message: "Category not found" };
-  }
-
   try {
+    await requireAdmin();
+
+    const existingCategory = await prisma.itemsCategory.findUnique({
+      where: { id },
+    });
+
+    if (!existingCategory) {
+      return { status: "error", message: "Category not found" };
+    }
+
     await prisma.itemsCategory.delete({
       where: { id },
     });
@@ -106,6 +119,9 @@ export async function deleteCategory(id: string): Promise<ActionState> {
     revalidatePath("/settings");
     return { status: "success", message: "Category deleted successfully!" };
   } catch (error: unknown) {
+    if (error instanceof AuthError) {
+      return { status: "error", message: error.message };
+    }
     console.error("Failed to delete category:", error);
     return {
       status: "error",
@@ -124,27 +140,29 @@ export async function addExchangeRate(rate: number): Promise<ActionState> {
     };
   }
 
-  const existingExchangeRate = await prisma.exchangeRate.findUnique({
-    where: { currency },
-  });
+  try {
+    await requireAdmin();
 
-  if (existingExchangeRate) {
-    await prisma.exchangeRate.update({
+    const existingExchangeRate = await prisma.exchangeRate.findUnique({
       where: { currency },
-      data: {
-        rate,
-        updated_at: new Date(),
-      },
     });
 
-    revalidatePath("/settings");
-    return {
-      status: "success",
-      message: "Exchange rate updated successfully!",
-    };
-  }
+    if (existingExchangeRate) {
+      await prisma.exchangeRate.update({
+        where: { currency },
+        data: {
+          rate,
+          updated_at: new Date(),
+        },
+      });
 
-  try {
+      revalidatePath("/settings");
+      return {
+        status: "success",
+        message: "Exchange rate updated successfully!",
+      };
+    }
+
     await prisma.exchangeRate.create({
       data: {
         currency: currency,
@@ -158,6 +176,9 @@ export async function addExchangeRate(rate: number): Promise<ActionState> {
       message: "Exchange rate created successfully!",
     };
   } catch (error: unknown) {
+    if (error instanceof AuthError) {
+      return { status: "error", message: error.message };
+    }
     console.error("Failed to add exchange rate:", error);
     return {
       status: "error",

@@ -1,24 +1,49 @@
 import { auth } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
-  if (process.env.NODE_ENV !== "development") {
-    return NextResponse.json({
-      success: false,
-      message: "This API is only available in development mode",
-    });
+// One-time local bootstrap route for creating the first admin account.
+// Requires SETUP_SECRET to be set locally and passed as ?secret=... — never set
+// SETUP_SECRET in a deployed environment.
+export async function GET(request: NextRequest) {
+  const setupSecret = process.env.SETUP_SECRET;
+  const providedSecret = request.nextUrl.searchParams.get("secret");
+
+  if (
+    process.env.NODE_ENV !== "development" ||
+    !setupSecret ||
+    providedSecret !== setupSecret
+  ) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "This API is only available in development mode with a valid setup secret",
+      },
+      { status: 403 },
+    );
+  }
+
+  const email = request.nextUrl.searchParams.get("email");
+  const password = request.nextUrl.searchParams.get("password");
+  const name = request.nextUrl.searchParams.get("name");
+
+  if (!email || !password || !name) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "email, password, and name query params are required",
+      },
+      { status: 400 },
+    );
   }
 
   try {
     await auth.api.signUpEmail({
       body: {
-        // IMPORTANT: Use your actual email address so you can receive the verification link!
-        // Your auth.ts requires email verification.
-        email: "khadary247@gmail.com",
-        password: "12345678", // Change this to your password
-        name: "kadar bache",
-        role: "SELLER",
-        number: "0909090909",
+        email,
+        password,
+        name,
+        role: "ADMIN",
+        number: "",
         image: "",
         image_id: "",
       },

@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/db";
 import { deleteImage } from "@/lib/upload";
 import { revalidatePath } from "next/cache";
+import { requireSession, AuthError } from "@/lib/auth-guard";
+import type { Prisma } from "@prisma/client";
 
 interface ActionResult {
   status: string;
@@ -36,6 +38,8 @@ export async function createProduct(
   }
 
   try {
+    await requireSession();
+
     const existingProduct = await prisma.product.findUnique({
       where: { sku },
     });
@@ -47,34 +51,38 @@ export async function createProduct(
       };
     }
 
-    await prisma.product.create({
-      data: {
-        name,
-        sku,
-        category,
-        price,
-        cost_price,
-        stock_qty,
-        is_low_stock: stock_qty <= 5,
-        image,
-        public_id,
-      },
-    });
-
-    await prisma.itemsCategory.update({
-      where: {
-        id: catId,
-      },
-      data: {
-        count: {
-          increment: 1,
+    await prisma.$transaction([
+      prisma.product.create({
+        data: {
+          name,
+          sku,
+          category,
+          price,
+          cost_price,
+          stock_qty,
+          is_low_stock: stock_qty <= 5,
+          image,
+          public_id,
         },
-      },
-    });
+      }),
+      prisma.itemsCategory.update({
+        where: {
+          id: catId,
+        },
+        data: {
+          count: {
+            increment: 1,
+          },
+        },
+      }),
+    ]);
 
     revalidatePath("/inventory");
     return { status: "success", message: "Product created successfully" };
   } catch (error) {
+    if (error instanceof AuthError) {
+      return { status: "error", message: error.message };
+    }
     console.error("Failed to create product:", error);
 
     if (public_id) {
@@ -119,7 +127,6 @@ export async function updateProduct(
     image,
     public_id,
   };
-  console.log("server", productData);
 
   if (
     !id ||
@@ -135,12 +142,7 @@ export async function updateProduct(
   }
 
   try {
-    await prisma.product.update({
-      where: {
-        id,
-      },
-      data: productData,
-    });
+    await requireSession();
 
     const oldcat = await prisma.itemsCategory.findUnique({
       where: {
@@ -148,39 +150,50 @@ export async function updateProduct(
       },
     });
     const oldCatId = oldcat?.id;
-    console.log("oldCatId", oldCatId);
-    console.log("newCatId", newCatId === "");
+
+    const updates: Prisma.PrismaPromise<unknown>[] = [
+      prisma.product.update({ where: { id }, data: productData }),
+    ];
 
     if (newCatId !== "") {
       // update category count
       if (oldcat && newCatId !== oldCatId) {
-        await prisma.itemsCategory.update({
+        updates.push(
+          prisma.itemsCategory.update({
+            where: {
+              id: oldCatId,
+            },
+            data: {
+              count: {
+                decrement: 1,
+              },
+            },
+          }),
+        );
+      }
+
+      updates.push(
+        prisma.itemsCategory.update({
           where: {
-            id: oldCatId,
+            id: newCatId,
           },
           data: {
             count: {
-              decrement: 1,
+              increment: 1,
             },
           },
-        });
-      }
-
-      await prisma.itemsCategory.update({
-        where: {
-          id: newCatId,
-        },
-        data: {
-          count: {
-            increment: 1,
-          },
-        },
-      });
+        }),
+      );
     }
+
+    await prisma.$transaction(updates);
 
     revalidatePath("/inventory");
     return { status: "success", message: "Product updated successfully" };
   } catch (error) {
+    if (error instanceof AuthError) {
+      return { status: "error", message: error.message };
+    }
     console.error("Failed to update product:", error);
 
     if (public_id) {

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
 import Topbar from "../../components/Topbar";
 import ButtomAcionBar from "../terminal/_components/ButtomAcionBar";
@@ -24,6 +25,8 @@ export default async function InventoryPage({
 
   const filter = params.filter ?? "newest";
 
+  // Full table read for dashboard stats, which are computed across all
+  // products regardless of the current filter/page.
   const data = await prisma.product.findMany({
     orderBy: {
       created_at: "desc",
@@ -89,51 +92,31 @@ export default async function InventoryPage({
     isInventoryValueDown,
   };
 
-  const total = products.length;
+  const listWhere: Prisma.ProductWhereInput =
+    filter === "out of stock"
+      ? { stock_qty: 0 }
+      : filter === "low stock"
+        ? { is_low_stock: true }
+        : {};
 
-  // memory pagination and filtering since we already fetched all to calculate stats
-  const paginatedProducts: Product[] = products
-    .slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
-    .filter((product: Product) => {
-      if (filter === "out of stock") {
-        return product.stock_qty === 0;
-      }
-      if (filter === "low stock") {
-        return product.is_low_stock;
-      }
-      if (filter === "newest") {
-        return product.created_at;
-      }
-      if (filter === "oldest") {
-        return product.created_at;
-      }
-      if (filter === "lowest price") {
-        return product.price;
-      }
-      if (filter === "highest price") {
-        return product.price;
-      }
-      return true;
-    });
+  const listOrderBy: Prisma.ProductOrderByWithRelationInput =
+    filter === "lowest price"
+      ? { price: "asc" }
+      : filter === "highest price"
+        ? { price: "desc" }
+        : filter === "oldest"
+          ? { created_at: "asc" }
+          : { created_at: "desc" };
 
-  if (filter === "lowest price") {
-    paginatedProducts.sort((a: Product, b: Product) => a.price - b.price);
-  }
-  if (filter === "highest price") {
-    paginatedProducts.sort((a: Product, b: Product) => b.price - a.price);
-  }
-  if (filter === "newest") {
-    paginatedProducts.sort(
-      (a: Product, b: Product) =>
-        b.created_at.getTime() - a.created_at.getTime(),
-    );
-  }
-  if (filter === "oldest") {
-    paginatedProducts.sort(
-      (a: Product, b: Product) =>
-        a.created_at.getTime() - b.created_at.getTime(),
-    );
-  }
+  const [paginatedProducts, total] = await Promise.all([
+    prisma.product.findMany({
+      where: listWhere,
+      orderBy: listOrderBy,
+      skip: (currentPage - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.product.count({ where: listWhere }),
+  ]);
 
   return (
     <>

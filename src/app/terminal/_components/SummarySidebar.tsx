@@ -10,7 +10,7 @@ import { useTerminal } from "../_context/TerminalContext";
 import { submitSale, ActionState } from "../actions";
 import toast from "react-hot-toast";
 import CustomerProfile from "@/components/CustomerProfile";
-import { format } from "date-fns";
+import dayjs from "dayjs";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -38,7 +38,6 @@ export default function SummarySidebar() {
     exchangeRate,
     repaymentDate,
     setRepaymentDate,
-    sellerId,
   } = useTerminal();
 
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
@@ -126,8 +125,6 @@ export default function SummarySidebar() {
             value={repaymentDate?.toISOString() || ""}
           />
         )}
-        {sellerId && <input type="hidden" name="seller_id" value={sellerId} />}
-
         {selectedCustomer && (
           <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
             <Banknote
@@ -164,7 +161,7 @@ export default function SummarySidebar() {
                       className="text-slate-400 dark:text-slate-500"
                     />
                     {repaymentDate ? (
-                      format(repaymentDate, "PPP")
+                      dayjs(repaymentDate).format("MMMM D, YYYY")
                     ) : (
                       <span className="text-slate-400 dark:text-slate-600">
                         Pick a repayment date

@@ -18,6 +18,7 @@ import { Loader2, CircleAlert, ShieldCheck } from "lucide-react";
 import { uploadImage } from "@/lib/upload";
 import Image from "next/image";
 import { User as AuthUser } from "@/lib/auth";
+import PhoneInput from "@/components/PhoneInput";
 
 export default function Profile() {
   const { data: session, isPending: sessionLoading } = authClient.useSession();
@@ -182,10 +183,14 @@ export default function Profile() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                  <label
+                    htmlFor="profile-first-name"
+                    className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400"
+                  >
                     First Name
                   </label>
                   <input
+                    id="profile-first-name"
                     name="firstName"
                     value={firstName}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -197,10 +202,14 @@ export default function Profile() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                  <label
+                    htmlFor="profile-last-name"
+                    className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400"
+                  >
                     Last Name
                   </label>
                   <input
+                    id="profile-last-name"
                     name="lastName"
                     value={lastName}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -211,11 +220,15 @@ export default function Profile() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                  <label
+                    htmlFor="profile-email"
+                    className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400"
+                  >
                     Email Address
                   </label>
                   <div className="relative">
                     <input
+                      id="profile-email"
                       name="email"
                       defaultValue={user.email}
                       className="w-full bg-slate-100/50 dark:bg-slate-900/20 border border-slate-200 dark:border-primary/10 rounded-md px-4 py-2.5 text-slate-500 dark:text-slate-400 cursor-not-allowed pr-24 outline-none"
@@ -235,34 +248,28 @@ export default function Profile() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                  <label
+                    htmlFor="profile-phone"
+                    className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400"
+                  >
                     Phone Number
                   </label>
-                  <div className="flex items-stretch w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all shadow-sm overflow-hidden">
-                    <span className="flex items-center justify-center px-4 bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 border-r border-slate-300 dark:border-primary/20 font-bold select-none text-sm font-mono">
-                      +252
-                    </span>
-                    <input
-                      type="hidden"
-                      name="number"
-                      value={`+252 ${phoneNumber}`}
-                    />
-                    <input
-                      placeholder="6X XXXXXXX"
-                      className="flex-1 bg-transparent px-4 py-2.5 text-slate-900 dark:text-slate-100 outline-none w-full"
-                      type="tel"
-                      value={phoneNumber}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setPhoneNumber(e.target.value)
-                      }
-                    />
-                  </div>
+                  <PhoneInput
+                    id="profile-phone"
+                    name="number"
+                    value={phoneNumber}
+                    onChange={setPhoneNumber}
+                  />
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                  <label
+                    htmlFor="profile-role"
+                    className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400"
+                  >
                     Role/Position
                   </label>
                   <input
+                    id="profile-role"
                     className="w-full bg-slate-100/50 dark:bg-slate-900/20 border border-slate-200/50 dark:border-primary/5 rounded-md px-4 py-2.5 text-slate-500 dark:text-slate-400 cursor-not-allowed italic capitalize outline-none"
                     readOnly
                     type="text"
@@ -303,10 +310,14 @@ export default function Profile() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+              <label
+                htmlFor="current-password"
+                className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400"
+              >
                 Current Password
               </label>
               <input
+                id="current-password"
                 name="currentPassword"
                 className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-sm"
                 placeholder="••••••••••••"
@@ -315,10 +326,14 @@ export default function Profile() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+              <label
+                htmlFor="new-password"
+                className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400"
+              >
                 New Password
               </label>
               <input
+                id="new-password"
                 name="newPassword"
                 className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-sm"
                 placeholder="Min. 8 characters"
@@ -328,10 +343,14 @@ export default function Profile() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+              <label
+                htmlFor="confirm-password"
+                className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400"
+              >
                 Confirm New Password
               </label>
               <input
+                id="confirm-password"
                 name="confirmPassword"
                 className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-sm"
                 placeholder="Re-enter password"

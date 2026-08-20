@@ -34,7 +34,11 @@ export function NoCustomer() {
           Create New Customer
         </Button>
       </div>
-      <AddCustomerModal isOpen={open} onClose={handleClose} />
+      <AddCustomerModal
+        key={open ? "open" : "closed"}
+        isOpen={open}
+        onClose={handleClose}
+      />
     </>
   );
 }

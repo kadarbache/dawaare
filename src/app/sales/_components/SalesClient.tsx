@@ -127,7 +127,6 @@ export default function SalesClient({
     set_is_modal_open(true);
   }
 
-  console.log(sales);
   const page_numbers = Array.from(
     { length: total_pages },
     (_, i) => i + 1,
