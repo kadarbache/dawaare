@@ -58,16 +58,6 @@ export type Product = Prisma.ProductGetPayload<{
   };
 }>;
 
-export type SaleItemsWithProductCostPrice = Prisma.SaleItemGetPayload<{
-  include: {
-    product: {
-      select: {
-        cost_price: true;
-      };
-    };
-  };
-}>;
-
 export type RecentTransactionsWithCustomerName = Prisma.SaleGetPayload<{
   include: {
     customer: {
@@ -102,6 +92,7 @@ export type SaleWithCustomerAndItems = Prisma.SaleGetPayload<{
         };
       };
     };
+    seller: { select: { name: true; id: true; image: true } };
   };
 }>;
 

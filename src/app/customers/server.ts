@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { requireSession, AuthError } from "@/lib/auth-guard";
 
 interface ActionResult {
   success: boolean;
@@ -26,6 +27,8 @@ export async function createCustomer(
   }
 
   try {
+    await requireSession();
+
     // Check if phone already exists since it's unique
     const existing = await prisma.customer.findUnique({
       where: { phone },
@@ -51,6 +54,9 @@ export async function createCustomer(
     revalidatePath("/customers");
     return { success: true };
   } catch (error) {
+    if (error instanceof AuthError) {
+      return { success: false, error: error.message };
+    }
     console.error("Failed to create customer:", error);
 
     return {
@@ -83,6 +89,8 @@ export async function repayDebt(
   }
 
   try {
+    await requireSession();
+
     const sale = await prisma.sale.findUnique({
       where: { id: saleId },
     });
@@ -130,6 +138,9 @@ export async function repayDebt(
 
     return { success: true };
   } catch (error) {
+    if (error instanceof AuthError) {
+      return { success: false, error: error.message };
+    }
     console.error("Failed to process payment:", error);
 
     return {

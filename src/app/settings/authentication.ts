@@ -4,10 +4,13 @@ import { auth } from "@/lib/auth";
 import { APIError } from "better-auth/api";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { randomBytes } from "crypto";
+import { requireAdmin, AuthError } from "@/lib/auth-guard";
 
 type ActionState = {
   error?: string | null;
   success?: boolean;
+  temporaryPassword?: string;
 };
 
 export async function addSellerAction(
@@ -26,10 +29,12 @@ export async function addSellerAction(
   firstName = firstName.trim().toLocaleLowerCase();
   lastName = lastName.trim().toLocaleLowerCase();
   const name = `${firstName} ${lastName}`;
-  // Using a default password for staff accounts. They can change it later.
-  const password = "dawaarepassword123";
+  // Random per-account temporary password, shown once to the admin so it can be shared with the new staff member.
+  const password = randomBytes(9).toString("base64url");
 
   try {
+    await requireAdmin();
+
     await auth.api.signUpEmail({
       body: {
         email,
@@ -44,8 +49,11 @@ export async function addSellerAction(
     });
 
     revalidatePath("/settings");
-    return { success: true };
+    return { success: true, temporaryPassword: password };
   } catch (error) {
+    if (error instanceof AuthError) {
+      return { error: error.message };
+    }
     if (error instanceof APIError) {
       return { error: error.message };
     }

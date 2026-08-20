@@ -263,10 +263,14 @@ export default function EditProductModel({
 
         {/* Input Section: Product Name */}
         <div className="flex flex-col gap-1.5 w-full">
-          <label className="w-full text-left text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <label
+            htmlFor="edit-product-name"
+            className="w-full text-left text-sm font-semibold text-slate-700 dark:text-slate-300"
+          >
             Product Name
           </label>
           <input
+            id="edit-product-name"
             name="name"
             defaultValue={editProduct.name}
             className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
@@ -292,11 +296,15 @@ export default function EditProductModel({
 
           {/* SKU Code */}
           <div className="flex flex-col gap-1.5 w-full">
-            <label className="w-full text-left text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="edit-product-sku"
+              className="w-full text-left text-sm font-semibold text-slate-700 dark:text-slate-300"
+            >
               SKU Code
             </label>
             <div className="flex gap-2">
               <input
+                id="edit-product-sku"
                 name="sku"
                 value={sku}
                 onChange={(e) => setSku(e.target.value)}
@@ -326,6 +334,7 @@ export default function EditProductModel({
                   }}
                   onError={(error) => {
                     console.error("Scanner Error:", error);
+                    toast.error("Could not access the camera for scanning.");
                   }}
                   components={{
                     finder: true,
@@ -347,7 +356,10 @@ export default function EditProductModel({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* Selling Price */}
           <div className="flex flex-col gap-1.5 w-full">
-            <label className="w-full text-left text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="edit-product-price"
+              className="w-full text-left text-sm font-semibold text-slate-700 dark:text-slate-300"
+            >
               Selling Price
             </label>
             <div className="relative">
@@ -355,6 +367,7 @@ export default function EditProductModel({
                 $
               </span>
               <input
+                id="edit-product-price"
                 name="price"
                 defaultValue={editProduct.price}
                 className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md pl-8 pr-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
@@ -367,7 +380,10 @@ export default function EditProductModel({
 
           {/* Cost Price */}
           <div className="flex flex-col gap-1.5 w-full">
-            <label className="w-full text-left text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="edit-product-cost-price"
+              className="w-full text-left text-sm font-semibold text-slate-700 dark:text-slate-300"
+            >
               Cost Price
             </label>
             <div className="relative">
@@ -375,6 +391,7 @@ export default function EditProductModel({
                 $
               </span>
               <input
+                id="edit-product-cost-price"
                 name="cost_price"
                 defaultValue={editProduct.cost_price}
                 className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md pl-8 pr-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
@@ -387,7 +404,10 @@ export default function EditProductModel({
 
           {/* Stock Count */}
           <div className="flex flex-col gap-1.5 w-full">
-            <label className="w-full text-left text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="edit-product-stock-qty"
+              className="w-full text-left text-sm font-semibold text-slate-700 dark:text-slate-300"
+            >
               Stock Count
             </label>
             <div className="relative">
@@ -395,6 +415,7 @@ export default function EditProductModel({
                 <Package size={20} />
               </span>
               <input
+                id="edit-product-stock-qty"
                 name="stock_qty"
                 defaultValue={editProduct.stock_qty}
                 className="w-full bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md pl-10 pr-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"

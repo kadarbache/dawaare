@@ -1,7 +1,7 @@
 import Topbar from "@/components/Topbar";
 import { prisma } from "@/lib/db";
 import { SaleItem, SaleItemWithSaleAndCustomer } from "@/utils/types";
-import dayjs from "dayjs";
+import { shop_now, to_shop_time, shop_day_key } from "@/lib/dates";
 import {
   AlertTriangle,
   ArrowDownLeft,
@@ -48,9 +48,9 @@ export default async function ProductDetailPage({
       orderBy: { created_at: "desc" },
     });
 
-  const all_sale_items: SaleItem[] = await prisma.saleItem.findMany({
-    where: { product_id: id },
-  });
+  const all_sale_items: SaleItem[] = sale_items;
+
+  const item_cost = (item: SaleItem) => item.cost_price ?? product.cost_price;
 
   const total_revenue = all_sale_items.reduce(
     (sum: number, item: SaleItem) => sum + item.total_price,
@@ -63,74 +63,64 @@ export default async function ProductDetailPage({
   );
 
   const total_cost = all_sale_items.reduce(
-    (sum: number, item: SaleItem) => sum + product.cost_price * item.quantity,
+    (sum: number, item: SaleItem) => sum + item_cost(item) * item.quantity,
     0,
   );
 
   const net_profit = total_revenue - total_cost;
 
-  const last_month = dayjs().subtract(1, "month");
+  // Compare the last 30 days against the 30 days before it. Comparing against
+  // all prior history would make the percentages grow meaningless over time.
+  const window_start = shop_now().subtract(29, "day").startOf("day");
+  const previous_window_start = window_start.subtract(30, "day");
+
   const recent_items = all_sale_items.filter((item) =>
-    dayjs(item.created_at).isAfter(last_month),
+    to_shop_time(item.created_at).isAfter(window_start),
   );
-  const older_items = all_sale_items.filter((item) =>
-    dayjs(item.created_at).isBefore(last_month),
-  );
+  const older_items = all_sale_items.filter((item) => {
+    const at = to_shop_time(item.created_at);
+    return at.isAfter(previous_window_start) && at.isBefore(window_start);
+  });
 
-  const recent_revenue = recent_items.reduce(
-    (sum: number, item: SaleItem) => sum + item.total_price,
-    0,
-  );
-  const older_revenue = older_items.reduce(
-    (sum: number, item: SaleItem) => sum + item.total_price,
-    0,
-  );
-  const revenue_change =
-    older_revenue > 0
-      ? ((recent_revenue - older_revenue) / older_revenue) * 100
-      : 0;
-
-  const recent_units = recent_items.reduce(
-    (sum: number, item: SaleItem) => sum + item.quantity,
-    0,
-  );
-  const older_units = older_items.reduce(
-    (sum: number, item: SaleItem) => sum + item.quantity,
-    0,
-  );
-  const units_change =
-    older_units > 0 ? ((recent_units - older_units) / older_units) * 100 : 0;
-
-  const recent_profit =
-    recent_revenue -
-    recent_items.reduce(
-      (sum: number, item: SaleItem) => sum + product.cost_price * item.quantity,
+  const sum_revenue = (items: SaleItem[]) =>
+    items.reduce((sum: number, item: SaleItem) => sum + item.total_price, 0);
+  const sum_units = (items: SaleItem[]) =>
+    items.reduce((sum: number, item: SaleItem) => sum + item.quantity, 0);
+  const sum_profit = (items: SaleItem[]) =>
+    items.reduce(
+      (sum: number, item: SaleItem) =>
+        sum + (item.unit_price - item_cost(item)) * item.quantity,
       0,
     );
-  const older_profit =
-    older_revenue -
-    older_items.reduce(
-      (sum: number, item: SaleItem) => sum + product.cost_price * item.quantity,
-      0,
-    );
-  const profit_change =
-    older_profit > 0
-      ? ((recent_profit - older_profit) / older_profit) * 100
-      : 0;
+
+  const percent_change = (recent: number, older: number) =>
+    older > 0 ? ((recent - older) / older) * 100 : 0;
+
+  const recent_revenue = sum_revenue(recent_items);
+  const older_revenue = sum_revenue(older_items);
+  const revenue_change = percent_change(recent_revenue, older_revenue);
+
+  const units_change = percent_change(
+    sum_units(recent_items),
+    sum_units(older_items),
+  );
+
+  const profit_change = percent_change(
+    sum_profit(recent_items),
+    sum_profit(older_items),
+  );
+
+  const revenue_by_day = new Map<string, number>();
+  for (const item of all_sale_items) {
+    const key = shop_day_key(item.created_at);
+    revenue_by_day.set(key, (revenue_by_day.get(key) ?? 0) + item.total_price);
+  }
 
   const last_30_days = Array.from({ length: 30 }, (_, i) => {
-    const date = dayjs().subtract(29 - i, "day");
-    const day_items = all_sale_items.filter(
-      (item) =>
-        dayjs(item.created_at).format("YYYY-MM-DD") ===
-        date.format("YYYY-MM-DD"),
-    );
+    const date = shop_now().subtract(29 - i, "day");
     return {
       date: date.format("MMM DD"),
-      revenue: day_items.reduce(
-        (sum: number, item: SaleItem) => sum + item.total_price,
-        0,
-      ),
+      revenue: revenue_by_day.get(date.format("YYYY-MM-DD")) ?? 0,
     };
   });
 
@@ -432,7 +422,9 @@ export default async function ProductDetailPage({
                             className="hover:bg-primary/5 transition-colors"
                           >
                             <td className="px-6 py-4 text-slate-500">
-                              {dayjs(item.created_at).format("MMM DD, YYYY")}
+                              {to_shop_time(item.created_at).format(
+                                "MMM DD, YYYY",
+                              )}
                             </td>
                             <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">
                               {item.sale.customer?.name || "Walk-in Customer"}
@@ -518,7 +510,7 @@ export default async function ProductDetailPage({
                                   : "Inventory Adjustment"}
                             </p>
                             <span className="text-xs text-slate-500">
-                              {dayjs(movement.date).format("MMM DD")}
+                              {to_shop_time(movement.date).format("MMM DD")}
                             </span>
                           </div>
                           <p className="text-xs text-slate-500 mt-1">

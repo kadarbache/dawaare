@@ -20,9 +20,10 @@ import {
   DebtClearance,
 } from "./server";
 import { SalesTrendChart } from "./SalesTrendChart";
+import { to_shop_time } from "@/lib/dates";
 import FilterButtons from "@/components/FilterButtons";
 import ButtomAcionBar from "../terminal/_components/ButtomAcionBar";
-// TODO: implement the dashboard stats to be dynamic based on the filter buttons and use the same pattern as the sales page
+
 function format_payment(method: string) {
   switch (method) {
     case "ZAAD":
@@ -37,18 +38,11 @@ function format_payment(method: string) {
 }
 
 function format_date(date: Date) {
-  return new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  return to_shop_time(date).format("MMM D, YYYY");
 }
 
 function format_time(date: Date) {
-  return new Date(date).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  return to_shop_time(date).format("hh:mm A");
 }
 
 export default async function DashboardPage({
@@ -95,14 +89,23 @@ export default async function DashboardPage({
             <StatusCard
               title={`Total Sales ${filter === "weekly" ? "This Week" : filter === "monthly" ? "This Month" : filter === "all" ? "All Time" : "Today"}`}
               value={`$${stats.total_sales.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
-              description={`${stats.total_sales_change >= 0 ? "+" : ""}${stats.total_sales_change.toFixed(1)}% from ${filter === "weekly" ? "last week" : filter === "monthly" ? "last month" : filter === "all" ? "beginning" : "yesterday"}`}
-              variant={stats.total_sales_change >= 0 ? "success" : "danger"}
+              description={
+                stats.total_sales_change === null
+                  ? "Billed, including unpaid debts"
+                  : `${stats.total_sales_change >= 0 ? "+" : ""}${stats.total_sales_change.toFixed(1)}% from ${filter === "weekly" ? "last week" : filter === "monthly" ? "last month" : "yesterday"}`
+              }
+              variant={
+                stats.total_sales_change === null || stats.total_sales_change >= 0
+                  ? "success"
+                  : "danger"
+              }
               icon={<DollarSign size={20} className="text-primary" />}
               trendIcon={
-                stats.total_sales_change >= 0 ? (
-                  <TrendingUp size={12} />
-                ) : (
+                stats.total_sales_change !== null &&
+                stats.total_sales_change < 0 ? (
                   <TrendingDown size={12} />
+                ) : (
+                  <TrendingUp size={12} />
                 )
               }
             />
@@ -120,11 +123,14 @@ export default async function DashboardPage({
                   minimumFractionDigits: 2,
                 })}
               </p>
+              <p className="text-[10px] text-slate-400 dark:text-slate-500">
+                Margin on sales billed this period
+              </p>
               <div className="mt-1 h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-primary rounded-full transition-all"
                   style={{
-                    width: `${Math.min((stats.net_profit / (stats.total_sales || 1)) * 100, 100)}%`,
+                    width: `${Math.max(Math.min((stats.net_profit / (stats.total_sales || 1)) * 100, 100), 0)}%`,
                   }}
                 />
               </div>
@@ -135,7 +141,7 @@ export default async function DashboardPage({
               value={`$${stats.pending_debts.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
               description={
                 stats.pending_debts > 0
-                  ? "Requires attention"
+                  ? "Outstanding across all time"
                   : "No pending debts"
               }
               variant={stats.pending_debts > 0 ? "danger" : "success"}

@@ -59,7 +59,10 @@ export default function CurrencyRate({
           <div className=" flex flex-col justify-between">
             <div className="relative group h-full">
               <div className="flex flex-col items-center h-full gap-3 px-5 py-4 bg-white dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md text-slate-900 dark:text-slate-100 focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent outline-none transition-all shadow-lg">
-                <label className="block text-left w-full text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2">
+                <label
+                  htmlFor="exchange-rate"
+                  className="block text-left w-full text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2"
+                >
                   New Conversion Rate
                 </label>
                 <div className="flex items-center justify-end w-full">
@@ -67,6 +70,7 @@ export default function CurrencyRate({
                     1 USD =
                   </span>
                   <input
+                    id="exchange-rate"
                     className="bg-transparent border-none focus:ring-0 text-sm w-full p-0 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 font-medium outline-none min-h-full"
                     placeholder="e.g 8500"
                     type="number"

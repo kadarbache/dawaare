@@ -41,6 +41,7 @@ export default async function CustomerDetailPage({
               },
             },
           },
+          seller: { select: { name: true, id: true, image: true } },
         },
       },
     },

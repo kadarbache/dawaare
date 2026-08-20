@@ -1,7 +1,6 @@
 "use client";
 
 import DialogModal from "@/components/DialogModel";
-import { SaleWithCustomerAndItems } from "@/utils/types";
 import { Banknote, Smartphone, Landmark } from "lucide-react";
 import { useState, useActionState, useEffect } from "react";
 import { repayDebt } from "../server";
@@ -9,7 +8,12 @@ import { repayDebt } from "../server";
 interface RepayDebtModalProps {
   isOpen: boolean;
   onClose: () => void;
-  sale: SaleWithCustomerAndItems | null;
+  sale: {
+    id: string;
+    total_amount: number;
+    amount_paid: number;
+    remaining: number;
+  } | null;
 }
 
 /**
@@ -75,12 +79,16 @@ export default function RepayDebtModal({
 
         {/* Primary Input Section (Terminal style) */}
         <div className="space-y-2">
-          <label className="text-[11px] text-primary uppercase tracking-widest font-bold">
+          <label
+            htmlFor="repay-amount"
+            className="text-[11px] text-primary uppercase tracking-widest font-bold"
+          >
             Amount to Pay
           </label>
           <div className="relative bg-white dark:bg-[#1a110c] rounded-md border border-slate-200 dark:border-primary/30 shadow-2xl flex items-center px-6 h-20 group focus-within:border-primary transition-all">
             <span className="text-primary font-black text-3xl mr-4">$</span>
             <input
+              id="repay-amount"
               autoFocus
               className="bg-transparent border-none focus:ring-0 font-black text-3xl dark:placeholder-stone-700 w-full tracking-tight outline-none text-slate-900 dark:text-slate-100 placeholder-slate-300"
               placeholder="0.00"

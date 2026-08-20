@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/db";
 import { PAGE_SIZE } from "./constants";
 import { format_sale_row } from "@/utils/helpers";
+import { requireAdmin, AuthError } from "@/lib/auth-guard";
+import { range_from_day_strings } from "@/lib/dates";
 
 export type SaleRow = {
   id: string;
@@ -44,12 +46,10 @@ export async function get_sales(
 ): Promise<{ sales: SaleRow[]; total: number }> {
   const where = {
     ...(start_date && end_date
-      ? {
-          created_at: {
-            gte: new Date(`${start_date}T00:00:00`),
-            lte: new Date(`${end_date}T23:59:59.999`),
-          },
-        }
+      ? (() => {
+          const range = range_from_day_strings(start_date, end_date);
+          return { created_at: { gte: range.start, lte: range.end } };
+        })()
       : {}),
   };
 
@@ -100,12 +100,10 @@ export async function get_sale_stats(
 ): Promise<SaleStats> {
   const where = {
     ...(start_date && end_date
-      ? {
-          created_at: {
-            gte: new Date(`${start_date}T00:00:00`),
-            lte: new Date(`${end_date}T23:59:59.999`),
-          },
-        }
+      ? (() => {
+          const range = range_from_day_strings(start_date, end_date);
+          return { created_at: { gte: range.start, lte: range.end } };
+        })()
       : {}),
   };
 
@@ -117,6 +115,7 @@ export async function get_sale_stats(
       _avg: { total_amount: true },
     }),
     prisma.sale.findFirst({
+      where,
       orderBy: { created_at: "desc" },
       select: { created_at: true },
     }),
@@ -136,6 +135,8 @@ export async function delete_sale(
   sale_id: string,
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdmin();
+
     const repaymentsCount = await prisma.repayment.count({
       where: { sale_id },
     });
@@ -176,6 +177,9 @@ export async function delete_sale(
     revalidatePath("/sales");
     return { success: true };
   } catch (error: unknown) {
+    if (error instanceof AuthError) {
+      return { success: false, error: error.message };
+    }
     if (error instanceof Error) {
       console.error("Failed to delete sale:", error.message);
       return {

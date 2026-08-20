@@ -14,6 +14,7 @@ import {
   Customer,
 } from "../_context/TerminalContext";
 import { usePathname } from "next/navigation";
+import toast from "react-hot-toast";
 
 function WorkspaceContent() {
   const { products, addToCart } = useTerminal();
@@ -116,6 +117,7 @@ function WorkspaceContent() {
                       onScan={handleScan}
                       onError={(error) => {
                         console.error("Scanner Error:", error);
+                        toast.error("Could not access the camera for scanning.");
                       }}
                       components={{
                         finder: true,

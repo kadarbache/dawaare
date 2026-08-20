@@ -44,10 +44,14 @@ export default function CategoryModel({
           <input type="hidden" name="category_id" value={editingCategory.id} />
         )}
         <div className="space-y-2">
-          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+          <label
+            htmlFor="category-name"
+            className="text-[10px] font-bold uppercase tracking-widest text-slate-500"
+          >
             Category Name
           </label>
           <input
+            id="category-name"
             type="text"
             name="category_name"
             defaultValue={editingCategory?.name || ""}

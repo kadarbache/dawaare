@@ -2,8 +2,9 @@
 
 import { createCustomer } from "@/app/customers/server";
 import { Loader2 } from "lucide-react";
-import React, { useActionState, useEffect, useRef } from "react";
+import React, { useActionState, useEffect, useRef, useState } from "react";
 import DialogModal from "@/components/DialogModel";
+import PhoneInput from "@/components/PhoneInput";
 
 interface AddCustomerModalProps {
   isOpen: boolean;
@@ -16,7 +17,7 @@ export default function AddCustomerModal({
 }: AddCustomerModalProps) {
   const [state, formAction, isPending] = useActionState(createCustomer, null);
   const formRef = useRef<HTMLFormElement>(null);
-  const hiddenPhoneRef = useRef<HTMLInputElement>(null);
+  const [phone, setPhone] = useState("");
 
   useEffect(() => {
     if (state?.success) {
@@ -49,10 +50,14 @@ export default function AddCustomerModal({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Name */}
           <div className="flex flex-col gap-1.5 md:col-span-1">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="customer-name"
+              className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+            >
               Full Name *
             </label>
             <input
+              id="customer-name"
               name="name"
               required
               className="w-full bg-slate-50 dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
@@ -63,35 +68,32 @@ export default function AddCustomerModal({
 
           {/* Phone */}
           <div className="flex flex-col gap-1.5 md:col-span-1">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="customer-phone"
+              className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+            >
               Phone Number *
             </label>
-            <div className="flex items-stretch w-full bg-slate-50 dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all overflow-hidden">
-              <span className="flex items-center justify-center px-4 bg-slate-100 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 border-r border-slate-300 dark:border-primary/20 font-bold select-none text-sm font-mono">
-                +252
-              </span>
-              <input type="hidden" name="phone" ref={hiddenPhoneRef} />
-              <input
-                placeholder="6X XXXXXXX"
-                className="flex-1 bg-transparent px-4 py-2.5 text-slate-900 dark:text-slate-100 outline-none w-full"
-                type="tel"
-                onChange={(e) => {
-                  if (hiddenPhoneRef.current) {
-                    hiddenPhoneRef.current.value = `+252 ${e.target.value}`;
-                  }
-                }}
-                required
-              />
-            </div>
+            <PhoneInput
+              id="customer-phone"
+              name="phone"
+              value={phone}
+              onChange={setPhone}
+              required
+            />
           </div>
 
           {/* Email */}
           <div className="flex flex-col gap-1.5 md:col-span-2">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="customer-email"
+              className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+            >
               Email{" "}
               <span className="font-normal text-slate-400">(Optional)</span>
             </label>
             <input
+              id="customer-email"
               name="email"
               className="w-full bg-slate-50 dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
               placeholder="e.g. johndoe@example.com"
@@ -102,11 +104,15 @@ export default function AddCustomerModal({
 
         {/* Address */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <label
+            htmlFor="customer-address"
+            className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+          >
             Address{" "}
             <span className="font-normal text-slate-400">(Optional)</span>
           </label>
           <textarea
+            id="customer-address"
             name="address"
             rows={2}
             className="w-full bg-slate-50 dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none"
@@ -116,10 +122,14 @@ export default function AddCustomerModal({
 
         {/* Notes */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <label
+            htmlFor="customer-notes"
+            className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+          >
             Notes <span className="font-normal text-slate-400">(Optional)</span>
           </label>
           <textarea
+            id="customer-notes"
             name="notes"
             rows={2}
             className="w-full bg-slate-50 dark:bg-primary/5 border border-slate-300 dark:border-primary/20 rounded-md px-4 py-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none"

@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { requireSession, AuthError } from "@/lib/auth-guard";
 
 export type ActionState = {
   success?: boolean;
@@ -12,12 +13,15 @@ export async function submitSale(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const sellerId = formData.get("seller_id") as string;
   try {
+    const session = await requireSession();
+    const sellerId = session.user.id;
+
     const rawCart = formData.get("cart_payload") as string;
     const notes = formData.get("notes") as string;
     const paymentMethod =
-      (formData.get("payment_method") as "ZAAD") || "CASH" || "E_DAHAB";
+      (formData.get("payment_method") as "ZAAD" | "CASH" | "E_DAHAB") ||
+      "CASH";
     const customerId = formData.get("customer_id") as string;
     const amountPaidInput = formData.get("amount_paid") as string;
     const repaymentDate = formData.get("repayment_date") as string;
@@ -69,6 +73,17 @@ export async function submitSale(
       });
 
       for (const item of cartItems) {
+        const product = await tx.product.findUnique({
+          where: { id: item.product.id },
+          select: { stock_qty: true, cost_price: true },
+        });
+
+        if (!product || product.stock_qty < item.quantity) {
+          throw new Error(
+            `Not enough stock for "${item.product.name}". Please refresh and try again.`,
+          );
+        }
+
         await tx.saleItem.create({
           data: {
             sale_id: sale.id,
@@ -77,6 +92,7 @@ export async function submitSale(
             quantity: item.quantity,
             unit_price: item.product.price,
             total_price: item.quantity * item.product.price,
+            cost_price: product.cost_price,
           },
         });
 
@@ -96,6 +112,9 @@ export async function submitSale(
 
     return { success: true };
   } catch (error: unknown) {
+    if (error instanceof AuthError) {
+      return { error: error.message };
+    }
     console.error("Checkout failed:", error);
     const err = error as Error;
     return {
