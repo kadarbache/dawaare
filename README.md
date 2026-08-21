@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dawaare
 
-## Getting Started
+Point-of-sale and inventory management for a retail shop. Staff ring up sales at
+a terminal, track stock and customers, record debt and repayments, and review
+takings on a dashboard.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router, React 19, React Compiler) with TypeScript
+- **Prisma 7** against PostgreSQL, connected through the Neon serverless adapter
+- **better-auth** for email/password sessions, with roles and email verification
+- **Tailwind CSS v4** with shadcn/ui and Radix primitives
+- **Cloudinary** for product and profile images, **Resend** for transactional email
+- **pnpm** as the package manager
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+# create .env with the variables listed below
+pnpm prisma migrate dev
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app runs at [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | PostgreSQL connection string (Neon) |
+| `NEXT_PUBLIC_APP_URL` | Base URL the auth client calls, e.g. `http://localhost:3000` |
+| `RESEND_API_KEY` | Sends verification emails |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary account |
+| `NEXT_PUBLIC_CLOUDINARY_API_KEY` | Cloudinary account |
+| `CLOUDINARY_API_SECRET` | Cloudinary account — server only |
+| `SETUP_SECRET` | Gates the one-time admin bootstrap route. Development only — never set this in a deployed environment. |
 
-## Learn More
+### Creating the first admin
 
-To learn more about Next.js, take a look at the following resources:
+There is no public sign-up. With `SETUP_SECRET` set and the dev server running,
+visit `/api/setup?secret=<your secret>` to create the first `ADMIN` account. The
+route refuses to run outside development. Every account after that is created
+from **Settings → Sellers**.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Command | Does |
+| --- | --- |
+| `pnpm dev` | Regenerates the Prisma client, then starts the dev server |
+| `pnpm build` | Regenerates the Prisma client, then builds for production |
+| `pnpm start` | Serves the production build |
+| `pnpm lint` | Runs ESLint |
+| `pnpm db:seed` | Seeds the database via `prisma/seed.ts` |
 
-## Deploy on Vercel
+## Routes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Path | What it does |
+| --- | --- |
+| `/terminal` | POS workspace — search products, build a cart, take payment |
+| `/inventory` | Products, stock levels, categories |
+| `/customers` | Customer records, outstanding debt, repayments |
+| `/sales` | Sales history with seller attribution |
+| `/dashboard` | Revenue, profit, and stock summaries |
+| `/settings` | Profile, sellers, categories, currency rates |
+| `/login` | Sign in |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`/` redirects to `/sales`.
+
+## Data model
+
+`Product` and `ItemsCategory` cover the catalogue. A `Sale` holds many
+`SaleItem` rows, each recording the cost price at the time of sale so margins
+stay correct when prices change later. Sales may be tied to a `Customer`, and
+unpaid balances are settled through `Repayment` records. `ExchangeRate` supports
+pricing in more than one currency. `User` carries a `Role` of `ADMIN` or
+`SELLER`; see Roles below.
+
+## Roles
+
+Every signed-in user can work the terminal and reach inventory, customers, and
+sales. `ADMIN` is required for the settings area — profile, sellers, categories,
+and currency rates — and for deleting a sale. The guards live in
+`src/lib/auth-guard.ts` (`requireSession` and `requireAdmin`) and are applied in
+the server actions rather than in middleware.
