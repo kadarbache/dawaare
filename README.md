@@ -17,7 +17,7 @@ takings on a dashboard.
 
 ```bash
 pnpm install
-# create .env with the variables listed below
+cp .env.example .env   # then fill in the values
 pnpm prisma migrate dev
 pnpm dev
 ```
@@ -26,10 +26,15 @@ The app runs at [http://localhost:3000](http://localhost:3000).
 
 ### Environment variables
 
+`.env.example` lists every variable; copy it to `.env` and fill it in.
+
 | Variable | Purpose |
 | --- | --- |
-| `DATABASE_URL` | PostgreSQL connection string (Neon) |
+| `DATABASE_URL` | Pooled PostgreSQL connection string (Neon), used by the app at runtime |
+| `DIRECT_URL` | Direct, non-pooled connection used by the Prisma CLI for migrations |
 | `NEXT_PUBLIC_APP_URL` | Base URL the auth client calls, e.g. `http://localhost:3000` |
+| `BETTER_AUTH_SECRET` | Signs better-auth sessions. Generate with `openssl rand -base64 32` |
+| `BETTER_AUTH_URL` | Same origin as `NEXT_PUBLIC_APP_URL` |
 | `RESEND_API_KEY` | Sends verification emails |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary account |
 | `NEXT_PUBLIC_CLOUDINARY_API_KEY` | Cloudinary account |
